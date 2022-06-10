@@ -15,15 +15,13 @@ find Applications -type d  -o -type l -mindepth 1 -maxdepth 1 -exec basename "{}
 JETBRAINS_CONFIG="${PWD}/config"
 
 JETBRAINS_CONFIGS="$(find "${JETBRAINS_CONFIG}" -type d -mindepth 1 -maxdepth 1 -exec basename "{}" \;)"
-set -x
+
 declare -A OPEN
 while read -r i; do
   name="${i/.app/}"
   echo $name
   OPEN["${i}"]="${JETBRAINS}/Applications/${i}"
 done < "${applications}"
-
-declare -p OPEN
 
 main() {
   local file i tmp
