@@ -206,3 +206,21 @@
 !/.sublime
 /.sublime/homebrew.sublime-workspace
 !/.vscode
+
+
+### START unignore
+## /
+!/.idea
+## /Bbin.app
+!/Bbin.app
+## /etc
+!/etc/bash_completion.d/bats
+## /libexec
+!/libexec
+## /sbin
+!/sbin/bats
+## /tests
+!/tests
+## /
+!/Makefile
+### END unignore

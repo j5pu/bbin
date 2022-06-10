@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+cd "$(dirname "$0")" || exit
+cd "$(git rev-parse --show-toplevel)" || exit
+PROJECT_DIR="$(pwd -P)"; export PROJECT_DIR
+. /etc/profile
+. libexec/paths.sh
+path_add_exist_all "${PROJECT_DIR}"
+#"/Applications/IntelliJ IDEA.app/Contents/MacOS/idea" "${PROJECT_DIR}"
+open "/Applications/IntelliJ IDEA.app" --args "${PROJECT_DIR}"
+
