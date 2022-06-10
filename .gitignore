@@ -213,6 +213,8 @@
 !/.idea
 ## /Bbin.app
 !/Bbin.app
+## /bin
+!/bin/jbeval
 ## /etc
 !/etc/bash_completion.d/bats
 ## /libexec
