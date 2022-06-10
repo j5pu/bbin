@@ -19,7 +19,6 @@ JETBRAINS_CONFIGS="$(find "${JETBRAINS_CONFIG}" -type d -mindepth 1 -maxdepth 1 
 declare -A OPEN
 while read -r i; do
   name="${i/.app/}"
-  echo $name
   OPEN["${i}"]="${JETBRAINS}/Applications/${i}"
 done < "${applications}"
 
