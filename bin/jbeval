@@ -18,10 +18,18 @@ JETBRAINS_CONFIGS="$(find "${JETBRAINS_CONFIG}" -type d -mindepth 1 -maxdepth 1 
 
 declare -A OPEN
 while read -r i; do
-  name="${i/.app/}"
   OPEN["${i}"]="${JETBRAINS}/Applications/${i}"
 done < "${applications}"
 
+#######################################
+# description
+# Globals:
+#   JETBRAINS_CONFIG
+#   JETBRAINS_CONFIGS
+#   OPEN
+# Arguments:
+#  None
+#######################################
 main() {
   local file i tmp
   open https://account.jetbrains.com/login
