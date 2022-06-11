@@ -199,40 +199,30 @@ bats::tmp() {
 #  None
 #######################################
 _bashpro() {
-  local bats_dst formatter_dst formatter_file formatter_patch formatter_src line plugin properties
+  local bats_dst plugin properties
   while read -r properties; do
     test -f "${properties}" || continue
 
     plugin="$(awk -F '=' '/idea.plugins.path=/ { print $2 }' "${properties}")/bashsupport-pro/bats-core"
     test -d "${plugin}" || continue
-
     bats_dst="${plugin}/bin/bats"
-    line="exec bats"
-    if ! grep -q "${line}" "${bats_dst}"; then
-      cp "${bats_dst}" "${bats_dst}.bak"
+    if ! grep -q "${BATS_BASHPRO_FORMATTER}" "${bats_dst}"; then
+      test -f "${bats_dst}.bak" || cp "${bats_dst}" "${bats_dst}.bak"
       cat > "${bats_dst}" <<EOF
 #!/usr/bin/env bash
-${line} "\$@"
+
+for arg do
+  shift
+  [ "\${arg}" != "${BATS_BASHPRO_FORMATTER}" ] || \
+arg="\$(dirname "\$(dirname "\$0")")/libexec/bats-core/bats-format-bashpro"
+  set -- "\$@" "\${arg}"
+done
+
+exec bats "\$@"
 EOF
       chmod +x "${bats_dst}"
       _ok "${bats_dst}: updated"
     fi
-
-    formatter_patch="${BATS_SHARE}/bats-core/libexec/bats-core/bats"
-    if ! grep -q "${BATS_BASHPRO_FORMATTER}" "${formatter_patch}"; then
-      sed -i "" "s/, tap13/, tap13, ${BATS_BASHPRO_FORMATTER}/; s/tap13|cat/tap13|cat|${BATS_BASHPRO_FORMATTER}/" \
-        "${formatter_patch}"
-      _ok "${formatter_patch}: patched"
-    fi
-
-    formatter_file="bats-format-${BATS_BASHPRO_FORMATTER}"
-    formatter_dst="${BATS_SHARE}/bats-core/libexec/bats-core/${formatter_file}"
-    ! test -e "${formatter_dst}" || continue
-
-    formatter_src="${plugin}/libexec/bats-core/${formatter_file}"
-    ln -s "${formatter_src}" "${formatter_dst}"
-    git -C "${BATS_SHARE}/bats-core" add "${formatter_dst}"
-    _ok "${formatter_dst}: copied"
 
   done < <(env | awk -F '=' '/^[A-Z].*_PROPERTIES=/ { print $2 }')
 }
@@ -286,12 +276,9 @@ _bats_libs() {
 #   0 ...
 #######################################
 _bats_pull() {
-  local i repo
+  local i
   for i in ${BATS_REPOS}; do
-    repo="${BATS_SHARE}/${i}"
-    [ "${i}" != "bats-core" ] || git -C "${repo}" stash --quiet
-    git -C "${repo}" pull --quiet
-    [ "${i}" != "bats-core" ] || test -z "$(git -C "${repo}" stash list)" || git -C "${repo}" stash pop --quiet
+    git -C "${BATS_SHARE}/${i}" pull --quiet
   done
 }
 
