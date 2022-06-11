@@ -1953,6 +1953,11 @@ example, run `export HOMEBREW_NO_INSECURE_REDIRECT=1` rather than just
 
   *Default:* `$HOME/.config/bat/config`.
 
+- `HOMEBREW_BAT_THEME`
+  <br>Use this as the `bat` theme for syntax highlighting.
+
+  *Default:* `$BAT_THEME`.
+
 - `HOMEBREW_BOOTSNAP`
   <br>If set, use Bootsnap to speed up repeated `brew` calls. A no-op when using Homebrew's vendored, relocatable Ruby on macOS (as it doesn't work).
 
@@ -2172,10 +2177,7 @@ example, run `export HOMEBREW_NO_INSECURE_REDIRECT=1` rather than just
   *Default:* macOS: `/private/tmp`, Linux: `/tmp`.
 
 - `HOMEBREW_UPDATE_REPORT_ALL_FORMULAE`
-  <br>If set, `brew update` lists updates to all software.
-
-- `HOMEBREW_UPDATE_REPORT_VERSION_CHANGED_FORMULAE`
-  <br>If set, `brew update` only lists updates to formulae with differing versions. Note this is slower than the default behaviour.
+  <br>If set, `brew update` lists changes to all formulae and cask files rather than only showing when they are installed or outdated.
 
 - `HOMEBREW_UPDATE_TO_TAG`
   <br>If set, always use the latest stable tag (even if developer commands have been run).

@@ -2452,6 +2452,8 @@ module Homebrew::EnvConfig
 
   def self.bat_config_path(); end
 
+  def self.bat_theme(); end
+
   def self.bootsnap?(); end
 
   def self.bottle_domain(); end
@@ -2573,8 +2575,6 @@ module Homebrew::EnvConfig
   def self.temp(); end
 
   def self.update_report_all_formulae?(); end
-
-  def self.update_report_version_changed_formulae?(); end
 
   def self.update_to_tag?(); end
 
@@ -2995,17 +2995,9 @@ module Kernel
 
   def choose(*args, &block); end
 
-  def itself(); end
-
-  def object_id(); end
-
   def pretty_inspect(); end
 
   def say(*args, &block); end
-
-  def then(); end
-
-  def yield_self(); end
 end
 
 module Kernel

@@ -129,6 +129,10 @@ module Cask
       metadata_main_container_path/"config.json"
     end
 
+    def checksumable?
+      url.using.blank? || url.using == :post
+    end
+
     def download_sha_path
       metadata_main_container_path/"LATEST_DOWNLOAD_SHA256"
     end
@@ -136,12 +140,15 @@ module Cask
     def new_download_sha
       require "cask/installer"
 
+      # Call checksumable? before hashing
       @new_download_sha ||= Installer.new(self, verify_download_integrity: false)
                                      .download(quiet: true)
                                      .instance_eval { |x| Digest::SHA256.file(x).hexdigest }
     end
 
     def outdated_download_sha?
+      return true unless checksumable?
+
       current_download_sha = download_sha_path.read if download_sha_path.exist?
       current_download_sha.blank? || current_download_sha != new_download_sha
     end
@@ -166,13 +173,11 @@ module Cask
         version
       end
 
-      if greedy || greedy_latest || (greedy_auto_updates && auto_updates)
-        if latest_version.latest?
-          return versions if outdated_download_sha?
+      if latest_version.latest?
+        return versions if (greedy || greedy_latest) && outdated_download_sha?
 
-          return []
-        end
-      elsif auto_updates
+        return []
+      elsif auto_updates && !greedy && !greedy_auto_updates
         return []
       end
 
