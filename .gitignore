@@ -214,6 +214,9 @@
 ## /Bbin.app
 !/Bbin.app
 ## /bin
+!/bin/color
+!/bin/fronman
+!/bin/genman
 !/bin/jbeval
 ## /etc
 !/etc/bash_completion.d/bats
