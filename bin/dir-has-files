@@ -1,0 +1,46 @@
+#!/bin/sh
+
+set -eu
+
+#######################################
+# show usage
+# Arguments:
+#   1
+#######################################
+help() {
+  test $# -gt 0 || return 0
+
+  case "$1" in
+    -h|--help|help) rc=0 ;;
+    -*) >&2 printf '%s\n\n' "${0##*/}: $1: invalid option/argument" ;;
+    *) return 0 ;;
+  esac
+
+  >&2 cat <<EOF
+usage: ${0##*/} [directory]
+   or: ${0##*/} [-h|--help|help]
+
+checks if it is a directory and has files or symlinks in first level (default: cwd)
+
+Commands:
+   -h, --help, help   display this help and exit.
+
+Returns:
+  0 if it is a directory and has files or symlinks
+EOF
+  exit "${rc:-1}"
+}
+
+#######################################
+# has the directory any files, including hidden
+# Arguments:
+#   directory   path to directory (default: cwd)
+# Returns:
+#   1 if directory does not have files or does not exist
+#######################################
+main () {
+  help "$@"
+  test -d "${1:-.}" && [ -n "$(find "${1:-.}" -maxdepth 1 -type f -o -type l)" ]
+}
+
+main "$@"

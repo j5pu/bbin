@@ -339,8 +339,8 @@ _file() {
 #######################################
 _functions(){
   mapfile -t BATS_FUNCTIONS < <(
-    filefuncs "${BATS_SHARE}"/bats-*/src/*.bash &&
-    filefuncs "${BASH_SOURCE[0]}"
+    filesfuncs "${BATS_SHARE}"/bats-*/src/*.bash &&
+    filesfuncs "${BASH_SOURCE[0]}"
   )
 
   # bashsupport disable=BP2001

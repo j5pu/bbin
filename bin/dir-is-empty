@@ -1,0 +1,45 @@
+#!/bin/sh
+
+set -eu
+
+#######################################
+# show usage
+# Arguments:
+#   1
+#######################################
+help() {
+  test $# -gt 0 || return 0
+
+  case "$1" in
+    -h|--help|help) rc=0 ;;
+    -*) >&2 printf '%s\n\n' "${0##*/}: $1: invalid option/argument" ;;
+    *) return 0 ;;
+  esac
+
+  >&2 cat <<EOF
+usage: ${0##*/} [directory]
+   or: ${0##*/} [-h|--help|help]
+
+checks if it is a directory, and it is empty (default: cwd)
+
+Commands:
+   -h, --help, help   display this help and exit.
+
+Returns:
+  0 if it is a directory, and it is empty
+EOF
+  exit "${rc:-1}"
+}
+
+#######################################
+# is directory empty, including hidden files and folders
+# Arguments:
+#   directory   path to directory (default: cwd)
+# Returns:
+#   1 if directory is empty or does not exist
+#######################################
+main () {
+  test -d "${1:-.}" && [ -z "$(find "${1:-.}" -mindepth 1 -maxdepth 1)" ]
+}
+
+main "$@"

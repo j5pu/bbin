@@ -13,6 +13,20 @@
 has() { command -v "${1?}" >/dev/null; }
 
 #######################################
+# sources all files in the first level of a directory, including hidden files
+# Arguments:
+#  directory    path of directory to source (default: cwd).
+#######################################
+source_dir () {
+  if dir-has-files "${1:-.}"; then
+    for _source_dir_file in "${1:-.}"/*; do
+      . "${_source_dir_file}"
+    done
+    unset _source_dir_file
+  fi
+}
+
+#######################################
 # change to git repository top path
 # Arguments:
 #  None
