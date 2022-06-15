@@ -214,6 +214,7 @@
 ## /Bbin.app
 !/Bbin.app
 ## /bin
+!/bin/cmd
 !/bin/color
 !/bin/dir-has-files
 !/bin/dir-is-empty
