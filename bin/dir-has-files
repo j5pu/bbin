@@ -2,6 +2,9 @@
 
 set -eu
 
+# TODO: tests de dir-has-files y dir-is-empty, los completions, el color, el arrays
+#
+
 #######################################
 # show usage
 # Arguments:
