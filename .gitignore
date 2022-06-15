@@ -216,9 +216,9 @@
 ## /bin
 !/bin/cmd
 !/bin/color
+!/bin/dir-exists-empty
 !/bin/dir-has
 !/bin/dir-has-files
-!/bin/dir-is-empty
 !/bin/filesfuncs
 !/bin/fronman
 !/bin/funcexported

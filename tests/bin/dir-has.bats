@@ -21,16 +21,16 @@
   assert_success
 }
 
-@test "echo $(bats::tmp dir1) | $(bats::basename)" {
+@test "echo $(bats::tmp d1) | $(bats::basename)" {
   run sh -c "${BATS_TEST_DESCRIPTION}"
   assert_failure
-  assert_output --regexp ".*/dir1"
+  assert_output --regexp ".*/d1"
 }
 
-@test "{ echo /tmp; echo $(bats::tmp dir1); } | $(bats::basename)" {
+@test "{ echo /tmp; echo $(bats::tmp d2); } | $(bats::basename)" {
   run sh -c "${BATS_TEST_DESCRIPTION}"
   assert_failure
-  assert_output --regexp ".*/dir1"
+  assert_output --regexp ".*/d2"
 }
 
 @test "{ echo /tmp; echo ~; } | $(bats::basename)" {
