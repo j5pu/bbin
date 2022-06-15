@@ -242,8 +242,9 @@ path_add_exist_all "${BBIN_PREFIX}"
 
 # FIXME: export_funcs_all fucks PROMPT starship y con export_funcs_path, debe ser por el jedi por el rebash
 #  -> Resolver el edit que hace el source del /etc/profile entonces las que no están exportadas, nada,
-#  con bashrc de este, pero al final es para todos. o hacer el rebash en el jeti en lugar del /etc/profile, si esta
+#  con bashrc de este, pero al final es para todos. o hacer el rebash en el jedi en lugar del /etc/profile, si esta
 #  rebash entonces rebash y si no /etc/profile, ya no recuerdo donde modifique el jedi!
+#  VER Como pruebo los sourced....
 #export_funcs_all
 export_funcs_path "${BBIN_PROFILE}"
 
