@@ -3,8 +3,7 @@
 
 # TODO: envrc
 
-. paths.sh || return 2>/dev/null || exit
-. utils.bash || return 2>/dev/null || exit
+has filesfuncs || return 2>/dev/null || exit
 
 # <html><h2>Bats Description Array</h2>
 # <p><strong><code>$BATS_ARRAY</code></strong> created by bats::array() with $BATS_TEST_DESCRIPTION.</p>
@@ -99,26 +98,6 @@ export INFOPATH
 export MANPATH
 
 #######################################
-# Restores $PATH to $BATS_PATH and sources .envrc.
-# Globals:
-#   PATH
-# Arguments:
-#  None
-#######################################
-bats::env() {
-  bats::cd
-
-  PATH="${BATS_PATH}"
-  MANPATH="${BATS_MANPATH}"
-  INFOPATH="${BATS_INFOPATH}"
-  path_add_exist_all "${BATS_TOP}"
-  ! test -f "${BATS_TOP}/.env" || source "${BATS_TOP}/.env"
-# TODO: envfile
-  #  . "$(dirname "${BASH_SOURCE[0]}")/envfile.sh"
-  #  envfile
-}
-
-#######################################
 # creates $BATS_ARRAY array from $BATS_TEST_DESCRIPTION or argument
 # Globals:
 #   BATS_ARRAY
@@ -143,6 +122,26 @@ bats::basename() { basename "${BATS_TEST_FILENAME-}" .bats; }
 #   BATS_TOP
 #######################################
 bats::cd() { cd "${BATS_TOP:-${BATS_TESTS:-.}}" || return; }
+
+#######################################
+# Restores $PATH to $BATS_PATH and sources .envrc.
+# Globals:
+#   PATH
+# Arguments:
+#  None
+#######################################
+bats::env() {
+  bats::cd
+
+  PATH="${BATS_PATH}"
+  MANPATH="${BATS_MANPATH}"
+  INFOPATH="${BATS_INFOPATH}"
+  path_add_exist_all "${BATS_TOP}"
+  ! test -f "${BATS_TOP}/.env" || source "${BATS_TOP}/.env"
+# TODO: envfile
+  #  . "$(dirname "${BASH_SOURCE[0]}")/envfile.sh"
+  #  envfile
+}
 
 #######################################
 # create a remote, a local temporary directory and change to local repository directory (no commits added)
@@ -596,8 +595,8 @@ _main() {
 
   if [ ! "${BATS_TESTS-}" ] && ! _directory "$(pwd)"; then
     if [ "${BATS_TOP-}" ]; then
-      for i in __tests__ test tests; do
-        directory="${BATS_TOP}/${i}"
+      for _bats_test_dir in __tests__ test tests; do
+        directory="${BATS_TOP}/${_bats_test_dir}"
         ! test -d "${directory}" || _directory "${directory}" || true
       done
       [ "${BATS_TESTS-}" ] || _die "${BATS_TOP}/{__tests__,test,tests}: no .bats test found"
@@ -607,19 +606,19 @@ _main() {
   fi
 
   local directories=()
-  for i in "${BATS_TESTS[@]}"; do
-    [ -d "${i}" ] || {
-      directories+=("$(dirname "${i}")")
+  for _bats_test_dir in "${BATS_TESTS[@]}"; do
+    [ -d "${_bats_test_dir}" ] || {
+      directories+=("$(dirname "${_bats_test_dir}")")
       continue
     }
-    directories+=("${i}")
+    directories+=("${_bats_test_dir}")
   done
   mapfile -t directories < <(printf '%s\n' "${directories[@]}" | sort -u)
   BATS_TEST_DIR="$(find "${directories[@]}" -mindepth 0 -maxdepth 0 -type d -print -quit)"
 
   local directory="${BATS_TESTS[0]}"
-  for i in "${BATS_TESTS[@]}"; do
-    directory="$(comm -12 <(tr "/" "\n" <<<"${i/\//}") \
+  for _bats_test_dir in "${BATS_TESTS[@]}"; do
+    directory="$(comm -12 <(tr "/" "\n" <<<"${_bats_test_dir/\//}") \
       <(tr "/" "\n" <<<"${directory/\//}") | sed 's|^|/|g' | tr -d '\n')"
   done
   test -d "${directory}" || directory="$(dirname "${directory}")"

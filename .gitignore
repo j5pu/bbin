@@ -225,8 +225,11 @@
 !/bin/genman
 !/bin/jbeval
 !/bin/newline-to
+!/bin/profile
 ## /etc
 !/etc/bash_completion.d/bats
+!/etc/profile.d/00-functions.bash
+!/etc/profile.d/00-functions.sh
 ## /libexec
 !/libexec
 ## /sbin
