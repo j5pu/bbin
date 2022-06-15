@@ -30,6 +30,12 @@ Commands:
 
 Returns:
   0 if it is a directory and has files or symlinks
+
+Examples:
+  $ ${0##*/}
+  $ ${0##*/} ~
+  $ ${0##*/} foo
+  $ ${0##*/} /tmp
 EOF
   exit "${rc:-1}"
 }
@@ -43,7 +49,7 @@ EOF
 #######################################
 main () {
   help "$@"
-  test -d "${1:-.}" && [ -n "$(find "${1:-.}" -maxdepth 1 -type f -o -type l)" ]
+  test -d "${1:-.}" && cd "${1:-.}" && [ -n "$(find . -maxdepth 1 -type f -o -type l)" ]
 }
 
 main "$@"
