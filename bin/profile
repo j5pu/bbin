@@ -33,6 +33,12 @@ export BBIN_PROFILE="${BBIN_PREFIX}/bin/profile"
 #
 export BBIN_DEVELOPMENT
 
+# Bbin Debug to test number of times is sourced
+#
+: "${BBIN_DEBUG=0}"; export BBIN_DEBUG
+
+test $BBIN_DEBUG -eq 0 || [ ! "${BASH_SOURCE-}" ] || caller
+
 if [ "${BBIN_PREFIX_DEFAULT}" = "${BBIN_PREFIX}" ]; then
   BBIN_DEVELOPMENT=0
   test $BBIN_DEFAULT_SOURCED -eq 0 || return 0
@@ -86,6 +92,20 @@ export_funcs_public() {
 #   1   parameter null or not set
 #######################################
 has() { command -v "${1?}" >/dev/null; }
+
+#######################################
+# description
+# Arguments:
+#  None
+# Returns:
+#   $__history_prompt_rc ...
+#######################################
+history_prompt() {
+  # shellcheck disable=SC3043
+  local __history_prompt_rc=$?
+  history -a; history -c; history -r; hash -r
+  return $__history_prompt_rc
+}
 
 #######################################
 # add/prepend directory to variable (PATH, MANPATH, etc.) removing previous entries
@@ -237,14 +257,15 @@ source_dir() {
   fi
 }
 
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 path_add_exist_all "${BBIN_PREFIX}"
+funcexported source_dir || export_funcs_path "${BBIN_PROFILE}"
+. shell
+source_dir "${BBIN_PREFIX}/etc/profile.d"
 
+[ "${PS1-}" ] || return 0
 
-# FIXME: export_funcs_all fucks PROMPT starship y con export_funcs_path, debe ser por el jedi por el rebash
-#  -> Resolver el edit que hace el source del /etc/profile entonces las que no están exportadas, nada,
-#  con bashrc de este, pero al final es para todos. o hacer el rebash en el jedi en lugar del /etc/profile, si esta
-#  rebash entonces rebash y si no /etc/profile, ya no recuerdo donde modifique el jedi!
-#  VER Como pruebo los sourced....
-#export_funcs_all
-export_funcs_path "${BBIN_PROFILE}"
+source_dir "${BBIN_PREFIX}/etc/bash_completion.d"
+
+export PROMPT_COMMAND="history_prompt${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
 

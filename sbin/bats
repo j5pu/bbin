@@ -35,28 +35,43 @@ export BATS_FUNCTIONS
 #
 export BATS_GATHER
 
-# <html><h2>Saved $INFOPATH on First Suite Test Start</h2>
-# <p><strong><code>$BATS_INFOPATH</code></strong></p>
-# </html>
-export BATS_INFOPATH="${INFOPATH}"
-
 # Bats Libs Repositories
 #
 export BATS_LIBS="bats-assert bats-file bats-support"
 
-# <html><h2>Saved $MANPATH on First Suite Test Start</h2>
+# <html><h2>Saved $INFOPATH on First Suite Test Start after bats::env</h2>
+# <p><strong><code>$BATS_INFOPATH</code></strong></p>
+# </html>
+export BATS_SAVED_INFOPATH
+
+# <html><h2>Saved $MANPATH on First Suite Test Start after bats::env</h2>
 # <p><strong><code>$BATS_MANPATH</code></strong></p>
 # </html>
-export BATS_MANPATH="${MANPATH}"
+export BATS_SAVED_MANPATH
+
+# <html><h2>Saved $PATH on First Suite Test Start after bats::env</h2>
+# <p><strong><code>$BATS_PATH</code></strong>bats-core adds bats-core libexec</p>
+# </html>
+export BATS_SAVED_PATH
+
+# <html><h2>Start $INFOPATH on First Suite Test Start</h2>
+# <p><strong><code>$BATS_INFOPATH</code></strong></p>
+# </html>
+export BATS_START_INFOPATH="${INFOPATH}"
+
+# <html><h2>Start $MANPATH on First Suite Test Start</h2>
+# <p><strong><code>$BATS_MANPATH</code></strong></p>
+# </html>
+export BATS_START_MANPATH="${MANPATH}"
+
+# <html><h2>Start $PATH on First Suite Test Start</h2>
+# <p><strong><code>$BATS_PATH</code></strong></p>
+# </html>
+export BATS_START_PATH="${PATH}"
 
 # Directory to write report files (variable set by: bats).
 #
 export BATS_OUTPUT
-
-# <html><h2>Saved $PATH on First Suite Test Start</h2>
-# <p><strong><code>$BATS_PATH</code></strong></p>
-# </html>
-export BATS_PATH="${PATH}"
 
 # Bats Core and Bats Libs Repositories
 #
@@ -133,11 +148,14 @@ bats::cd() { cd "${BATS_TOP:-${BATS_TESTS:-.}}" || return; }
 bats::env() {
   bats::cd
 
-  PATH="${BATS_PATH}"
-  MANPATH="${BATS_MANPATH}"
-  INFOPATH="${BATS_INFOPATH}"
+  PATH="${BATS_START_PATH}"
+  MANPATH="${BATS_START_MANPATH}"
+  INFOPATH="${BATS_START_INFOPATH}"
   path_add_exist_all "${BATS_TOP}"
   ! test -f "${BATS_TOP}/.env" || source "${BATS_TOP}/.env"
+  BATS_SAVED_PATH="${PATH}"
+  BATS_SAVED_MANPATH="${MANPATH}"
+  BATS_SAVED_INFOPATH="${INFOPATH}"
 # TODO: envfile
   #  . "$(dirname "${BASH_SOURCE[0]}")/envfile.sh"
   #  envfile

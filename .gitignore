@@ -226,6 +226,7 @@
 !/bin/jbeval
 !/bin/newline-to
 !/bin/profile
+!/bin/shell
 ## /etc
 !/etc/bash_completion.d/bats
 !/etc/profile.d/00-functions.bash
