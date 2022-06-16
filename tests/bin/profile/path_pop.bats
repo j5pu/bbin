@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 
-setup_file() { export BATS_FILE_PATH="${PATH}"; }
+setup_file() { . "${BATS_TOP}/tests/helpers/test_helpers.bash"; }
 
 @test "PATH=/usr/tmp:${PATH}; path_in /usr/tmp && path_pop /usr/tmp && path_in /usr/tmp " {
   run sh -c "${BATS_TEST_DESCRIPTION}"
