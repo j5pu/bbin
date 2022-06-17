@@ -191,9 +191,11 @@ path_append_exist() { path_pop "${1?}" "${2-}"; [ ! -d "$1" ] || path_append "$1
 #######################################
 path_dedup() {
   [ "${1:-PATH}" = "MANPATH" ] || _path_dedup_strip=":"
-  eval "export ${1:-PATH}='$(eval printf %s "\$${1:-PATH}" | awk -v RS=: -v ORS=: '!arr[$0]++' | \
-    sed "s/${_path_dedup_strip-}$//")'"
-  unset _path_dedup_strip
+  _path_dedup_value="$(eval echo "\$${1:-PATH}" |  tr ':' '\n' | awk '!NF || !seen[$0]++' | \
+    sed -n "H;\${x;s|\n|:|g;s|^:||;s|${_path_dedup_strip-}$||;p;}")"
+  [ "${_path_dedup_value}" != ":" ] || _path_dedup_value=""
+  eval "export ${1:-PATH}='${_path_dedup_value}'"
+  unset _path_dedup_strip _path_dedup_value
 }
 
 #######################################
@@ -227,9 +229,11 @@ path_in() {
 #######################################
 path_pop() {
   [ "${2:-PATH}" = "MANPATH" ] || _path_pop_strip=":"
-  eval "export ${2:-PATH}='$(eval echo "\$${2:-PATH}" | sed 's/:$//' | tr ':' '\n' | \
-    grep -v "^${1}$" | tr '\n' ':' | sed "s/${_path_pop_strip-}$//")'"
-  unset _path_pop_strip
+  _path_pop_value="$(eval echo "\$${2:-PATH}" | sed 's/:$//' | tr ':' '\n' | \
+    grep -v "^${1}$" | tr '\n' ':' | sed "s|${_path_pop_strip-}$||")"
+  [ "${_path_pop_value}" != ":" ] || _path_pop_value=""
+  eval "export ${2:-PATH}='${_path_pop_value}'"
+  unset _path_pop_strip _path_pop_value
 }
 
 #######################################

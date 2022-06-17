@@ -18,7 +18,7 @@ assert_colon() { assert_equal "${!1: -1}" ":"; }
 # Arguments:
 #   1  Value to check
 #######################################
-assert_manpath() { assert_equal "${MANPATH}" "$1"; assert_colon MANPATH; }
+assert_manpath() { assert_equal "${MANPATH}" "$1" && assert_colon MANPATH; }
 
 #######################################
 # assert $PATH is equal to arg and check not colon at the end
@@ -27,7 +27,7 @@ assert_manpath() { assert_equal "${MANPATH}" "$1"; assert_colon MANPATH; }
 # Arguments:
 #   1  Value to check
 #######################################
-assert_path() { assert_equal "${PATH}" "$1";  refute_colon PATH; }
+assert_path() { assert_equal "${PATH}" "$1" && refute_colon PATH; }
 
 #######################################
 # not colon at the end
