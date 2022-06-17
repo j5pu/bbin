@@ -3,7 +3,8 @@
 
 # TODO: envrc
 
-has filesfuncs || return 2>/dev/null || exit
+command -v has >/dev/null || return 2>/dev/null || exit
+command -v filesfuncs >/dev/null || return 2>/dev/null || exit
 
 # <html><h2>Bats Description Array</h2>
 # <p><strong><code>$BATS_ARRAY</code></strong> created by bats::array() with $BATS_TEST_DESCRIPTION.</p>

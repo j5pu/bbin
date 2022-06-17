@@ -5,7 +5,6 @@ cd "$(git rev-parse --show-toplevel)" || exit
 PROJECT_DIR="$(pwd -P)"; export PROJECT_DIR
 . /etc/profile
 BBIN_PREFIX="${PROJECT_DIR}"
-BBIN_DEBUG=1
 . "${BBIN_PREFIX}/bin/profile"
 #"/Applications/IntelliJ IDEA.app/Contents/MacOS/idea" "${PROJECT_DIR}"
 open "/Applications/IntelliJ IDEA.app" --args "${PROJECT_DIR}"

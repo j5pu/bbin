@@ -26,6 +26,11 @@ __SHELL_SH_SOURCED=1
 # </html>
 SH="${ZSH_ARGZERO:-${0##*/}}"
 
+# Hook for shell-specific initialization (zsh or bash).
+#
+# shellcheck disable=SC2034
+SHELL_HOOK=""
+
 #######################################
 # bash
 # Arguments:
@@ -53,12 +58,13 @@ __real() {
 case "${SH}" in
   ash|bash|busybox|dash|ksh|sh)
     if [ "${BASH_SOURCE-}" ]; then
+      SHELL_HOOK=bash
       __bash
     else
       __real "${ZSH_ARGZERO:-$0}"
     fi
     ;;
-  -zsh|zsh) SH="zsh" ;;
+  -zsh|zsh) SH="zsh"; SHELL_HOOK="${SH}" ;;
   *)
     if [ "${BASH-}" ]; then
       __bash
