@@ -2,14 +2,14 @@
 
 setup_file() { rebash; . "${BATS_TOP}/tests/helpers/test_helpers.bash"; }
 
-@test "PATH=/usr/tmp:${PATH}; path_in /usr/tmp && path_pop /usr/tmp && path_in /usr/tmp " {
+@test "PATH=/usr/tmp:${PATH}; path_in /usr/tmp && $(bats::basename) /usr/tmp && path_in /usr/tmp " {
   run sh -c "${BATS_TEST_DESCRIPTION}"
   assert_failure
   assert_equal "${PATH}" "${BATS_FILE_PATH}"
   refute [ "${PATH: -1}" = ":" ]
 }
 
-@test "PATH=${PATH}:/usr/tmp:; path_in /usr/tmp && path_pop /usr/tmp && path_in /usr/tmp " {
+@test "PATH=${PATH}:/usr/tmp:; path_in /usr/tmp && $(bats::basename) /usr/tmp && path_in /usr/tmp " {
   run sh -c "${BATS_TEST_DESCRIPTION}"
   assert_failure
   assert_equal "${PATH}" "${BATS_FILE_PATH}"
@@ -23,9 +23,9 @@ setup_file() { rebash; . "${BATS_TOP}/tests/helpers/test_helpers.bash"; }
   assert_equal "${MANPATH: -1}" ":"
 }
 
-@test "path_pop last component -> '' " {
+@test "$(bats::basename) last component -> '' " {
   for _part in $(echo "${MANPATH}" | tr ':' '\n'); do
-    path_pop "${_part}" MANPATH
+    $(bats::basename) "${_part}" MANPATH
   done
   assert_equal "${MANPATH}" ""
 }

@@ -122,8 +122,9 @@ path_add() {
   _path_add_value="$(eval echo "\$${2:-PATH}")"
   _path_add_value="${_path_add_value:+:${_path_add_value}}"
   [ "${2:-PATH}" != "MANPATH" ] || [ "${_path_add_value-}" ] || _path_add_value=":"
-  eval "export ${2:-PATH}='${1}${_path_add_value}'"
-  unset _path_add_value
+  _path_add_real="$(pwd_p "${1?}")"
+  eval "export ${2:-PATH}='${_path_add_real}${_path_add_value}'"
+  unset _path_add_value _path_add_real
 }
 
 #######################################
@@ -170,8 +171,9 @@ path_append() {
   elif [ "${_path_append_value-}" ]; then
     _path_append_first=":"
   fi
-  eval "export ${2:-PATH}='${_path_append_value}${_path_append_first-}${1}${_path_append_last-}'"
-  unset _path_append_first _path_append_last _path_append_value
+  _path_append_real="$(pwd_p "${1?}")"
+  eval "export ${2:-PATH}='${_path_append_value}${_path_append_first-}${_path_append_real}${_path_append_last-}'"
+  unset _path_append_first _path_append_last _path_append_real _path_append_value
 }
 
 #######################################
@@ -211,9 +213,10 @@ path_dedup() {
 #######################################
 path_in() {
   [ "${2:-PATH}" = "MANPATH" ] || _path_in_add=":"
+  _path_in_real="$(pwd_p "${1?}")"
   case ":$(eval echo "\$${2:-PATH}")${_path_in_add-}" in
-    *:"${1?}":*) unset _path_in_add; return 0 ;;
-    *) unset _path_in_add; return 1 ;;
+    *:"${_path_in_real}":*) unset _path_in_add _path_in_real; return 0 ;;
+    *) unset _path_in_add _path_in_real; return 1 ;;
   esac
 }
 
@@ -229,12 +232,20 @@ path_in() {
 #######################################
 path_pop() {
   [ "${2:-PATH}" = "MANPATH" ] || _path_pop_strip=":"
+  _path_pop_real="$(pwd_p "${1?}")"
   _path_pop_value="$(eval echo "\$${2:-PATH}" | sed 's/:$//' | tr ':' '\n' | \
-    grep -v "^${1}$" | tr '\n' ':' | sed "s|${_path_pop_strip-}$||")"
+    grep -v "^${_path_pop_real}$" | tr '\n' ':' | sed "s|${_path_pop_strip-}$||")"
   [ "${_path_pop_value}" != ":" ] || _path_pop_value=""
   eval "export ${2:-PATH}='${_path_pop_value}'"
-  unset _path_pop_strip _path_pop_value
+  unset _path_pop_real _path_pop_strip _path_pop_value
 }
+
+#######################################
+# physical pwd if it is a directory (default: pwd)
+# Arguments:
+#   1   path (default: pwd)
+#######################################
+pwd_p() { if test -d "${1:-.}"; then (cd "${1:-.}" || return; pwd -P); else echo "$1"; fi; }
 
 #######################################
 # rebash
@@ -244,7 +255,6 @@ path_pop() {
 rebash() {
   ! test -f "${BBIN_PROFILE_DEFAULT}" || BBIN_DEFAULT_SOURCED=0 . "${BBIN_PROFILE_DEFAULT}"
   test $BBIN_DEVELOPMENT -eq 0 || BBIN_DEVELOPMENT_SOURCED=0 . "${BBIN_PROFILE}"
-  :
 }
 
 #######################################
@@ -263,7 +273,7 @@ source_dir() {
 
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 path_add_exist_all "${BBIN_PREFIX}"
-funcexported source_dir || export_funcs_path "${BBIN_PROFILE}"
+export_funcs_path "${BBIN_PROFILE}"
 . shell
 source_dir "${BBIN_PREFIX}/etc/profile.d"
 

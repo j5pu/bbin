@@ -5,32 +5,32 @@
   assert_success
 }
 
-@test "path_in /tmp/bin " {
+@test "$(bats::basename) /tmp/bin " {
   bats::run
   assert_failure
 }
 
-@test "path_in /tmp/bin MANPATH " {
+@test "$(bats::basename) /tmp/bin MANPATH " {
   bats::run
   assert_failure
 }
 
-@test "PYTHONPATH=/tmp/bin:/usr/bin; path_in /tmp/bin PYTHONPATH" {
+@test "PYTHONPATH=/tmp/bin:/usr/bin; $(bats::basename) /tmp/bin PYTHONPATH" {
   run sh -c "${BATS_TEST_DESCRIPTION}"
   assert_success
 }
 
-@test "PYTHONPATH=/tmp/bin:/usr/bin; path_in /usr/bin PYTHONPATH" {
+@test "PYTHONPATH=/tmp/bin:/usr/bin; $(bats::basename) /usr/bin PYTHONPATH" {
   run sh -c "${BATS_TEST_DESCRIPTION}"
   assert_success
 }
 
-@test "PYTHONPATH=/tmp/bin:/usr/bin:; path_in /usr/bin PYTHONPATH" {
+@test "PYTHONPATH=/tmp/bin:/usr/bin:; $(bats::basename) /usr/bin PYTHONPATH" {
   run sh -c "${BATS_TEST_DESCRIPTION}"
   assert_success
 }
 
-@test "path_in /tmp/bin PYTHONPATH " {
+@test "$(bats::basename) /tmp/bin PYTHONPATH " {
   bats::run
   assert_failure
 }

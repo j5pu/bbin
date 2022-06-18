@@ -2,12 +2,12 @@
 
 f() { :; }
 
-@test "funcexported bats::run " {
+@test "$(bats::basename) bats::run " {
   bats::run
   assert_success
 }
 
-@test "filefuncs f " {
+@test "$(bats::basename) f " {
   bats::run
   assert_failure
 }
