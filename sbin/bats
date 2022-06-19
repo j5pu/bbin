@@ -41,6 +41,11 @@ export BATS_GATHER
 #
 export BATS_LIBS="bats-assert bats-file bats-support"
 
+
+# Run only local tests when set to 1, otherwise run container tests.
+#
+: "${BATS_LOCAL=0}"; export BATS_LOCAL
+
 # <html><h2>Saved $INFOPATH on First Suite Test Start after bats::env</h2>
 # <p><strong><code>$BATS_INFOPATH</code></strong></p>
 # </html>
@@ -55,6 +60,10 @@ export BATS_SAVED_MANPATH
 # <p><strong><code>$BATS_SAVED_PATH</code></strong>bats-core adds bats-core libexec</p>
 # </html>
 export BATS_SAVED_PATH
+
+# Verbose show Docker Command.
+#
+: "${BATS_SHOW_DOCKER_COMMAND=0}"; export BATS_SHOW_DOCKER_COMMAND
 
 # <html><h2>Start $INFOPATH on First Suite Test Start</h2>
 # <p><strong><code>$BATS_INFOPATH</code></strong></p>

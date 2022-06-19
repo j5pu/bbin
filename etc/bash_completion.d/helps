@@ -17,6 +17,7 @@ _helps() {
 complete -F _helps docker-login
 complete -F _helps docker-running
 complete -F _helps docker-start
+complete -F _helps docker-stop
 complete -F _helps isaction
 complete -F _helps isdebian
 complete -F _helps ismacos

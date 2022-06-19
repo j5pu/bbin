@@ -1,7 +1,31 @@
 # shellcheck shell=bash
 
-cd "$(dirname "${BASH_SOURCE[0]}")"/../.. || return
-load tests/helpers/helper_setup.bash
+#######################################
+# evaluates the output
+# Globals:
+#   BATS_TEST_DESCRIPTION
+#   DESCRIPTION
+# Arguments:
+#  None
+#######################################
+assert_container() {
+  ! isaction || skip
+  test "${BATS_LOCAL}" -eq 0 || skip "BATS_LOCAL is set to 1"
+
+  bats::array
+
+  bats_require_minimum_version 1.5.0
+
+  if test $# -eq 1; then
+    run -127 shell_container
+    assert_failure
+    assert_line --partial "$1"
+  else
+    run shell_container
+    assert_success
+    assert_line "${BATS_ARRAY[0]}"
+  fi
+}
 
 #######################################
 # run the container
@@ -11,37 +35,24 @@ load tests/helpers/helper_setup.bash
 # Arguments:
 #  None
 #######################################
-container() {
-  bats::array
+shell_container() {
+  ! isaction || skip
+  test "${BATS_LOCAL}" -eq 0 || skip "BATS_LOCAL is set to 1"
+
   path_add_all "/${BATS_BASENAME}"
-  >&3 echo "$PATH"
-  >&3 echo "$MANPATH"
-  >&3 echo "$INFOPATH"
-  return
-  local c=() env=(-e PATH="${BATS_BASENAME}/bin") helper=("/rc/tests/fixtures/${BATS_ARRAY[3]}.sh") shell=( "${DESCRIPTION[4]-}" )
-  if [ "${DESCRIPTION[3]}" = '-c' ]; then
-    c=( "${DESCRIPTION[3]}" )
-    helper=( "/rc/tests/fixtures/${DESCRIPTION[4]}.sh${DESCRIPTION[5]:+ ${DESCRIPTION[5]}}" )
+  PATH="/${BATS_BASENAME}/tests/fixtures/shell:${PATH}"
+  local c=() env=(-e PATH="${PATH}" -e MANPATH="${MANPATH}" -e INFOPATH="${INFOPATH}")
+  local helper=("/${BATS_BASENAME}/tests/fixtures/shell/${BATS_ARRAY[3]}") shell=( "${BATS_ARRAY[4]-}" )
+  if [ "${BATS_ARRAY[3]}" = '-c' ]; then
+    c=( "${BATS_ARRAY[3]}" )
+    helper=( "/${BATS_BASENAME}/tests/fixtures/shell/${BATS_ARRAY[4]}${BATS_ARRAY[5]:+ ${BATS_ARRAY[5]}}" )
     shell=()
   fi
-  docker run -i --rm -v "${BATS_TOP}:/${BATS_BASENAME}" \
-    "${DESCRIPTION[0]}" "${DESCRIPTION[2]}" "${c[@]}" "${helper[@]}" "${shell[@]}"
-
+  command=( docker run -i --rm -v "${BATS_TOP}:/${BATS_BASENAME}" "${env[@]}" \
+    "${BATS_ARRAY[1]}" "${BATS_ARRAY[2]}" "${c[@]}" "${helper[@]}" "${shell[@]}" )
+  test "${BATS_SHOW_DOCKER_COMMAND}" -eq 0 || >&3 echo "${command[@]}"
+  "${command[@]}"
 }
 
-#######################################
-# evaluates the output
-# Globals:
-#   BATS_TEST_DESCRIPTION
-#   DESCRIPTION
-# Arguments:
-#  None
-#######################################
-shell() {
-  ! isaction || skip
+export_funcs_path "${BASH_SOURCE[0]}"
 
-  read -r -a DESCRIPTION <<< "${BATS_TEST_DESCRIPTION}"
-  run container "$@"
-  return
-  assert_line --partial "${DESCRIPTION[1]}"
-}

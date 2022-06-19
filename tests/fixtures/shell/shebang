@@ -1,8 +1,7 @@
 #!/bin/sh
-cd "$(dirname "$0")"/../../.. || exit
 
 if [ "${1-}" ]; then
-  "$1" -c ". ./bin/shell && echo \${SH}"
+  "$1" -c ". shell && echo \${SH}"
 else
-  . ./bin/shell && printf '%s' "${SH}"
+  . shell && printf '%s' "${SH}"
 fi

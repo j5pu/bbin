@@ -29,7 +29,7 @@ Commands:
 
 Globals:
   DOCKER_HUB_TOKEN    Docker Hub token
-  GHCR_IO_TOKEN       GitHub IO token
+  GH_TOKEN            GitHub token for ghcr.io
   GIT                 Docker Hub user
 EOF
   exit "${rc:-1}"
@@ -62,7 +62,7 @@ main() {
   has docker || exit 0
   login "${GIT?}" "${DOCKER_HUB_TOKEN?}" https://index.docker.io/v2/
   login "${GIT}" "${DOCKER_HUB_TOKEN}" https://registry-1.docker.io/v2/
-  login "${GIT}" "${GHCR_IO_TOKEN?}" ghcr.io
+  login "${GIT}" "${GH_TOKEN?}" ghcr.io
 }
 
 main "$@"
