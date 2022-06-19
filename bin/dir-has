@@ -22,7 +22,7 @@ usage: ${0##*/} [directory...]
    or: [directory...] | ${0##*/}
        ${0##*/} [-h|--help|help]
 
-directory or directories exist and have files, including hidden files and folders or does not exist
+directory/s exist and have files, including hidden files and folders or does not exist
 
 Arguments:
   [directory...]      directory or directories (default: cwd) or from stdin if not input

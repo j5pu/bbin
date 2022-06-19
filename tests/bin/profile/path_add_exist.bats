@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 
-setup_file() { rebash; . "${BATS_TOP}/tests/helpers/test_helpers.bash"; }
+setup_file() { rebash; . "${BATS_TOP}/tests/helpers/bin::profile::path.bash"; }
 
 @test "$(bats::basename) '/t a' && $(bats::basename) '/t a' && ! path_in '/t a' && assert_path \"${BATS_FILE_PATH}\"" {
   run bash -c "${BATS_TEST_DESCRIPTION}"

@@ -1,0 +1,11 @@
+tap "homebrew/bundle"
+tap "homebrew/core"
+
+if RUBY_PLATFORM[/darwin/]
+  brew "bash"
+  brew "dash"
+  brew "parallel"
+else
+  brew "ksh"
+  brew "zsh"
+end

@@ -1,5 +1,9 @@
 #!/usr/bin/env bats
 
+@test "assert::helps checks if it is a directory, and it is empty (default: cwd)" {
+  bats::success
+}
+
 @test "$(bats::basename) " {
   bats::run
   assert_failure

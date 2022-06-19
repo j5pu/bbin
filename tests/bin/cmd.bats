@@ -2,6 +2,10 @@
 
 f() { :; }
 
+@test "assert::helps command, builtin, function, alias exists" {
+  bats::success
+}
+
 @test "type $(bats::basename)" {
   bats::run
   assert_output "$(bats::basename) is $(command -v "$(bats::basename)")"

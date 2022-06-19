@@ -219,16 +219,28 @@
 !/bin/dir-exists-empty
 !/bin/dir-has
 !/bin/dir-has-files
+!/bin/docker-running
+!/bin/docker-start
+!/bin/docker-stop
 !/bin/filesfuncs
 !/bin/fronman
 !/bin/funcexported
 !/bin/genman
+!/bin/hascmd
+!/bin/inargs
+!/bin/isaction
+!/bin/isdebian
+!/bin/ismacos
 !/bin/jbeval
 !/bin/newline-to
+!/bin/path-default
 !/bin/profile
 !/bin/shell
 ## /etc
 !/etc/bash_completion.d/bats
+!/etc/bash_completion.d/hascmd
+!/etc/bash_completion.d/helps
+!/etc/bash_completion.d/inargs
 !/etc/profile.d/00-functions.bash
 !/etc/profile.d/00-functions.sh
 ## /libexec

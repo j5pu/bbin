@@ -12,17 +12,7 @@ all() {
 
 export -f all
 
-@test "$(bats::basename) . && assert_path \"${BATS_FILE_PATH}\"" {
-  run bash -c "${BATS_TEST_DESCRIPTION}"
-  assert_success
-}
-
-@test "d=$(bats::tmp d); $(bats::basename) \${d} && assert_path \"${BATS_FILE_PATH}\"" {
-  run bash -c "${BATS_TEST_DESCRIPTION}"
-  assert_success
-}
-
-@test "t=$(bats::tmp t); mkdir -p \${t}/{bin,sbin,share,libexec}; mkdir -p \${t}/share/{info,man}; all \${t}" {
+@test "t=/${BATS_BASENAME}; all \${t}" {
   run bash -c "${BATS_TEST_DESCRIPTION}"
   assert_success
 }

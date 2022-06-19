@@ -1,5 +1,9 @@
 #!/usr/bin/env bats
 
+@test "assert::helps checks if it is a directory and has files or symlinks in first level (default: cwd)" {
+  bats::success
+}
+
 @test "$(bats::basename) " {
   bats::run
   assert_success

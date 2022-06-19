@@ -1,5 +1,9 @@
 #!/usr/bin/env bats
 
+@test "assert::helps replace input newlines with value and remove last newline always" {
+  bats::success
+}
+
 @test "$(bats::basename) \"\$(printf '%s\n' 1 \"2 2\" 3)\"" {
   run sh -c "${BATS_TEST_DESCRIPTION}"
   assert_output '^1$|^2 2$|^3$'

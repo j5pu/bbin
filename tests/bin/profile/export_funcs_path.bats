@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 
-setup_file() { rebash; . "${BATS_TOP}/tests/helpers/test_helpers.bash"; }
+setup_file() { rebash; }
 
 _function() { :; }
 

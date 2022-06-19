@@ -2,6 +2,10 @@
 
 f() { :; }
 
+@test "assert::helps checks if function is exported " {
+  bats::success
+}
+
 @test "$(bats::basename) bats::run " {
   bats::run
   assert_success

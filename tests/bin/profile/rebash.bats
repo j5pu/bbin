@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 
-setup_file() { rebash; . "${BATS_TOP}/tests/helpers/test_helpers.bash"; export BBIN_DEBUG=1;}
+setup_file() { rebash; export BBIN_DEBUG=1;}
 
 # TODO: check number of times with BBIN_DEBUG ...
 

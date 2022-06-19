@@ -1,5 +1,9 @@
 #!/usr/bin/env bats
 
+@test "assert::helps directory/s exist and have files, including hidden files and folders or does not exist" {
+  bats::success
+}
+
 @test "$(bats::basename) " {
   bats::run
   assert_success

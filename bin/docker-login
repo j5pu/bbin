@@ -1,0 +1,68 @@
+#!/bin/sh
+
+set -eu
+
+#######################################
+# show usage
+# Arguments:
+#   1
+#######################################
+help() {
+  test $# -gt 0 || return 0
+
+  case "$1" in
+    -h|--help|help) rc=0 ;;
+    *)
+      >&2 echo "${0##*/}: $1: invalid option/argument"
+      >&2 echo
+      ;;
+  esac
+
+  >&2 cat <<EOF
+usage: ${0##*/}
+   or: ${0##*/} [-h|--help|help]
+
+login to Docker registry and GitHub docker registry
+
+Commands:
+   -h, --help, help   display this help and exit.
+
+Globals:
+  DOCKER_HUB_TOKEN    Docker Hub token
+  GHCR_IO_TOKEN       GitHub IO token
+  GIT                 Docker Hub user
+EOF
+  exit "${rc:-1}"
+}
+
+#######################################
+# login helper
+# Arguments:
+#   1   username
+#   2   password
+#   3   registry
+#######################################
+login() {
+  docker-start
+  yes yes | docker login "$3" >/dev/null 2>&1 || docker login "$3" --username "$1" --password "$2"
+}
+
+#######################################
+# login to Docker registry and GitHub docker registry
+# Globals:
+#   DOCKER_HUB_TOKEN
+#   GHCR_IO_TOKEN
+#   GIT
+# Arguments:
+#   None
+#######################################
+main() {
+  help "$@"
+
+  has docker || exit 0
+  login "${GIT?}" "${DOCKER_HUB_TOKEN?}" https://index.docker.io/v2/
+  login "${GIT}" "${DOCKER_HUB_TOKEN}" https://registry-1.docker.io/v2/
+  login "${GIT}" "${GHCR_IO_TOKEN?}" ghcr.io
+}
+
+main "$@"

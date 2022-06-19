@@ -1,5 +1,17 @@
 #!/usr/bin/env bats.bash
 
+setup_file() { export HELPS_LINE="list functions in file/files, start at the beginning of the line, function()"; }
+
+@test "$(bats::basename) " {
+  bats::run
+  assert_failure
+  assert_line "${HELPS_LINE}"
+}
+
+@test "assert::helps" {
+  bats::success
+}
+
 @test "$(bats::basename) \"$(command -v profile)\" " {
   bats::run
   assert_output - <<EOF
@@ -9,6 +21,7 @@ export_funcs_public
 has
 history_prompt
 path_add
+path_add_all
 path_add_exist
 path_add_exist_all
 path_append

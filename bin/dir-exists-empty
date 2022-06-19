@@ -45,6 +45,8 @@ EOF
 #   1 if directory is empty or does not exist
 #######################################
 main () {
+  help "$@"
+
   test -d "${1:-.}" && cd "${1:-.}" && [ -z "$(find . -mindepth 1 -maxdepth 1)" ]
 }
 

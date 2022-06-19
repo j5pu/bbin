@@ -21,7 +21,8 @@ export BATS_COMMAND
 
 # Installation Directory for bats-core and bats libs
 #
-export BATS_SHARE="${HOME}/.local/share"; mkdir -p "${BATS_SHARE}"
+export BATS_SHARE="${HOME}/.local/share"
+mkdir -p "${BATS_SHARE}"
 
 # Bats Core executable path
 #
@@ -51,7 +52,7 @@ export BATS_SAVED_INFOPATH
 export BATS_SAVED_MANPATH
 
 # <html><h2>Saved $PATH on First Suite Test Start after bats::env</h2>
-# <p><strong><code>$BATS_PATH</code></strong>bats-core adds bats-core libexec</p>
+# <p><strong><code>$BATS_SAVED_PATH</code></strong>bats-core adds bats-core libexec</p>
 # </html>
 export BATS_SAVED_PATH
 
@@ -66,7 +67,7 @@ export BATS_START_INFOPATH="${INFOPATH}"
 export BATS_START_MANPATH="${MANPATH}"
 
 # <html><h2>Start $PATH on First Suite Test Start</h2>
-# <p><strong><code>$BATS_PATH</code></strong></p>
+# <p><strong><code>$BATS_START_PATH</code></strong></p>
 # </html>
 export BATS_START_PATH="${PATH}"
 
@@ -114,6 +115,37 @@ export INFOPATH
 export MANPATH
 
 #######################################
+# assert -h, --help, help with $HELPS_LINE
+# Globals:
+#   HELPS_LINE
+# Arguments:
+#   1   HELPS_LINE
+# Examples:
+# @test "assert::helps starts Docker daemon if not running" {
+#  ${BATS_TEST_DESCRIPTION}
+#}
+#
+# @test "assert::helps starts Docker daemon if not running" {
+#  bats::success
+#}
+# setup_file() { HELPS_LINE="foo" }
+#@test "assert::helps" {
+#  bats::success
+#}
+#######################################
+assert::helps() {
+  local helps_line option run
+  run="$(bats::basename)"
+  helps_line="${HELPS_LINE:-$@}"
+  assert [ -n "${helps_line}" ]
+  for option in -h --help help; do
+    run "${run}" "${option}"
+    assert_success
+    assert_line "${helps_line}"
+  done
+}
+
+#######################################
 # creates $BATS_ARRAY array from $BATS_TEST_DESCRIPTION or argument
 # Globals:
 #   BATS_ARRAY
@@ -140,7 +172,7 @@ bats::basename() { basename "${BATS_TEST_FILENAME-}" .bats; }
 bats::cd() { cd "${BATS_TOP:-${BATS_TESTS:-.}}" || return; }
 
 #######################################
-# Restores $PATH to $BATS_PATH and sources .envrc.
+# Restores $PATH to $BATS_SAVED_PATH and sources .envrc.
 # Globals:
 #   PATH
 # Arguments:
@@ -157,7 +189,7 @@ bats::env() {
   BATS_SAVED_PATH="${PATH}"
   BATS_SAVED_MANPATH="${MANPATH}"
   BATS_SAVED_INFOPATH="${INFOPATH}"
-# TODO: envfile
+  # TODO: envfile
   #  . "$(dirname "${BASH_SOURCE[0]}")/envfile.sh"
   #  envfile
 }
@@ -197,6 +229,20 @@ bats::run() {
 }
 
 #######################################
+# run description array and asserts if success
+# Globals:
+#   BATS_ARRAY
+# Arguments:
+#  None
+# Caution:
+#  Do not se it with single quotes ('echo "1 2" 3 4'), use double quotes ("echo '1 2' 3 4")
+#######################################
+bats::success() {
+  bats::run
+  assert_success
+}
+
+#######################################
 # create a temporary directory in $BATS_FILE_TMPDIR if arg is provided
 # Globals:
 #   BATS_FILE_TMPDIR
@@ -226,7 +272,7 @@ _bashpro() {
     bats_dst="${plugin}/bin/bats"
     if ! grep -q "${BATS_BASHPRO_FORMATTER}" "${bats_dst}"; then
       test -f "${bats_dst}.bak" || cp "${bats_dst}" "${bats_dst}.bak"
-      cat > "${bats_dst}" <<EOF
+      cat >"${bats_dst}" <<EOF
 #!/usr/bin/env bash
 
 for arg do
@@ -309,7 +355,7 @@ _bats_pull() {
 #######################################
 _die() {
   local rc=$?
-  >&2 printf '%b\n' "\033[1;31m✘\033[0m ${BASH_SOURCE[0]##*/}: $*"
+  printf >&2 '%b\n' "\033[1;31m✘\033[0m ${BASH_SOURCE[0]##*/}: $*"
   "${RETURN:-exit}" $rc
 }
 
@@ -355,10 +401,10 @@ _file() {
 # Arguments:
 #  None
 #######################################
-_functions(){
+_functions() {
   mapfile -t BATS_FUNCTIONS < <(
-    filesfuncs "${BATS_SHARE}"/bats-*/src/*.bash &&
-    filesfuncs "${BASH_SOURCE[0]}"
+    filesfuncs "${BATS_SHARE}"/bats-*/src/*.bash \
+      && filesfuncs "${BASH_SOURCE[0]}"
   )
 
   # bashsupport disable=BP2001
@@ -431,7 +477,7 @@ EOF
 # Arguments:
 #   1  message
 #######################################
-_ok() { >&2 printf '%b\n' "\033[1;32m✔\033[0m ${BASH_SOURCE[0]##*/}: $*"; }
+_ok() { printf >&2 '%b\n' "\033[1;32m✔\033[0m ${BASH_SOURCE[0]##*/}: $*"; }
 
 #######################################
 # unsets functions
@@ -453,7 +499,10 @@ _main() {
   local sourced=false
   [ "${BASH_SOURCE##*/}" = "${0##*/}" ] || sourced=true
 
-  ! $sourced || { $sourced && ! funcexported assert 2>/dev/null; } || { _unsets; return; }
+  ! $sourced || { $sourced && ! funcexported assert 2>/dev/null; } || {
+    _unsets
+    return
+  }
 
   _bats_clone || return
   $sourced || _bats_pull || return
@@ -462,7 +511,10 @@ _main() {
 
   bats::env || return
 
-  ! $sourced || { _unsets; return; }
+  ! $sourced || {
+    _unsets
+    return
+  }
 
   set -eu
   shopt -s inherit_errexit
@@ -517,8 +569,14 @@ _main() {
         options+=("$1" "$2")
         shift
         ;;
-      --man) man "${BATS_SHARE}/bats-core/man/bats.1"; exit ;;
-      --man7) man "${BATS_SHARE}/bats-core/man/bats.7"; exit ;;
+      --man)
+        man "${BATS_SHARE}/bats-core/man/bats.1"
+        exit
+        ;;
+      --man7)
+        man "${BATS_SHARE}/bats-core/man/bats.7"
+        exit
+        ;;
       --no-parallelize-across-files) no_parallelize_across_files=("$1") ;;
       --no-parallelize-within-files) no_parallelize_within_files=("$1") ;;
       --no-tempdir-cleanup)
@@ -558,7 +616,10 @@ _main() {
         options+=("$1")
         ;;
       -v | --version) options+=("$1") ;;
-      bashpro) _bashpro; exit ;;
+      bashpro)
+        _bashpro
+        exit
+        ;;
       commands)
         printf '%s\n' -h --help help "$1" functions list | sort
         exit

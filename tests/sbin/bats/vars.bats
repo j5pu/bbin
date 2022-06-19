@@ -2,7 +2,7 @@
 
 @test "\$BATS_* " {
 
-  for i in BATS_BASENAME BATS_EXECUTABLE BATS_SHARE BATS_PATH BATS_TOP; do
+  for i in BATS_BASENAME BATS_EXECUTABLE BATS_SHARE BATS_TOP; do
     echo "${!i}"
     assert [ -n "${!i}" ]
   done
