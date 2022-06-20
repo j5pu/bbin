@@ -2,6 +2,8 @@
 
 set -eu
 
+# https://gist.github.com/rcmorano/e51935a2c1427c98c91757f33a71ab0b
+
 #######################################
 # show usage
 # Arguments:
@@ -43,8 +45,7 @@ EOF
 #   3   registry
 #######################################
 login() {
-  docker-start
-  yes yes | docker login "$3" >/dev/null 2>&1 || docker login "$3" --username "$1" --password "$2"
+  echo "$2" | docker login "$3" --username "$1" --password-stdin
 }
 
 #######################################
@@ -60,9 +61,13 @@ main() {
   help "$@"
 
   has docker || exit 0
-  login "${GIT?}" "${DOCKER_HUB_TOKEN?}" https://index.docker.io/v2/
-  login "${GIT}" "${DOCKER_HUB_TOKEN}" https://registry-1.docker.io/v2/
-  login "${GIT}" "${GH_TOKEN?}" ghcr.io
+  docker-start
+  if docker manifest inspect "${GIT?}/foo" 2>&1 | grep -q "unauthorized: authentication required"; then
+    login "${GIT}" "${DOCKER_HUB_TOKEN?}" https://index.docker.io/v1/
+    login "${GIT}" "${DOCKER_HUB_TOKEN}" https://index.docker.io/v2/
+    login "${GIT}" "${DOCKER_HUB_TOKEN}" https://registry-1.docker.io/v2/
+    login "${GIT}" "${GH_TOKEN?}" ghcr.io
+  fi
 }
 
 main "$@"
