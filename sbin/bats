@@ -2,8 +2,8 @@
 # shellcheck disable=SC2155,SC2046
 
 # TODO: envrc
-
-command -v has >/dev/null || return 2>/dev/null || exit
+unset -f has
+command -v has >/dev/null || . "$(dirname "${BASH_SOURCE[0]}")/../bin/profile"
 command -v filesfuncs >/dev/null || return 2>/dev/null || exit
 
 # <html><h2>Bats Description Array</h2>
@@ -41,10 +41,10 @@ export BATS_GATHER
 #
 export BATS_LIBS="bats-assert bats-file bats-support"
 
-
-# Run only local tests when set to 1, otherwise run container tests.
+# Run only local tests when set to 1, otherwise run container tests (Default: 0 when isaction is true).
 #
 : "${BATS_LOCAL=0}"; export BATS_LOCAL
+
 
 # <html><h2>Saved $INFOPATH on First Suite Test Start after bats::env</h2>
 # <p><strong><code>$BATS_INFOPATH</code></strong></p>
@@ -201,6 +201,18 @@ bats::env() {
   # TODO: envfile
   #  . "$(dirname "${BASH_SOURCE[0]}")/envfile.sh"
   #  envfile
+
+  if isaction; then
+    BATS_LOCAL=1
+  elif test $BATS_LOCAL -eq 0 && ! docker-running; then
+    ! fd3 || >&3 echo "${0##*/}: Docker: Starting"
+    docker-start
+    ! fd3 || >&3 echo "${0##*/}: Docker: Started"
+    if ! docker-running; then
+      ! fd3 || >&3 echo "${0##*/}: Error: Starting Docker"
+      return 2>/dev/null || exit
+    fi
+  fi
 }
 
 #######################################

@@ -9,7 +9,6 @@
 #  None
 #######################################
 assert_container() {
-  ! isaction || skip
   test "${BATS_LOCAL}" -eq 0 || skip "BATS_LOCAL is set to 1"
 
   bats::array
@@ -36,9 +35,6 @@ assert_container() {
 #  None
 #######################################
 shell_container() {
-  ! isaction || skip
-  test "${BATS_LOCAL}" -eq 0 || skip "BATS_LOCAL is set to 1"
-
   path_add_all "/${BATS_BASENAME}"
   PATH="/${BATS_BASENAME}/tests/fixtures/shell:${PATH}"
   local c=() env=(-e PATH="${PATH}" -e MANPATH="${MANPATH}" -e INFOPATH="${INFOPATH}")

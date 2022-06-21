@@ -11,7 +11,7 @@
 #######################################
 _docker_login() {
   [ "$1" = "$3" ] || return 0
-  mapfile -t COMPREPLY < <(compgen -b -c -o nospace -W "-h --help help $(docker-contexts)" -- "$2")
+  mapfile -t COMPREPLY < <(compgen -b -c -o nospace -W "-h --help help $(docker-contexts) --all" -- "$2")
 }
 
 complete -F _docker_login docker-login

@@ -44,13 +44,13 @@ main() {
       sudo systemctl start docker
     fi
 
-    echo >&2 "Docker: Starting"
+    echo >&2 "${0##*/}: Docker: Starting"
 
     while (! docker-running); do
       sleep 1
     done
 
-    echo >&2 "Docker: Started"
+    echo >&2 "${0##*/}: Docker: Started"
   fi
 }
 

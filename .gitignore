@@ -219,9 +219,12 @@
 !/bin/dir-exists-empty
 !/bin/dir-has
 !/bin/dir-has-files
+!/bin/docker-contexts
+!/bin/docker-login
 !/bin/docker-running
 !/bin/docker-start
 !/bin/docker-stop
+!/bin/fd3
 !/bin/filesfuncs
 !/bin/fronman
 !/bin/funcexported
@@ -241,12 +244,14 @@
 !/etc/bash_completion.d/hascmd
 !/etc/bash_completion.d/helps
 !/etc/bash_completion.d/inargs
-!/etc/profile.d/00-functions.bash
-!/etc/profile.d/00-functions.sh
+!/etc/bash_completion.d/source
+!/etc/profile.d/00-constants.sh
 ## /libexec
 !/libexec
 ## /sbin
 !/sbin/bats
+## /share
+!/share/bashpro
 ## /src
 !/src
 ## /tests

@@ -14,18 +14,19 @@ help() {
 
   case "$1" in
     -h|--help|help) rc=0 ;;
-    *)
-      >&2 echo "${0##*/}: $1: invalid option/argument"
-      >&2 echo
-      ;;
+    *) return ;;
   esac
 
   >&2 cat <<EOF
-usage: ${0##*/}
+usage: ${0##*/} [context|--all]
    or: ${0##*/} [-h|--help|help]
 
 login to Docker registry and GitHub docker registry
 
+Options:
+  context             docker context to use (default: current context)
+  --all               login to all contexts
+  
 Commands:
    -h, --help, help   display this help and exit.
 
@@ -55,13 +56,30 @@ login() {
 #   GHCR_IO_TOKEN
 #   GIT
 # Arguments:
-#   None
+#   1  [docker context]
 #######################################
 main() {
   help "$@"
 
   has docker || exit 0
   docker-start
+  
+  if [ "${1-}" = "--all" ]; then
+    for i in $(docker-contexts); do
+      "$0" "${i}"
+    done
+    exit
+  fi
+  
+  context="$(docker context show)"
+
+
+  if [ "${1-}" ] && [ "$1" != "${context}" ]; then
+    docker context use "$1" >/dev/null
+    # shellcheck disable=SC2064
+    trap "docker context use ${context} >/dev/null" EXIT
+  fi
+  
   if docker manifest inspect "${GIT?}/foo" 2>&1 | grep -q "unauthorized: authentication required"; then
     login "${GIT}" "${DOCKER_HUB_TOKEN?}" https://index.docker.io/v1/
     login "${GIT}" "${DOCKER_HUB_TOKEN}" https://index.docker.io/v2/

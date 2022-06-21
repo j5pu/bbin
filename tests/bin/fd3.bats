@@ -1,5 +1,7 @@
 #!/usr/bin/env bats
 
-setup_file() { . "${BATS_TEST_DIRNAME}/helpers/load_profile.bash"; }
+@test "$(bats::basename) " { bats::success; }
 
-@test "$(description::file true)" { assert fd3; }
+@test "assert::helps check if fd3 is open" {
+  bats::success
+}
