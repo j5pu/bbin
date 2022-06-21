@@ -47,6 +47,7 @@ EOF
 #######################################
 login() {
   echo "$2" | docker login "$3" --username "$1" --password-stdin
+  docker login "$3"
 }
 
 #######################################

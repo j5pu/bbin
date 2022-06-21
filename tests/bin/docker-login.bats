@@ -20,11 +20,6 @@ teardown_file() {
   vars
 
   bats::success
-
-  for i in https://index.docker.io/v1/ https://index.docker.io/v2/ https://registry-1.docker.io/v2/ ghcr.io; do
-    run docker login "$i"
-    assert_success
-  done
 }
 
 @test "$(bats::basename) foo " {

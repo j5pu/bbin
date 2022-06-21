@@ -208,7 +208,7 @@ bats::env() {
     ! fd3 || >&3 echo "${0##*/}: Docker: Starting"
     docker-start
     ! fd3 || >&3 echo "${0##*/}: Docker: Started"
-    if ! docker-running; then
+    if has docker && ! docker-running; then
       ! fd3 || >&3 echo "${0##*/}: Error: Starting Docker"
       return 2>/dev/null || exit
     fi
