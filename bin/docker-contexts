@@ -1,0 +1,67 @@
+#!/bin/sh
+
+set -eu
+
+#######################################
+# show usage
+# Arguments:
+#   1
+#######################################
+help() {
+  test $# -gt 0 || return 0
+
+  case "$1" in
+    -h|--help|help) rc=0 ;;
+    *) return ;;
+  esac
+
+  >&2 cat <<EOF
+usage: ${0##*/} [context]
+   or: ${0##*/} [-h|--help|help]
+
+list docker contexts
+
+Commands:
+   -h, --help, help   display this help and exit.
+
+EOF
+  exit "${rc:-1}"
+}
+
+#######################################
+# login helper
+# Arguments:
+#   1   username
+#   2   password
+#   3   registry
+#######################################
+login() {
+  echo "$2" | docker login "$3" --username "$1" --password-stdin
+}
+
+#######################################
+# login to Docker registry and GitHub docker registry
+# Globals:
+#   DOCKER_HUB_TOKEN
+#   GHCR_IO_TOKEN
+#   GIT
+# Arguments:
+#   1  [docker context]
+#######################################
+main() {
+  help "$@"
+
+  has docker || exit 0
+  docker-start
+  context="$(docker context show)"
+  [ "${1-}" ] || docker context use "$1"
+  if docker manifest inspect "${GIT?}/foo" 2>&1 | grep -q "unauthorized: authentication required"; then
+    login "${GIT}" "${DOCKER_HUB_TOKEN?}" https://index.docker.io/v1/
+    login "${GIT}" "${DOCKER_HUB_TOKEN}" https://index.docker.io/v2/
+    login "${GIT}" "${DOCKER_HUB_TOKEN}" https://registry-1.docker.io/v2/
+    login "${GIT}" "${GH_TOKEN?}" ghcr.io
+  fi
+  [ ! "${context-}" ] || docker context use "${context}"
+}
+
+main "$@"
