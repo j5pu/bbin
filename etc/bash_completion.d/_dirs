@@ -15,3 +15,7 @@ _dirs() {
 }
 
 complete -F _dirs dir-exists-empty
+complete -F _dirs dir-has
+complete -F _dirs dir-has-files
+complete -F _dirs source_dir
+complete -F _dirs pwd_p

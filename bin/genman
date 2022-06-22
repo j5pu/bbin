@@ -5,6 +5,32 @@
 set -euo pipefail
 shopt -s inherit_errexit
 
+. cd.sh
+
+#######################################
+# checks if filtered new file and existing are different
+# Arguments:
+#   1
+#######################################
+different() {
+  local tmp
+  tmp="$(mktemp)"
+  grep -vE " Generator:|      Date:|    Source:|.TH" "$1" > "${tmp}"
+  echo "${tmp}"
+}
+
+#######################################
+# filter man output to see real differences
+# Arguments:
+#   1   man file
+#######################################
+filter() {
+  local tmp
+  tmp="$(mktemp)"
+  grep -vE " Generator:|      Date:|    Source:|.TH" "$1" > "${tmp}"
+  echo "${tmp}"
+}
+
 #######################################
 # shows invalid function comment block error message
 # Globals:
@@ -18,7 +44,6 @@ invalid() {
     echo -e "\n@ BLOCK START @\n$(tail -r <<< "${block}")\n@ BLOCK END @\n">&2
     exit 1
   fi
-
 }
 
 #######################################
@@ -119,8 +144,8 @@ tests_line() {
 #   1             [--desc|--help|--manrepo|--version] [directory]
 #######################################
 main(){
-  local arg author corner dest dir dirs doctitle file filename find manmanual manpurpose mansource manvolnum
-  local orgname output path='.' repo script src version
+  local arg author corner dest dir dirs doctitle file filename filenames=() find manmanual manpurpose mansource
+  local manvolnum orgname output path='.' repo script src version
 
   for arg do
     shift
@@ -130,7 +155,7 @@ main(){
     esac
   done
 
-  cd "$(git top || { echo "${0##*/}: $(pwd): Not a git repository" >&2; exit 1; } )"
+  cd_top_exit
 
   author="$(git config user.username || { echo "$0: $(pwd): Invalid git username"; exit 1; })"
   orgname="$(git owner || { echo "$0: $(pwd): Invalid git owner"; exit 1; })"
@@ -154,7 +179,7 @@ main(){
       *.[1-8]) manvolnum="${manname##*.}"; manname="${manname%.*}"; ;;  # Do not change order !!!
     esac
 
-    dirs=(); for d in bin lib sbin; do [ ! -d "${d}" ] || dirs+=("${d}"); done
+    dirs=(); for d in bin lib libexec sbin; do [ ! -d "${d}" ] || dirs+=("${d}"); done
 
     src_file="$(find "${dirs[@]}" -type f -name "${manname}")"
 
@@ -165,15 +190,15 @@ main(){
       while read -r src_file; do
         manpurpose="$(manpurpose-func "${manname}")"
         [ ! "${manpurpose-}" ] || break
-      done < <(find "${dirs[@]}" -type f -name "*.sh")
+      done < <(find "${dirs[@]}" -type f -o type l -name "*.sh")
     fi
     [ "${manpurpose-}" ] || { echo Invalid Desc for: "${manname}"; exit 1; }
 
     dest='./share/man'; mkdir -p "${dest}"
     filename="${manname}.${manvolnum}"  # name.1
+    filenames+=("${filename}")
     dir="${tmp}/man${manvolnum}"; mkdir -p "${dir}"
     output="${dir}/${filename}"
-
 
     manmanual="${manname^} Manual"
     mansource="${manname^} ${version}"

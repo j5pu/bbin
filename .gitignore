@@ -214,6 +214,7 @@
 ## /Bbin.app
 !/Bbin.app
 ## /bin
+!/bin/cd.sh
 !/bin/cmd
 !/bin/color
 !/bin/dir-exists-empty
@@ -240,10 +241,11 @@
 !/bin/profile
 !/bin/shell
 ## /etc
+!/etc/bash_completion.d/_dirs
+!/etc/bash_completion.d/_helps
 !/etc/bash_completion.d/bats
 !/etc/bash_completion.d/docker-login
 !/etc/bash_completion.d/hascmd
-!/etc/bash_completion.d/helps
 !/etc/bash_completion.d/inargs
 !/etc/bash_completion.d/source
 !/etc/profile.d/00-constants-homebrew.sh

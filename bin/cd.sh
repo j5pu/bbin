@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #
-# Posix Utils Library
+# Change Directory Posix Utils Library
 
 #######################################
 # change to git repository top path
@@ -10,15 +10,18 @@
 # Returns:
 #   1 if not git repository
 #######################################
-top_cd() {
+cd_top() {
   # Git Repository Top Path if exist
   #
-  TOP_CD=""
-  if TOP_CD="$(git rev-parse --show-toplevel)"; then
-    cd "${TOP_CD}" || return 1
+  CD_TOP=""
+  if CD_TOP="$(git rev-parse --show-toplevel 2>&1)"; then
+    cd "${CD_TOP}" || return 1
     return
+  else
+    >&2 echo "cd_top: ${PWD}: ${CD_TOP}"
+    CD_TOP=""
+    return 1
   fi
-  return 1
 }
 
 #######################################
@@ -28,4 +31,4 @@ top_cd() {
 # Returns:
 #   1 if not git repository (exit)
 #######################################
-top_cd_exit() { top_cd || exit; }
+cd_top_exit() { cd_top || exit; }

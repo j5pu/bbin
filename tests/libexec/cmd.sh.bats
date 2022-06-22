@@ -2,7 +2,6 @@
 
 setup_file() { . "$(bats::basename)"; NAME="$(basename "$(bats::basename)" .sh)"; export NAME; export -f "${NAME?}"; }
 
-
 @test "type -t ${NAME}" {
   bats::run
   assert_output "function"
