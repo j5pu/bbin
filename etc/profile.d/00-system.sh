@@ -427,7 +427,8 @@ system() {
       PM_INSTALL="${PM_INSTALL} ${NO_CACHE}"
     fi
   fi
-  git_config; unset -f git_config
+  # TODO: git_config
+  # git_config; unset -f git_config
 }
 
 system; unset -f system
