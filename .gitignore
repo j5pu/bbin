@@ -246,7 +246,8 @@
 !/etc/bash_completion.d/helps
 !/etc/bash_completion.d/inargs
 !/etc/bash_completion.d/source
-!/etc/profile.d/00-constants.sh
+!/etc/profile.d/00-constants-homebrew.sh
+!/etc/profile.d/00-system.sh
 ## /libexec
 !/libexec
 ## /sbin
