@@ -238,6 +238,7 @@
 !/bin/isdebian
 !/bin/ismacos
 !/bin/jbeval
+!/bin/journal-clean
 !/bin/newline-to
 !/bin/path-default
 !/bin/profile.sh

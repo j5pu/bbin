@@ -21,4 +21,5 @@ complete -F _helps docker-stop
 complete -F _helps isaction
 complete -F _helps isdebian
 complete -F _helps ismacos
+complete -F _helps journal-clean
 complete -F _helps path-default
