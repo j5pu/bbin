@@ -1,1 +1,1 @@
-../bin/shell
+../bin/shell.sh

@@ -1,1 +1,1 @@
-../bin/profile
+../bin/profile.sh

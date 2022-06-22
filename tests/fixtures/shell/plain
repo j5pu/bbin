@@ -1,5 +1,0 @@
-if [ "${1-}" ]; then
-  "$1" -c ". shell && echo \${SH}"
-else
-  . shell && printf '%s' "${SH}"
-fi

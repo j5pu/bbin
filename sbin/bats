@@ -3,7 +3,7 @@
 
 # TODO: envrc
 unset -f has
-command -v has >/dev/null || . "$(dirname "${BASH_SOURCE[0]}")/../bin/profile"
+command -v has >/dev/null || . "$(dirname "${BASH_SOURCE[0]}")/../bin/profile.sh"
 command -v filesfuncs >/dev/null || return 2>/dev/null || exit
 
 # <html><h2>Bats Description Array</h2>
@@ -18,6 +18,10 @@ export BATS_BASHPRO_FORMATTER="bashpro"
 # Command Executed (variable set by: bats).
 #
 export BATS_COMMAND
+
+# Docker Context for Container Tests (default: macOS or default for Linux)
+#
+export BATS_DOCKER_CONTEXT
 
 # Installation Directory for bats-core and bats libs
 #
@@ -44,7 +48,6 @@ export BATS_LIBS="bats-assert bats-file bats-support"
 # Run only local tests when set to 1, otherwise run container tests (Default: 0 when isaction is true).
 #
 : "${BATS_LOCAL=0}"; export BATS_LOCAL
-
 
 # <html><h2>Saved $INFOPATH on First Suite Test Start after bats::env</h2>
 # <p><strong><code>$BATS_INFOPATH</code></strong></p>
@@ -202,15 +205,33 @@ bats::env() {
   #  . "$(dirname "${BASH_SOURCE[0]}")/envfile.sh"
   #  envfile
 
-  if isaction; then
+
+  if isaction || ! has docker; then
     BATS_LOCAL=1
-  elif test $BATS_LOCAL -eq 0 && ! docker-running; then
-    ! fd3 || >&3 echo "${0##*/}: Docker: Starting"
-    docker-start
-    ! fd3 || >&3 echo "${0##*/}: Docker: Started"
-    if has docker && ! docker-running; then
-      ! fd3 || >&3 echo "${0##*/}: Error: Starting Docker"
-      return 2>/dev/null || exit
+  elif test $BATS_LOCAL -eq 0; then
+    if [ ! "${BATS_DOCKER_CONTEXT-}" ]; then
+      if ismacos; then
+        BATS_DOCKER_CONTEXT="macOS"
+      else
+        BATS_DOCKER_CONTEXT="default"
+      fi
+    fi
+
+    if [ "$(docker context show)" != "${BATS_DOCKER_CONTEXT}" ]; then
+      docker context use "${BATS_DOCKER_CONTEXT}" >/dev/null || \
+        { >&2 echo "Docker: Change context to: ${BATS_DOCKER_CONTEXT}: failed"; return 1; }
+      ! fd3 || >&3 echo "${0##*/}: Docker: Changed context to: ${BATS_DOCKER_CONTEXT}"
+    fi
+
+    if ! docker-running; then
+      ! fd3 || >&3 echo "${0##*/}: Docker: Starting"
+      docker-start
+      ! fd3 || >&3 echo "${0##*/}: Docker: Started"
+
+      if ! docker-running; then
+        ! fd3 || >&3 echo "${0##*/}: Error: Starting Docker"
+        >&2 echo "${0##*/}: Error: Starting Docker"; return 1 2>/dev/null || exit
+      fi
     fi
   fi
 }
@@ -273,9 +294,9 @@ bats::success() {
 #  new temporary directory or $BATS_FILE_TMPDIR
 #######################################
 bats::tmp() {
-  local tmp="${BATS_FILE_TMPDIR}${1:+/$1}"
-  [ ! "${1-}" ] || mkdir -p "${tmp}"
-  echo "${tmp}"
+  local GENERATED="${BATS_FILE_TMPDIR}${1:+/$1}"
+  [ ! "${1-}" ] || mkdir -p "${GENERATED}"
+  echo "${GENERATED}"
 }
 
 #######################################

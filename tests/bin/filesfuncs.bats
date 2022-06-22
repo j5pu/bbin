@@ -12,7 +12,7 @@ setup_file() { export HELPS_LINE="list functions in file/files, start at the beg
   bats::success
 }
 
-@test "$(bats::basename) \"$(command -v profile)\" " {
+@test "$(bats::basename) \"$(command -v profile.sh)\" " {
   bats::run
   assert_output - <<EOF
 export_funcs_all

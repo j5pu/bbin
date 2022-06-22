@@ -2,21 +2,33 @@
 
 #
 # converts, tests and commit changes for AsciiDoc man pages in a repository
+
 set -euo pipefail
 shopt -s inherit_errexit
+
+# TODO: aqui lo dejo, poner el cd.sh en uno de utils.sh y un utils.bash y cambiar el cmd.sh ese y probar esto.
+#    acabar con los bash_completion
 
 . cd.sh
 
 #######################################
-# checks if filtered new file and existing are different
+# Identifies files to be removed, changed files and new files, relative to $GENERATED and $DEST (i.e.: man1/remove.1)
+# Globals:
+#   COMMON_FILES
+#   DEST
+#   GENERATED
+#   NEW_FILES
+#   REMOVE_FILES
 # Arguments:
-#   1
+#   1   man file
 #######################################
-different() {
-  local tmp
-  tmp="$(mktemp)"
-  grep -vE " Generator:|      Date:|    Source:|.TH" "$1" > "${tmp}"
-  echo "${tmp}"
+files() {
+  local dest_files="" generated_files=""
+  ! test -d "${DEST}" || dest_files="$(find "${DEST}" -type f | sed "s|${DEST}/||g" | sort)"
+  ! test -d "${GENERATED}" || generated_files="$(find "${GENERATED}" -type f | sed "s|${GENERATED}/||g" | sort)"
+  REMOVE_FILES="$(comm -23 <(echo "${dest_files}") <(echo "${generated_files}"))"
+  NEW_FILES="$(comm -13 <(echo "${dest_files}") <(echo "${generated_files}"))"
+  COMMON_FILES="$(comm -12 <(echo "${dest_files}") <(echo "${generated_files}"))"
 }
 
 #######################################
@@ -29,6 +41,17 @@ filter() {
   tmp="$(mktemp)"
   grep -vE " Generator:|      Date:|    Source:|.TH" "$1" > "${tmp}"
   echo "${tmp}"
+}
+
+#######################################
+# add to git array because file is in the index
+# Globals:
+#   GIT_ADD_FILES
+# Arguments:
+#   1   file
+#######################################
+index() {
+  ! git ls-files --error-unmatch "$1" 2>/dev/null || GIT_ADD_FILES+=("${file}")
 }
 
 #######################################
@@ -87,7 +110,7 @@ manpurpose-func() {
 #######################################
 tests() {
   if [ "${2-}" ]; then
-    readarray -t page < <(MANPATH="${tmp}${MANPATH:+:${MANPATH}}" COLUMNS=160 man -P cat "$2" "$1")
+    readarray -t page < <(MANPATH="${GENERATED}${MANPATH:+:${MANPATH}}" COLUMNS=160 man -P cat "$2" "$1")
   else
     readarray -t page < <(COLUMNS=160 man -P cat "$1")
   fi
@@ -144,14 +167,15 @@ tests_line() {
 #   1             [--desc|--help|--manrepo|--version] [directory]
 #######################################
 main(){
-  local arg author corner dest dir dirs doctitle file filename filenames=() find manmanual manpurpose mansource
-  local manvolnum orgname output path='.' repo script src version
+  GIT_ADD_FILES=()
+  local arg author corner dest_file dir dirs doctitle file filename find generated_file manmanual manpurpose mansource
+  local manvolnum orgname output repo script src version
 
   for arg do
     shift
     case "${arg}" in
       --*) fromman "$0" "$@" || exit 0 ;;
-      *) cd "${arg}" || { "$0: ${path}: No such directory"; exit 1; };;
+      *) cd "${arg}" || { "$0: ${arg}: No such directory"; exit 1; };;
     esac
   done
 
@@ -163,10 +187,11 @@ main(){
   script="${0##*/}"
   version=$(svu next || { echo "$0: $(pwd): Invalid next semver" >&2; exit 1; })
 
-  tmp="$(mktemp -d)"
-
-  find=( . ); [ ! -d ./src/man ] || find+=( ./src/man )
+  GENERATED="$(mktemp -d)"
+  DEST="${CD_TOP}/share/man"
+  find=( "${CD_TOP}" ); [ ! -d "${CD_TOP}/src/man" ] || find+=( "${CD_TOP}/src/man" )
   while read -r file; do
+    mkdir -p "${DEST}"
     manvolnum=1
     src="${file%.*}"
     manname="${src##*/}"  # name.1 or name
@@ -190,14 +215,12 @@ main(){
       while read -r src_file; do
         manpurpose="$(manpurpose-func "${manname}")"
         [ ! "${manpurpose-}" ] || break
-      done < <(find "${dirs[@]}" -type f -o type l -name "*.sh")
+      done < <(find "${dirs[@]}" -type f \( -name "*.sh" -o -name "*.bash" \) )
     fi
     [ "${manpurpose-}" ] || { echo Invalid Desc for: "${manname}"; exit 1; }
 
-    dest='./share/man'; mkdir -p "${dest}"
     filename="${manname}.${manvolnum}"  # name.1
-    filenames+=("${filename}")
-    dir="${tmp}/man${manvolnum}"; mkdir -p "${dir}"
+    dir="${GENERATED}/man${manvolnum}"; mkdir -p "${dir}"
     output="${dir}/${filename}"
 
     manmanual="${manname^} Manual"
@@ -225,14 +248,43 @@ main(){
 
     tests "${output}"
     tests "${manname}" "${manvolnum}"
-  done < <(find "${find[@]}" -type f \( -name "*.adoc" -o -name "README.adoc" \) -mindepth 1 -maxdepth 1 | grep -v '=')
+  done < <(find "${find[@]}" -type f \( -name "*.adoc" -o -name "README.adoc" \) \
+    -mindepth 1 -maxdepth 1 -not -path "*/templates/*" | grep -v '=')
 
-  if [ -d "${dest}" ]; then
-    if ! git diff --no-index --no-patch "${dest}" "${tmp}" >/dev/null; then
-      rm -rf "${dest:?}"/*
-      cp -r "${tmp}"/* "${dest}"
-      git add "${dest}" && git commit --quiet -m "${script}" "${dest}" >/dev/null 2>&1
-    fi
+  files
+  
+  if [ "${REMOVE_FILES-}" ]; then
+    for i in ${REMOVE_FILES}; do
+      dest_file="${DEST}/${i}"
+      rm "${dest_file}"
+      index "${dest_file}"
+    done
+  fi
+
+  if [ "${NEW_FILES-}" ]; then
+    for i in ${NEW_FILES}; do
+      dest_file="${DEST}/${i}"
+      mkdir -p "$(dirname "${dest_file}")"
+      cp "${GENERATED}/${i}" "${dest_file}"
+      index "${dest_file}"
+    done
+  fi
+
+  if [ "${COMMON_FILES-}" ]; then
+    for i in ${COMMON_FILES}; do
+      dest_file="${DEST}/${i}"
+      generated_file="${GENERATED}/${i}"
+
+      if ! git diff --no-index --no-patch "$(filter "${dest_file}")" "$(filter "${generated_file}")" >/dev/null; then
+        cp "${generated_file}" "${dest_file}"
+        index "${dest_file}"
+      fi
+    done
+  fi
+
+  if [ "${GIT_ADD_FILES-}" ]; then
+    git add "${GIT_ADD_FILES[@]}"
+    git commit --quiet -m "${script}" "${GIT_ADD_FILES[@]}" >/dev/null
   fi
 }
 

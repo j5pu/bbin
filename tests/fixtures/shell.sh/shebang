@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ "${1-}" ]; then
+  "$1" -c ". shell.sh && echo \${SH}"
+else
+  . shell.sh && printf '%s' "${SH}"
+fi

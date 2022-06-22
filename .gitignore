@@ -214,6 +214,8 @@
 ## /Bbin.app
 !/Bbin.app
 ## /bin
+!/bin/arrays.bash
+!/bin/base-images.bash
 !/bin/cd.sh
 !/bin/cmd
 !/bin/color
@@ -238,8 +240,8 @@
 !/bin/jbeval
 !/bin/newline-to
 !/bin/path-default
-!/bin/profile
-!/bin/shell
+!/bin/profile.sh
+!/bin/shell.sh
 ## /etc
 !/etc/bash_completion.d/_dirs
 !/etc/bash_completion.d/_helps
@@ -260,6 +262,8 @@
 !/src
 ## /tests
 !/tests
+## /tmp
+!/tmp
 ## /
 !/Makefile
 ### END unignore

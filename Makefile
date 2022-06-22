@@ -7,7 +7,7 @@ basename := $(shell basename $(DIR))
 tests: tests-bats
 
 tests-bats:
-	@tests/bin/shell/generate
+	@tests/libexec/shell.sh/generate
 	@bats tests
 
 tests-deps:
