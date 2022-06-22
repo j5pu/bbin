@@ -43,7 +43,7 @@ cmd() {
   if [ $# -eq 1 ]; then
     type "$1" >/dev/null 2>&1
   else
-    GENERATED="$(mktemp)"
+    tmp="$(mktemp)"
     type "$@" >/dev/null 2>"${tmp}"
     ! test -s "${tmp}" || grep -qv "not found" "${tmp}"
   fi
