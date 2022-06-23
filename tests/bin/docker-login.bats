@@ -25,8 +25,7 @@ teardown_file() {
 @test "$(bats::basename) foo " {
   vars
 
-  bats::run
-  assert_failure
+  bats::failure
   assert_output --regexp "context \"foo\": not found"
 }
 

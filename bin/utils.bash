@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 
-# Shared array to copy in arrays.bash library
+#
+# Utils Library for Bash
+
+. utils.sh
+export_funcs_path "$(command -v utils.sh)"
+
+# Shared array to copy array used by cparray(), getkey(), getvalue() and inarray()
 #
 declare -Axg _ARRAY
 
@@ -16,27 +22,12 @@ declare -Axg _ARRAY
 cparray() {
   local declare
   if declare="$(declare -p "${1:-COMP_WORDS}" 2>&1)"; then
-    [[ "${declare}" =~ "declare "-[a,A] ]] || { show Undefined Array: "${declare}"; return 1; }
+    [[ "${declare}" =~ "declare "-[a,A] ]] || { >&2 echo "cparray: undefined array: ${declare}"; return 1; }
     eval "_ARRAY=$(cut -d '=' -f 2- <<< "${declare}")"
   else
     >&2 echo "cparray: ${declare}"
     return 1
   fi
-}
-
-#######################################
-# check if key in array and shows value or nothing with no errors
-# Globals:
-#   _ARRAY
-# Arguments:
-#   key         the value to search
-#   [array]     array name (default: COMP_WORDS)
-# Returns:
-#   1 if value not in array, or invalid array
-#######################################
-default() {
-  cparray "${2-}" || return 1
-  printf '%s' "${_ARRAY["${1?}"]}" 2>/dev/null || true
 }
 
 #######################################
@@ -59,6 +50,21 @@ getkey() {
 }
 
 #######################################
+# check if key in array and shows value or nothing with no errors (former name: default)
+# Globals:
+#   _ARRAY
+# Arguments:
+#   key         the value to search
+#   [array]     array name (default: COMP_WORDS)
+# Returns:
+#   1 if invalid array
+#######################################
+getvalue() {
+  cparray "${2-}" || return 1
+  printf '%s' "${_ARRAY["${1?}"]}" 2>/dev/null || true
+}
+
+#######################################
 # check if value in array exists
 # Globals:
 #   _ARRAY
@@ -71,3 +77,5 @@ getkey() {
 inarray() {
   getkey "$@" >/dev/null
 }
+
+export_funcs_path "${BASH_SOURCE[0]}"

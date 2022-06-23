@@ -1,5 +1,39 @@
 #!/bin/sh
 
+#
+# Change Directory Posix Utils Library
+
+# Git Repository Top Path if exist for cd_top() and cd_top_exit()
+#
+export GIT_TOP=""
+
+#######################################
+# change to git repository top path
+# Arguments:
+#  None
+# Returns:
+#   1 if not git repository
+#######################################
+cd_top() {
+  if GIT_TOP="$(git rev-parse --show-toplevel 2>&1)"; then
+    cd "${GIT_TOP}" || return 1
+    return
+  else
+    >&2 echo "cd_top: ${PWD}: ${GIT_TOP}"
+    GIT_TOP=""
+    return 1
+  fi
+}
+
+#######################################
+# change to git repository top path and exit if not git repository
+# Arguments:
+#  None
+# Returns:
+#   1 if not git repository (exit)
+#######################################
+cd_top_exit() { cd_top || exit; }
+
 #######################################
 # show usage
 # Arguments:
@@ -48,8 +82,3 @@ cmd() {
     ! test -s "${tmp}" || grep -qv "not found" "${tmp}"
   fi
 }
-
-case "${0##*/}" in
-  cmd|cmd.sh) set -eu; cmd "$@" ;;
-esac
-

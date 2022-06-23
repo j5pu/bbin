@@ -4,21 +4,11 @@
   bats::success
 }
 
-@test "$(bats::basename) " {
-  bats::run
-  assert_success
-}
+@test "$(bats::basename) " { bats::success; }
 
-@test "$(bats::basename) ~ " {
-  bats::run
-  assert_success
-}
+@test "$(bats::basename) ~ " { bats::success; }
 
-@test "$(bats::basename) foo" {
-  bats::run
-  assert_failure
-  assert_output "foo"
-}
+@test "$(bats::basename) foo" { bats::failure; assert_output "foo"; }
 
 @test "find . -type d | $(bats::basename)" {
   run sh -c "${BATS_TEST_DESCRIPTION}"

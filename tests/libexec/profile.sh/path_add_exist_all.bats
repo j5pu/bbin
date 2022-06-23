@@ -12,6 +12,10 @@ all() {
 
 export -f all
 
+@test "funcexported $(bats::basename) " { bats::success; }
+
+@test "type -t $(bats::basename)" { bats::success; assert_output "function"; }
+
 @test "$(bats::basename) . && assert_path \"${BATS_FILE_PATH}\"" {
   run bash -c "${BATS_TEST_DESCRIPTION}"
   assert_success

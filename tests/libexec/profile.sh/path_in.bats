@@ -2,20 +2,15 @@
 
 setup_file() { rebash; . "${BATS_TOP}/tests/helpers/libexec::profile.sh::path.bash"; }
 
-@test "path_in /bin " {
-  bats::run
-  assert_success
-}
+@test "funcexported $(bats::basename) " { bats::success; }
 
-@test "$(bats::basename) /tmp/bin " {
-  bats::run
-  assert_failure
-}
+@test "type -t $(bats::basename)" { bats::success; assert_output "function"; }
 
-@test "$(bats::basename) /tmp/bin MANPATH " {
-  bats::run
-  assert_failure
-}
+@test "path_in /bin " { bats::success; }
+
+@test "$(bats::basename) /tmp/bin " { bats::failure; }
+
+@test "$(bats::basename) /tmp/bin MANPATH " { bats::failure; }
 
 @test "PYTHONPATH=/tmp/bin:/usr/bin; $(bats::basename) /tmp/bin PYTHONPATH" {
   run sh -c "${BATS_TEST_DESCRIPTION}"
@@ -32,7 +27,4 @@ setup_file() { rebash; . "${BATS_TOP}/tests/helpers/libexec::profile.sh::path.ba
   assert_success
 }
 
-@test "$(bats::basename) /tmp/bin PYTHONPATH " {
-  bats::run
-  assert_failure
-}
+@test "$(bats::basename) /tmp/bin PYTHONPATH " { bats::failure; }

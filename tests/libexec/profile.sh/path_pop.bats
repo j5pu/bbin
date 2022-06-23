@@ -2,6 +2,10 @@
 
 setup_file() { rebash; . "${BATS_TOP}/tests/helpers/libexec::profile.sh::path.bash"; }
 
+@test "funcexported $(bats::basename) " { bats::success; }
+
+@test "type -t $(bats::basename)" { bats::success; assert_output "function"; }
+
 @test "PATH=/usr/tmp:${PATH}; path_in /usr/tmp && $(bats::basename) /usr/tmp && path_in /usr/tmp " {
   run sh -c "${BATS_TEST_DESCRIPTION}"
   assert_failure

@@ -5,8 +5,7 @@
 
   if ! docker-running; then
     >&3 echo "Docker daemon starting"
-    bats::run
-    assert_success
+    bats::success
   fi
 
   run docker-running

@@ -2,12 +2,16 @@
 
 setup_file() { rebash; . "${BATS_TOP}/tests/helpers/libexec::profile.sh::path.bash"; }
 
+@test "funcexported $(bats::basename) " { bats::success; }
+
+@test "type -t $(bats::basename)" { bats::success; assert_output "function"; }
+
 @test "$(bats::basename) '/t a' && $(bats::basename) '/t a' && ! path_in '/t a' && assert_path \"${BATS_FILE_PATH}\"" {
   run bash -c "${BATS_TEST_DESCRIPTION}"
   assert_success
 }
 
-@test "$(bats::basename) . && $(bats::basename) . && path_in \"$(pwd_p)\" && assert_path \"$(pwd_p):${BATS_FILE_PATH}\"" {
+@test "$(bats::basename) . && $(bats::basename) . && path_in $(pwd_p) && assert_path \"$(pwd_p):${BATS_FILE_PATH}\"" {
   run bash -c "${BATS_TEST_DESCRIPTION}"
   assert_success
 }

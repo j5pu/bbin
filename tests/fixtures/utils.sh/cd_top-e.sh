@@ -1,6 +1,8 @@
 #!/bin/sh
 
-. cd.sh
+set -eu
+
+. utils.sh
 
 main() {
   cd_top

@@ -6,6 +6,10 @@ _function() { :; }
 
 f() { :; }
 
+@test "funcexported $(bats::basename) " { bats::success; }
+
+@test "type -t $(bats::basename)" { bats::success; assert_output "function"; }
+
 @test "$(bats::basename) ${BASH_SOURCE[0]}" {
   ${BATS_TEST_DESCRIPTION}
 

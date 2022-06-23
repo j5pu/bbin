@@ -1,9 +1,9 @@
 #!/bin/sh
 
-. cd.sh
+. utils.sh
 
 main() {
-  cd_top_exit
+  cd_top
   echo "top: ${CD_TOP}"
 }
 

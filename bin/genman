@@ -6,10 +6,7 @@
 set -euo pipefail
 shopt -s inherit_errexit
 
-# TODO: aqui lo dejo, poner el cd.sh en uno de utils.sh y un utils.bash y cambiar el cmd.sh ese y probar esto.
-#    acabar con los bash_completion
-
-. cd.sh
+. utils.bash
 
 #######################################
 # Identifies files to be removed, changed files and new files, relative to $GENERATED and $DEST (i.e.: man1/remove.1)
@@ -181,9 +178,9 @@ main(){
 
   cd_top_exit
 
-  author="$(git config user.username || { echo "$0: $(pwd): Invalid git username"; exit 1; })"
-  orgname="$(git owner || { echo "$0: $(pwd): Invalid git owner"; exit 1; })"
-  repo="$(git name || { echo "$0: $(pwd): Invalid git repo name"; exit 1; })"
+  author="$(git config user.username)" || { echo "$0: $(pwd): Invalid git username"; exit 1; }
+  orgname="$(git owner)" || { echo "$0: $(pwd): Invalid git owner"; exit 1; }
+  repo="$(git name)" || { echo "$0: $(pwd): Invalid git repo name"; exit 1; }
   script="${0##*/}"
   version=$(svu next || { echo "$0: $(pwd): Invalid next semver" >&2; exit 1; })
 

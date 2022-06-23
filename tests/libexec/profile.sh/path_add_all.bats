@@ -10,6 +10,10 @@ all() {
   assert_equal "${INFOPATH}" "${tmp}/share/info:${BATS_SAVED_INFOPATH}"
 }
 
+@test "funcexported $(bats::basename) " { bats::success; }
+
+@test "type -t $(bats::basename)" { bats::success; assert_output "function"; }
+
 export -f all
 
 @test "t=/${BATS_BASENAME}; all \${t}" {

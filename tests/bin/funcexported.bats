@@ -6,12 +6,6 @@ f() { :; }
   bats::success
 }
 
-@test "$(bats::basename) bats::run " {
-  bats::run
-  assert_success
-}
+@test "$(bats::basename) bats::run " { bats::success; }
 
-@test "$(bats::basename) f " {
-  bats::run
-  assert_failure
-}
+@test "$(bats::basename) f " { bats::failure; }

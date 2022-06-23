@@ -2,8 +2,7 @@
 
 @test "$(bats::basename) " {
   if docker version 2>&1 | grep -q "Is the docker daemon running"; then
-    bats::run
-    assert_failure
+    bats::failuree
   elif has docker; then
     bats::success
   else

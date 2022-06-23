@@ -216,7 +216,6 @@
 ## /bin
 !/bin/arrays.bash
 !/bin/base-images.bash
-!/bin/cd.sh
 !/bin/cmd
 !/bin/color
 !/bin/dir-exists-empty
@@ -232,6 +231,13 @@
 !/bin/fronman
 !/bin/funcexported
 !/bin/genman
+!/bin/git-blue
+!/bin/git-green
+!/bin/git-magenta
+!/bin/git-name
+!/bin/git-parse
+!/bin/git-red
+!/bin/git-url
 !/bin/hascmd
 !/bin/inargs
 !/bin/isaction
@@ -243,6 +249,8 @@
 !/bin/path-default
 !/bin/profile.sh
 !/bin/shell.sh
+!/bin/utils.bash
+!/bin/utils.sh
 ## /etc
 !/etc/bash_completion.d/_dirs
 !/etc/bash_completion.d/_helps

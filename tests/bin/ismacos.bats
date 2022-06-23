@@ -11,13 +11,10 @@ setup_file() { export HELPS_LINE="is running on macOS?"; }
   fi
 }
 
-@test "assert::helps" {
-  bats::success
-}
+@test "assert::helps" { bats::success; }
 
 @test "$(bats::basename) foo " {
-  bats::run
-  assert_failure
+  bats::failure
   assert_line "${HELPS_LINE}"
   assert_line "$(bats::basename): foo: invalid option/argument"
 }

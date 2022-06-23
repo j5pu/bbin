@@ -237,6 +237,20 @@ bats::env() {
 }
 
 #######################################
+# run description array and asserts if failure
+# Globals:
+#   BATS_ARRAY
+# Arguments:
+#  None
+# Caution:
+#  Do not se it with single quotes ('echo "1 2" 3 4'), use double quotes ("echo '1 2' 3 4")
+#######################################
+bats::failure() {
+  bats::run
+  assert_failure
+}
+
+#######################################
 # create a remote, a local temporary directory and change to local repository directory (no commits added)
 # Globals:
 #   BATS_REMOTE

@@ -2,17 +2,21 @@
 
 setup_file() { rebash; }
 
+@test "funcexported $(bats::basename) " { bats::success; }
+
+@test "type -t $(bats::basename)" { bats::success; assert_output "function"; }
+
 @test "$(bats::basename) " {
-  bats::run
+  bats::success
   assert_output "$(pwd -P)"
 }
 
 @test "$(bats::basename) . " {
-  bats::run
+  bats::success
   assert_output "$(pwd -P)"
 }
 
 @test "$(bats::basename) foo " {
-  bats::run
+  bats::success
   assert_output "foo"
 }
