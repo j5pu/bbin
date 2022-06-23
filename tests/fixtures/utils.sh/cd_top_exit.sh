@@ -4,7 +4,7 @@
 
 main() {
   cd_top_exit
-  echo "top: ${CD_TOP}"
+  echo "top: ${GIT_TOP}"
 }
 
 main "$@"

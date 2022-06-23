@@ -185,8 +185,8 @@ main(){
   version=$(svu next || { echo "$0: $(pwd): Invalid next semver" >&2; exit 1; })
 
   GENERATED="$(mktemp -d)"
-  DEST="${CD_TOP}/share/man"
-  find=( "${CD_TOP}" ); [ ! -d "${CD_TOP}/src/man" ] || find+=( "${CD_TOP}/src/man" )
+  DEST="${GIT_TOP}/share/man"
+  find=( "${GIT_TOP}" ); [ ! -d "${GIT_TOP}/src/man" ] || find+=( "${GIT_TOP}/src/man" )
   while read -r file; do
     mkdir -p "${DEST}"
     manvolnum=1

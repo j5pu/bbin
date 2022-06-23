@@ -101,7 +101,7 @@ main() {
   done
 
   argument="${1:-origin}"
-  >&2 echo "opt: ${opt-}, argument: ${argument-}"
+#  >&2 echo "opt: ${opt-}, argument: ${argument-}"
   if echo "${argument}" | grep -q '/' || [ "${opt-}" ]; then
     format "${argument}"
   else
@@ -110,5 +110,5 @@ main() {
 }
 
 . git-parse.sh
-echo "$@"
+#echo "$@"
 main "$@"

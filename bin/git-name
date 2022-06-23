@@ -22,6 +22,7 @@ ${GIT_COMMAND}
 ${COLOR_SCRIPT} [$(git magenta "<remote>")|$(git magenta "<url>")]
 ${COLOR_SCRIPT} $(git magenta "<remote>")
 ${COLOR_SCRIPT} $(git magenta "<url>")
+
 ${COLOR_SCRIPT} - repository name from config remote url or url (default: $(git magenta "origin"))
 --
 h,help    Show help and exit.
@@ -34,12 +35,12 @@ EOF
 #  [<remote>|<url>]     remote name or url (default: cwd)
 #######################################
 main() {
-  if [ "${1-}" ] && echo "${1-}" | grep -q '/'; then
+  if [ "${1-}" ] && { echo "${1-}" | grep -q '/'; }; then
     base "$(echo "$1" | sed 's|https://raw.githubusercontent.com/||g')"
   else
     url="$(git url "${1-}")" && base "${url}"
   fi
 }
-. git-parse.sh
+. git-parse.sh; shift
 
 main "$@"

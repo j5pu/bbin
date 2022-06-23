@@ -2,10 +2,12 @@
 # shellcheck disable=SC2155,SC2046
 
 # TODO: envrc
-# FIXME: Does not work if not in PATH everything so if I clone and run test fails
-#   ./sbin/bats to test it from iTerm
+
 unset -f has
-command -v has >/dev/null || . "$(dirname "${BASH_SOURCE[0]}")/../bin/profile.sh"
+if ! command -v has >/dev/null; then
+  export BBIN_PREFIX="$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd -P)"
+  . "${BBIN_PREFIX}/bin/profile.sh" || return 2>/dev/null || exit
+fi
 command -v filesfuncs >/dev/null || return 2>/dev/null || exit
 
 # <html><h2>Bats Description Array</h2>
