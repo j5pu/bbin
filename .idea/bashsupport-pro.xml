@@ -18,7 +18,9 @@
       <library name="tests">
         <sources>
           <source path="libexec" recursive="true" />
-          <source path="share/bashpro/bats" recursive="true" />
+          <source path="libexec" recursive="true" />
+          <source path="tests/fixtures" recursive="true" />
+          <source path="tests/helpers" recursive="true" />
           <source path="$PROJECT_DIR$/../.local/share/bats-assert/src" recursive="true" external="true" />
           <source path="$PROJECT_DIR$/../.local/share/bats-file/src" recursive="true" external="true" />
           <source path="$PROJECT_DIR$/../binsh/.bashrc" external="true" />

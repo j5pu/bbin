@@ -3,7 +3,6 @@
 
 # TODO: envrc
 
-unset -f has
 if ! command -v has >/dev/null; then
   export BBIN_PREFIX="$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd -P)"
   . "${BBIN_PREFIX}/bin/profile.sh" || return 2>/dev/null || exit
@@ -205,39 +204,10 @@ bats::env() {
   BATS_SAVED_PATH="${PATH}"
   BATS_SAVED_MANPATH="${MANPATH}"
   BATS_SAVED_INFOPATH="${INFOPATH}"
+
   # TODO: envfile
   #  . "$(dirname "${BASH_SOURCE[0]}")/envfile.sh"
   #  envfile
-
-
-  if isaction || ! has docker; then
-    BATS_LOCAL=1
-  elif test $BATS_LOCAL -eq 0; then
-    if [ ! "${BATS_DOCKER_CONTEXT-}" ]; then
-      if ismacos; then
-        BATS_DOCKER_CONTEXT="macOS"
-      else
-        BATS_DOCKER_CONTEXT="default"
-      fi
-    fi
-
-    if [ "$(docker context show)" != "${BATS_DOCKER_CONTEXT}" ]; then
-      docker context use "${BATS_DOCKER_CONTEXT}" >/dev/null || \
-        { >&2 echo "Docker: Change context to: ${BATS_DOCKER_CONTEXT}: failed"; return 1; }
-      ! fd3 || >&3 echo "${0##*/}: Docker: Changed context to: ${BATS_DOCKER_CONTEXT}"
-    fi
-
-    if ! docker-running; then
-      ! fd3 || >&3 echo "${0##*/}: Docker: Starting"
-      docker-start
-      ! fd3 || >&3 echo "${0##*/}: Docker: Started"
-
-      if ! docker-running; then
-        ! fd3 || >&3 echo "${0##*/}: Error: Starting Docker"
-        >&2 echo "${0##*/}: Error: Starting Docker"; return 1 2>/dev/null || exit
-      fi
-    fi
-  fi
 }
 
 #######################################
@@ -315,6 +285,15 @@ bats::tmp() {
   local GENERATED="${BATS_FILE_TMPDIR}${1:+/$1}"
   [ ! "${1-}" ] || mkdir -p "${GENERATED}"
   echo "${GENERATED}"
+}
+
+#######################################
+# skip if GitHub action
+# Arguments:
+#  None
+#######################################
+skip::if::action() {
+  ! isaction || skip "GitHub action"
 }
 
 #######################################
@@ -435,6 +414,49 @@ _directory() {
   mapfile -t tests < <(find "$(realpath "$1")" \( -type f -o -type l \) -name "*.bats")
   [ "${tests-}" ] || return
   BATS_TESTS+=("${tests[@]}")
+}
+
+#######################################
+# start docker
+# Globals:
+#   BATS_DOCKER_CONTEXT
+#   BATS_LOCAL
+# Arguments:
+#   0
+# Returns:
+#   1 ...
+#######################################
+_docker() {
+  [ "${1-}" != "bashpro" ] || return 0
+
+  if isaction || ! has docker; then
+    BATS_LOCAL=1
+  elif test $BATS_LOCAL -eq 0; then
+    if [ ! "${BATS_DOCKER_CONTEXT-}" ]; then
+      if ismacos; then
+        BATS_DOCKER_CONTEXT="macOS"
+      else
+        BATS_DOCKER_CONTEXT="default"
+      fi
+    fi
+
+    if [ "$(docker context show)" != "${BATS_DOCKER_CONTEXT}" ]; then
+      docker context use "${BATS_DOCKER_CONTEXT}" >/dev/null || \
+        { >&2 echo "Docker: Change context to: ${BATS_DOCKER_CONTEXT}: failed"; return 1; }
+      ! fd3 || >&3 echo "${0##*/}: Docker: Changed context to: ${BATS_DOCKER_CONTEXT}"
+    fi
+
+    if ! docker-running; then
+      ! fd3 || >&3 echo "${0##*/}: Docker: Starting"
+      docker-start
+      ! fd3 || >&3 echo "${0##*/}: Docker: Started"
+
+      if ! docker-running; then
+        ! fd3 || >&3 echo "${0##*/}: Error: Starting Docker"
+        >&2 echo "${0##*/}: Error: Starting Docker"; return 1 2>/dev/null || exit
+      fi
+    fi
+  fi
 }
 
 #######################################
@@ -570,6 +592,7 @@ _main() {
   _functions || return
 
   bats::env || return
+  _docker "$@" || return
 
   ! $sourced || {
     _unsets

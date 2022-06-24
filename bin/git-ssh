@@ -1,0 +1,40 @@
+#!/bin/sh
+
+set -eu
+
+: git ssh
+
+#######################################
+# git spec
+# Globals:
+#   SCRIPT
+# Arguments:
+#  None
+#######################################
+spec() {
+  cat <<EOF
+${GIT_COMMAND}
+${COLOR_SCRIPT} [$(git magenta "<user>")]
+
+${COLOR_SCRIPT} - Check SSH access to GitHub (default: $(git magenta "\$GIT"))
+--
+h,help    Show help and exit.
+EOF
+}
+
+#######################################
+# git ssh access
+# Arguments:
+#  [<user>|<url>]  remote name or url (default: $USER).
+#######################################
+main() {
+  case "${1-}" in
+    -h|--help) . git-parse.sh; exit ;;
+  esac
+
+  ssh -T git@github.com 2>&1 | grep -q "Hi ${1:-${GIT}}! You've successfully authenticated" && exit
+  >&2 echo "${0##*/}: ${1:-${GIT}}: SSH access to GitHub failed."
+  exit 1
+}
+
+main "$@"

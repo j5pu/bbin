@@ -1,12 +1,14 @@
 #!/usr/bin/env bats
 
+setup_file() { . "${BATS_TOP}/tests/helpers/helpers.bash"; }
+
 @test "$(bats::basename) " {
+  skip::if::not::command docker
+
   if docker version 2>&1 | grep -q "Is the docker daemon running"; then
     bats::failuree
-  elif has docker; then
-    bats::success
   else
-    skip "Docker daemon not installed"
+    bats::success
   fi
 }
 

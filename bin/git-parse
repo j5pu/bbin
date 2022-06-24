@@ -160,7 +160,9 @@ case "${0##*/}" in
 esac
 
 if [ "${_spec-}" ]; then
+  >&2 echo "$0: start"
   eval "$($_spec | ${_parsecmd} -- "$@" || echo exit $?)"
+  >&2 echo "$0: finish"
 
   #######################################
   # change to directory in -C option if specified on the spec (C=path) and removes from parsed arguments.

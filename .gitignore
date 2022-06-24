@@ -235,8 +235,10 @@
 !/bin/git-green
 !/bin/git-magenta
 !/bin/git-name
+!/bin/git-owner
 !/bin/git-parse
 !/bin/git-red
+!/bin/git-ssh
 !/bin/git-url
 !/bin/hascmd
 !/bin/inargs
@@ -256,11 +258,19 @@
 !/etc/bash_completion.d/_helps
 !/etc/bash_completion.d/bats
 !/etc/bash_completion.d/docker-login
+!/etc/bash_completion.d/git-name
+!/etc/bash_completion.d/git-owner
+!/etc/bash_completion.d/git-ssh
+!/etc/bash_completion.d/git-url
 !/etc/bash_completion.d/hascmd
 !/etc/bash_completion.d/inargs
 !/etc/bash_completion.d/source
-!/etc/profile.d/00-constants-homebrew.sh
+!/etc/profile.d/constants
 !/etc/profile.d/00-system.sh
+!/etc/profile.d/hooks.sh
+!/etc/profile.d/shellopts.sh
+## /etc/rc.d
+!/etc/rc.d
 ## /libexec
 !/libexec
 ## /sbin

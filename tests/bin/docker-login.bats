@@ -1,10 +1,12 @@
 #!/usr/bin/env bats
 
+setup_file() { . "${BATS_TOP}/tests/helpers/helpers.bash"; }
+
 vars() {
-  has docker || skip "Docker daemon not installed"
+  skip::if::not::command docker
 
   for var in DOCKER_HUB_TOKEN GH_TOKEN GIT; do
-    [ "${!var-}" ] || skip "Missing ${var}"
+    skip::if::not::var "${var}"
   done
 
   docker-running || >&3 echo "Docker daemon starting"

@@ -2,8 +2,20 @@
 
 : git config
 
+set -eu
+
 # TODO: terminal con el git-url y poner pruebas de los git que he añadido y ver si hay otro git-name
 #  seguir con el puto genman, ver que hago con los git-commands si pongo directorio de git con symlinks
+#######################################
+# die with error
+# Arguments:
+#  None
+#######################################
+die() {
+  rc=$?
+  >&2 echo "${0##*/}: $*"
+  exit "${rc:-1}"
+}
 
 #######################################
 # git spec
@@ -63,7 +75,7 @@ format() {
   owner="$(git-owner "$1")"; [ "${owner-}" ] || die url name: "$@"
   prefix="https://github.com/"
   suffix=".git"
-  case "${opt:-git}" in
+  case "${format:-git}" in
     --file) prefix="git+file://"; suffix="" ;;
     --git) : ;;
     --https) prefix="git+https://github.com/" ;;
@@ -75,13 +87,6 @@ format() {
   echo "${prefix}${owner}/${name}${suffix}"
 }
 
-#######################################
-# remote url from config
-# Arguments:
-#  <remote>    remote name (default: origin)
-#######################################
-url() { git config remote."$1".url || die Invalid Remote: "$1"; }
-
 # TODO: aqui lo dejo probar esto, habría que hacer un checkout default,
 #  probar url y seguir con submodule que necesita los git all y clone...
 #   copiar de semver el como calcula el tag actual
@@ -92,23 +97,48 @@ url() { git config remote."$1".url || die Invalid Remote: "$1"; }
 #   opt
 #######################################
 main() {
-  while test $# != 0; do
-    case "$1" in
-      --) shift; break ;;
-      --*) opt="$1"  ;;
+  ping=false
+  
+  for arg; do
+    case "${arg}" in
+      -h|--help) . git-parse.sh || exit ;;
+      --file|--git|--https|--pip|--raw|--ssh|--web)
+        [ ! "${format-}" ] || die "${arg}, ${format}: only one format can be provided"
+        format="${arg}"
+        ;;
+      --ping) ping=true ;;
+      *)
+        [ ! "${format-}" ] || die "${arg}, ${format}: only one argument can be provided remote|owner/repo|url"
+        argument="${arg}" ;;
     esac
-    shift
   done
 
+#  while test $# != 0; do
+#    case "$1" in
+#      --) shift; break ;;
+#      --*) opt="$1"  ;;
+#    esac
+#    shift
+#  done
+
   argument="${1:-origin}"
+  : "${format=git}"
+
 #  >&2 echo "opt: ${opt-}, argument: ${argument-}"
   if echo "${argument}" | grep -q '/' || [ "${opt-}" ]; then
-    format "${argument}"
+    url="$(format "${argument}")"
   else
-    git config remote."${argument}".url || die Invalid Remote: "${argument}"
+    url="$(git config remote."${argument}".url)" || die Invalid Remote: "${argument}"
   fi
+
+  if $ping; then
+    case "${format}" in
+      --git|--ssh) git ls-remote "${url}" CHECK_GIT_REMOTE_URL_REACHABILITY ;;
+      *) die "--ping: can only be used with --git|--ssh" ;;
+    esac
+  fi
+
+  echo "${url}"
 }
 
-. git-parse.sh
-#echo "$@"
 main "$@"
