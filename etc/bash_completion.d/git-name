@@ -1,5 +1,8 @@
 # shellcheck shell=bash
 
+# TODO: estaba con las completions y el git-url para volver al genman !! que no estaban y me puse con el profile.sh
+# TODO: y entonces el set -o functrace fastidiaba todo.
+
 #######################################
 # git-name
 # Globals:
