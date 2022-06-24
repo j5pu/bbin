@@ -37,6 +37,10 @@ export BBIN_DEVELOPMENT
 #
 : "${BBIN_DEBUG=0}"; export BBIN_DEBUG
 
+# Homebrew etc/profile.d sourced
+#
+: "${BREW_PROFILE_D_SOURCED=0}"
+
 test $BBIN_DEBUG -eq 0 || [ ! "${BASH_SOURCE-}" ] || caller
 
 if [ "${BBIN_PREFIX_DEFAULT}" = "${BBIN_PREFIX}" ]; then
@@ -283,10 +287,27 @@ rebash() {
 source_dir() {
   if dir-has-files "${1:-.}"; then
     for _source_dir_file in "${1:-.}"/*; do
-      . "${_source_dir_file}"
+      ! test -f "${_source_dir_file}" || . "${_source_dir_file}"
     done
     unset _source_dir_file
   fi
+}
+
+#######################################
+# set shell option if available
+# Arguments:
+#  directory    path of directory to source (default: cwd).
+#######################################
+_shell_opt() {
+  for arg; do
+    if set -o | grep -q "${arg}"; then
+      if [ "${SH}" =  "posix-ksh" ]; then
+        set -o"${arg}"
+      else
+        set -o "${arg}"
+      fi
+    fi
+  done
 }
 
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
@@ -294,15 +315,30 @@ path_add_exist_all "${BBIN_PREFIX}"
 export_funcs_path "${BBIN_PROFILE}"
 . shell.sh
 
+source_dir "${BBIN_PREFIX}/etc/profile.d/constants"
 source_dir "${BBIN_PREFIX}/etc/profile.d"
+source_dir "${BBIN_PREFIX}/etc/profile.d/${SH}"
+[ "${SH}" = "${SHELL_HOOK:-${SH}}" ] || source_dir "${BBIN_PREFIX}/etc/profile.d/${SHELL_HOOK}"
 
-[ "${PS1-}" ] || return 0
-
-source_dir "${BBIN_PREFIX}/etc/bash_completion.d"
-
-if [ "${SHELL_HOOK-}" ]; then
-  ! has starship || eval "$(starship init "${SHELL_HOOK}")"
+if [ "${HOMEBREW_PREFIX-}" != "${BBIN_PREFIX}" ] && test $BREW_PROFILE_D_SOURCED -eq 0; then
+  BREW_PROFILE_D_SOURCED=1; source_dir "${HOMEBREW_PREFIX}/etc/profile.d"
 fi
+
+if [ ! "${PS1-}" ]; then
+  _shell_opt errtrace functrace
+  return
+fi
+
+_shell_opt autocd cdablevars emacs histappend histexpand nocaseglob nocasematch
+
+source_dir "${BBIN_PREFIX}/etc/rc.d"
+source_dir "${BBIN_PREFIX}/etc/rc.d/${SH}"
+[ "${SH}" = "${SHELL_HOOK:-${SH}}" ] || source_dir "${BBIN_PREFIX}/etc/rc.d/${SHELL_HOOK}"
+
+#if [ "${SHELL_HOOK-}" ]; then
+#  ! has starship || eval "$(starship init "${SHELL_HOOK}")"
+#fi
 
 export PROMPT_COMMAND="history_prompt${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
 
+unset -f _shell_opt

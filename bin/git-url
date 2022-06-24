@@ -1,7 +1,5 @@
 #!/bin/sh
 
-: git config
-
 set -eu
 
 # TODO: terminal con el git-url y poner pruebas de los git que he añadido y ver si hay otro git-name

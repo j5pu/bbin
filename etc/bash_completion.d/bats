@@ -16,8 +16,12 @@ _bats() {
     --one -p --pretty --report-formatter -r --recursive -o --output --print-output-on-failure
     --show-output-of-passing-tests --tap -T --timing -x --trace --verbose --verbose-run)
 
-  ! [[ "${COMP_WORDS[1]}" =~ -h|--help|--man|--man7|-v|--version|bashpro|commands|help|functions|list ]] || return 0
-  [[ $COMP_CWORD -ne 1 ]] || mapfile -t commands < <("$1" commands)
+  mapfile -t commands < <("$1" commands)
+
+  ! inargs "${COMP_WORDS[1]}" "${commands[@]}" || return 0
+
+
+  [[ $COMP_CWORD -eq 1 ]] || commands=()
 
   case "$2" in
     -F|--formatter|--report-formatter) options=(); commands=(); list=() ;;

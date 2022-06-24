@@ -254,6 +254,7 @@
 !/bin/utils.bash
 !/bin/utils.sh
 ## /etc
+## /etc/bash_completion.d
 !/etc/bash_completion.d/_dirs
 !/etc/bash_completion.d/_helps
 !/etc/bash_completion.d/bats
@@ -265,12 +266,23 @@
 !/etc/bash_completion.d/hascmd
 !/etc/bash_completion.d/inargs
 !/etc/bash_completion.d/source
-!/etc/profile.d/constants
+## /etc/profile.d
+!/etc/profile.d/bash-4/hooks.sh
+!/etc/profile.d/constants/bash.sh
+!/etc/profile.d/constants/bats.sh
+!/etc/profile.d/constants/docker.sh
+!/etc/profile.d/constants/git.sh
+!/etc/profile.d/constants/homebrew.sh
+!/etc/profile.d/constants/pager.sh
+!/etc/profile.d/constants/pyenv.sh
+!/etc/profile.d/constants/python.sh
 !/etc/profile.d/00-system.sh
-!/etc/profile.d/hooks.sh
-!/etc/profile.d/shellopts.sh
 ## /etc/rc.d
-!/etc/rc.d
+!/etc/rc.d/bash/hooks.sh
+!/etc/rc.d/bash-4/hooks.sh
+!/etc/rc.d/aliases.sh
+!/etc/rc.d/hooks.sh
+!/etc/rc.d/pyenv.sh
 ## /libexec
 !/libexec
 ## /sbin

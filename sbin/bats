@@ -427,7 +427,7 @@ _directory() {
 #   1 ...
 #######################################
 _docker() {
-  [ "${1-}" != "bashpro" ] || return 0
+  ! [[ "${1-}" =~ -h|--help|--man|--man7|-v|--version|bashpro|commands|help|functions|list  ]] || return 0
 
   if isaction || ! has docker; then
     BATS_LOCAL=1
@@ -704,7 +704,7 @@ _main() {
         exit
         ;;
       commands)
-        printf '%s\n' -h --help help "$1" functions list | sort
+        printf '%s\n' -h --help --man --man7 -v --version bashpro "$1" functions help list | sort
         exit
         ;;
       functions)

@@ -1,7 +1,7 @@
 # shellcheck shell=bash
 
 #######################################
-# bats/bats.sh completions
+# git-url
 # Globals:
 #   COMPREPLY
 # Arguments:
@@ -10,23 +10,41 @@
 #   3     word preceding the word being completed or $1 when is the first word ("prev")
 #######################################
 _git_url() {
-  local commands=() formatters=(bashpro junit pretty tap tap13) list=()
-  local options=(--code-quote-style -c --count -f --filter -F --formatter -d --dry-run -j --jobs
-    --gather-test-outputs-in --no-parallelize-across-files --no-parallelize-within-files --no-tempdir-cleanup
-    --one -p --pretty --report-formatter -r --recursive -o --output --print-output-on-failure
-    --show-output-of-passing-tests --tap -T --timing -x --trace --verbose --verbose-run)
+  local argument=""
+  local commands=(-h --help) formats=(--file --git --https --pip --raw --ssh --web) options=(--ping) remotes=()
+  mapfile -t remotes < <(git remote)
 
-  ! [[ "${COMP_WORDS[1]}" =~ -h|--help|--man|--man7|-v|--version|bashpro|commands|help|functions|list ]] || return 0
-  [[ $COMP_CWORD -ne 1 ]] || mapfile -t commands < <("$1" commands)
+  ! inargs "${COMP_WORDS[1]}" "${commands[@]}" || return 0
 
-  case "$2" in
-    -F|--formatter|--report-formatter) options=(); commands=(); list=() ;;
-    *)
-      mapfile -t list < <(comm -23 <("$1" list) <(printarr "${COMP_WORDS[@]:1:COMP_CWORD-1}"))
-      mapfile -t options < <(comm -23 <(printarr "${options[@]}") <(printarr "${COMP_WORDS[@]:1:COMP_CWORD-1}"))
-      ;;
-  esac
-  mapfile -t COMPREPLY < <(compgen -o nosort -W "${commands[*]} ${formatters[*]} ${options[*]} ${list[*]}" -- "$2")
+  # FIXME: esta mal el git name porque pones <or> y no selecciona
+  # TODO: acabar, mirar que si formats esta vacío ...
+  #  mirar la palabra concreta
+  if inargs "${options[0]}" "${COMP_WORDS[@]}"; then
+    options=()
+  else
+    for _i in --git --ssh; do
+      ! inargs "${_i}" "${COMP_WORDS[@]}" || { options=(); break; }
+    done
+  fi
+
+  for _i in "${formats[@]}"; do
+    ! inargs "${_i}" "${COMP_WORDS[@]}" || { formats=(); break; }
+  done
+
+  for _i in "${remotes[@]}"; do
+    ! inargs "${_i}" "${COMP_WORDS[@]}" || { remotes=(); break; }
+  done
+
+  [[ $COMP_CWORD -eq 1 ]] || commands=()
+
+#  case "$2" in
+#    -F|--formatter|--report-formatter) options=(); commands=(); list=() ;;
+#    *)
+#      mapfile -t list < <(comm -23 <("$1" list) <(printarr "${COMP_WORDS[@]:1:COMP_CWORD-1}"))
+#      mapfile -t options < <(comm -23 <(printarr "${options[@]}") <(printarr "${COMP_WORDS[@]:1:COMP_CWORD-1}"))
+#      ;;
+#  esac
+  mapfile -t COMPREPLY < <(compgen -W "${commands[*]} ${formats[*]} ${options[*]} ${remotes[*]}" -- "$2")
 }
 
 complete -F _git_url git-url

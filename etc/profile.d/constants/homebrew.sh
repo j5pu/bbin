@@ -1,4 +1,5 @@
 # shellcheck shell=sh
+
 export HOMEBREW_BAT=1
 export HOMEBREW_FORCE_BREWED_CURL=1
 export HOMEBREW_FORCE_VENDOR_RUBY=1
