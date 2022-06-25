@@ -9,8 +9,8 @@
 #   2     word being completed ("cur")
 #   3     word preceding the word being completed or $1 when is the first word ("prev")
 #######################################
-_git_url() {
-  local formats="--file --git --https --pip --raw --ssh --web" helps="-h --help" ping="--ping" remotes
+_git_default() {
+  local helps="-h --help" remotes
   remotes=$(__git_remotes)
 
   if [ "${COMP_WORDS[0]}" != "git" ]; then
@@ -27,17 +27,15 @@ _git_url() {
     i="${words[c]}"
     case "${i}" in
       -h|--help) return ;;
-      --ping) ping=""; helps="" ;;
-      --file|--https|--pip|--raw|--web) formats=""; helps=""; ping="" ;;
-      --git|--insteadOf|--ssh) formats=""; helps="" ;;
       *) remotes=""; helps="" ;;
     esac
     # if "git" command continues giving completions because ___git_complete wrapper complete -o bashdefault
-    { [ "${formats-}" ] || [ "${helps-}" ] || [ "${ping-}" ] || [ "${remotes-}" ]; } || return 0
+    { [ "${helps-}" ] || [ "${remotes-}" ]; } || return 0
     ((c++))
   done
 
-  __gitcomp "${helps}${formats:+ ${formats}}${ping:+ ${ping}}${remotes:+ ${remotes}}"
+  # shellcheck disable=SC2086
+  __gitcomp "${helps}${remotes:+ ${remotes}}"
 }
 
-complete -F _git_url git-url
+complete -F _git_default git-default

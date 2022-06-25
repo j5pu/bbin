@@ -275,6 +275,7 @@ pwd_p() { if test -d "${1:-.}"; then (cd "${1:-.}" || return; pwd -P); else echo
 #   PATH
 #######################################
 rebash() {
+  unset BREW_PROFILE_D_SOURCED
   ! test -f "${BBIN_PROFILE_DEFAULT}" || BBIN_DEFAULT_SOURCED=0 . "${BBIN_PROFILE_DEFAULT}"
   test $BBIN_DEVELOPMENT -eq 0 || BBIN_DEVELOPMENT_SOURCED=0 . "${BBIN_PROFILE}"
 }

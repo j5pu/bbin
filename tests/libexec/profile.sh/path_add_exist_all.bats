@@ -16,9 +16,14 @@ export -f all
 
 @test "type -t $(bats::basename)" { bats::success; assert_output "function"; }
 
-@test "$(bats::basename) . && assert_path \"${BATS_FILE_PATH}\"" {
-  run bash -c "${BATS_TEST_DESCRIPTION}"
-  assert_success
+@test "$(bats::basename) ." {
+  ${BATS_TEST_DESCRIPTION}
+
+  ALL_PATH="${BATS_FILE_PATH}"
+  for i in libexec bin sbin; do
+    path_add_exist "./${i}" ALL_PATH
+  done
+  assert_path "${ALL_PATH}"
 }
 
 @test "d=$(bats::tmp d); $(bats::basename) \${d} && assert_path \"${BATS_FILE_PATH}\"" {

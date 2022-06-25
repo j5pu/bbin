@@ -14,6 +14,12 @@ setup_file() { . "${BATS_TOP}/tests/helpers/helpers.bash"; }
   bats::success
 }
 
+@test "git -C '${PWD}' ssh ${GIT}" {
+  skip::if::not::var GIT
+  skip::if::not::command ssh
+  bats::success
+}
+
 @test "$(bats::basename) foo" {
   skip::if::not::var GIT
   skip::if::not::command ssh

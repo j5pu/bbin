@@ -1,7 +1,7 @@
 # shellcheck shell=bash
 
 #######################################
-# git-owner
+# completions
 # Globals:
 #   COMPREPLY
 # Arguments:
@@ -10,8 +10,32 @@
 #   3     word preceding the word being completed or $1 when is the first word ("prev")
 #######################################
 _git_owner() {
-  [ "$1" = "$3" ] || return 0
-  mapfile -t COMPREPLY < <(compgen -o nospace -W "-h --help $(git remote)" -- "$2")
+  local helps="-h --help" remotes
+  remotes=$(__git_remotes)
+
+  if [ "${COMP_WORDS[0]}" != "git" ]; then
+    # __git_cmd_idx=1 if command is "git" and "${COMP_WORDS[1]}" is "url"
+    # __git_cmd_idx=3 if "${COMP_WORDS[1]}" is "-C" and "${COMP_WORDS[3]}" is "url"
+    # bashsupport disable=BP3001
+    local cur __git_cmd_idx=0 cword prev words
+    _get_comp_words_by_ref -n =: cur words cword prev
+  fi
+
+  local c=$((__git_cmd_idx+1)) i # Starts in first word after command and loop until everything but last
+
+  while [ $c -lt "${cword}" ]; do
+    i="${words[c]}"
+    case "${i}" in
+      -h|--help) return ;;
+      *) remotes=""; helps="" ;;
+    esac
+    # if "git" command continues giving completions because ___git_complete wrapper complete -o bashdefault
+    { [ "${helps-}" ] || [ "${remotes-}" ]; } || return 0
+    ((c++))
+  done
+
+  # shellcheck disable=SC2086
+  __gitcomp "${helps}${remotes:+ ${remotes}}"
 }
 
 complete -F _git_owner git-owner

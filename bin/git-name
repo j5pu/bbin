@@ -35,12 +35,17 @@ EOF
 #  [<remote>|<url>]     remote name or url (default: cwd)
 #######################################
 main() {
+  for arg; do
+    case "${arg}" in
+    -h|--help) . git-parse.sh || exit ;;
+    esac
+  done
+
   if [ "${1-}" ] && { echo "${1-}" | grep -q '/'; }; then
     base "$(echo "$1" | sed 's|https://raw.githubusercontent.com/||g')"
   else
     url="$(git url "${1-}")" && base "${url}"
   fi
 }
-. git-parse.sh; shift
 
 main "$@"

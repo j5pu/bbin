@@ -8,6 +8,8 @@ shopt -s inherit_errexit
 
 . utils.bash
 
+# TODO: seguir con el puto genman, ver que hago con los git-commands si pongo directorio de git con symlinks
+
 #######################################
 # Identifies files to be removed, changed files and new files, relative to $GENERATED and $DEST (i.e.: man1/remove.1)
 # Globals:

@@ -232,6 +232,7 @@
 !/bin/funcexported
 !/bin/genman
 !/bin/git-blue
+!/bin/git-default
 !/bin/git-green
 !/bin/git-magenta
 !/bin/git-name
@@ -249,6 +250,7 @@
 !/bin/journal-clean
 !/bin/newline-to
 !/bin/path-default
+!/bin/printarr
 !/bin/profile.sh
 !/bin/shell.sh
 !/bin/utils.bash
@@ -259,6 +261,7 @@
 !/etc/bash_completion.d/_helps
 !/etc/bash_completion.d/bats
 !/etc/bash_completion.d/docker-login
+!/etc/bash_completion.d/git-default
 !/etc/bash_completion.d/git-name
 !/etc/bash_completion.d/git-owner
 !/etc/bash_completion.d/git-ssh

@@ -10,7 +10,6 @@ setup_file() { rebash; export BBIN_DEBUG=1;}
 
 @test "$(bats::basename)" {
   bats::success
-  assert_output - <<EOF
-1 environment
-EOF
+  assert_equal "$(echo "$output" | wc -l | sed 's/ //g')" 1
+  assert_output --regexp "environment"
 }
