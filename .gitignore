@@ -214,10 +214,9 @@
 ## /Bbin.app
 !/Bbin.app
 ## /bin
-!/bin/arrays.bash
 !/bin/base-images.bash
-!/bin/cmd
 !/bin/color
+!/bin/completions_helpers.bash
 !/bin/dir-exists-empty
 !/bin/dir-has
 !/bin/dir-has-files
@@ -231,16 +230,30 @@
 !/bin/fronman
 !/bin/funcexported
 !/bin/genman
+!/bin/git-black
 !/bin/git-blue
+!/bin/git-bold
+!/bin/git-colors
+!/bin/git-cyan
 !/bin/git-default
+!/bin/git-dirname
+!/bin/git-filename
 !/bin/git-green
+!/bin/git-is
+!/bin/git-italic
 !/bin/git-magenta
 !/bin/git-name
+!/bin/git-normal
 !/bin/git-owner
 !/bin/git-parse
 !/bin/git-red
 !/bin/git-ssh
+!/bin/git-super
+!/bin/git-superproject
+!/bin/git-top
 !/bin/git-url
+!/bin/git-white
+!/bin/git-yellow
 !/bin/hascmd
 !/bin/inargs
 !/bin/isaction
@@ -257,17 +270,11 @@
 !/bin/utils.sh
 ## /etc
 ## /etc/bash_completion.d
-!/etc/bash_completion.d/_dirs
-!/etc/bash_completion.d/_helps
+!/etc/bash_completion.d/_comp_one_command
+!/etc/bash_completion.d/_no_comp
 !/etc/bash_completion.d/bats
-!/etc/bash_completion.d/docker-login
-!/etc/bash_completion.d/git-default
-!/etc/bash_completion.d/git-name
-!/etc/bash_completion.d/git-owner
-!/etc/bash_completion.d/git-ssh
 !/etc/bash_completion.d/git-url
 !/etc/bash_completion.d/hascmd
-!/etc/bash_completion.d/inargs
 !/etc/bash_completion.d/source
 ## /etc/profile.d
 !/etc/profile.d/bash-4/hooks.sh
@@ -282,6 +289,7 @@
 !/etc/profile.d/00-system.sh
 ## /etc/rc.d
 !/etc/rc.d/bash/hooks.sh
+!/etc/rc.d/bash-4/completion_helpers.bash
 !/etc/rc.d/bash-4/hooks.sh
 !/etc/rc.d/aliases.sh
 !/etc/rc.d/hooks.sh

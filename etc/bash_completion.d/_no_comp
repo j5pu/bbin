@@ -1,7 +1,7 @@
-# shellcheck shell=bash
+# shellcheck shell=bash disable=SC2043
 
 #######################################
-# hascmd
+# inargs completions
 # Globals:
 #   COMPREPLY
 # Arguments:
@@ -9,13 +9,12 @@
 #   2     word being completed ("cur")
 #   3     word preceding the word being completed or $1 when is the first word ("prev")
 #######################################
-_dirs() {
-  [ "$1" = "$3" ] || return 0
-  mapfile -t COMPREPLY < <(compgen -o plusdirs -W "-h --help help" -- "$2")
-}
+__no_comp() { return 0; }
 
-complete -F _dirs dir-exists-empty
-complete -F _dirs dir-has
-complete -F _dirs dir-has-files
-complete -F _dirs source_dir
-complete -F _dirs pwd_p
+for _no_comp_i in \
+ inargs \
+ ; do
+  complete -F __no_comp "${_no_comp_i}"
+done
+
+unset _no_comp_i

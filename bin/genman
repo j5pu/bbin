@@ -11,6 +11,17 @@ shopt -s inherit_errexit
 # TODO: seguir con el puto genman, ver que hago con los git-commands si pongo directorio de git con symlinks
 
 #######################################
+# die with error
+# Arguments:
+#  None
+#######################################
+die() {
+  rc=$?
+  >&2 echo "${SCRIPT}: $*"
+  exit $rc
+}
+
+#######################################
 # Identifies files to be removed, changed files and new files, relative to $GENERATED and $DEST (i.e.: man1/remove.1)
 # Globals:
 #   COMMON_FILES
@@ -31,7 +42,7 @@ files() {
 }
 
 #######################################
-# filter man output to see real differences
+# filter man output to see real differences (will not copy the man page - ignores date, version, etc.)
 # Arguments:
 #   1   man file
 #######################################
@@ -40,17 +51,6 @@ filter() {
   tmp="$(mktemp)"
   grep -vE " Generator:|      Date:|    Source:|.TH" "$1" > "${tmp}"
   echo "${tmp}"
-}
-
-#######################################
-# add to git array because file is in the index
-# Globals:
-#   GIT_ADD_FILES
-# Arguments:
-#   1   file
-#######################################
-index() {
-  ! git ls-files --error-unmatch "$1" 2>/dev/null || GIT_ADD_FILES+=("${file}")
 }
 
 #######################################
@@ -96,6 +96,19 @@ manpurpose-func() {
 }
 
 #######################################
+# push template changes to GitHub
+# Arguments:
+#  None
+#######################################
+templates() {
+  local directory
+  #   TODO: estaba con esto para hacer el push si esta en git dir the genman y me fui al git top,
+  #     acabar con los test de git basename dirname filename is super superproject top y volver a esto
+  #     de template para que no fallara cuando se copiaba el repo
+  directory="$(cd "$(dirname "${0}")" )"
+}
+
+#######################################
 # test generated man page
 # Globals:
 #   author        The author.
@@ -108,6 +121,7 @@ manpurpose-func() {
 #   1             Generated man page.
 #######################################
 tests() {
+  ! $NO_TEST || return 0
   if [ "${2-}" ]; then
     readarray -t page < <(MANPATH="${GENERATED}${MANPATH:+:${MANPATH}}" COLUMNS=160 man -P cat "$2" "$1")
   else
@@ -146,6 +160,8 @@ tests_line() {
 
 #######################################
 # converts, tests and commit changes for AsciiDoc man pages in a repository
+# checks description comment in main function for scripts if exists, otherwise comment in file
+# checks function description comment if it is not a script by sourcing *.sh and *.bash files and searching
 # Globals:
 #   author        The author.
 #   bottom_left   Button left text of man page.
@@ -166,25 +182,27 @@ tests_line() {
 #   1             [--desc|--help|--manrepo|--version] [directory]
 #######################################
 main(){
-  GIT_ADD_FILES=()
-  local arg author corner dest_file dir dirs doctitle file filename find generated_file manmanual manpurpose mansource
-  local manvolnum orgname output repo script src version
+  NO_TEST=false; SCRIPT="${0##*/}"
+  local arg author change_mansource=false commit=() corner dest_file dir dirs doctitle file filename find generated_file
+  local manmanual manpurpose mansource manvolnum orgname output repo src
 
   for arg do
     shift
     case "${arg}" in
+      --no-test) NO_TEST=true ;;
+      # option for testing, run 'genman' and 'genman --change-mansource' and ls -la genman.1, file is not updated
+      --change-mansource) change_mansource=true ;;
       --*) fromman "$0" "$@" || exit 0 ;;
       *) cd "${arg}" || { "$0: ${arg}: No such directory"; exit 1; };;
     esac
   done
 
   cd_top_exit
+  templates
 
-  author="$(git config user.username)" || { echo "$0: $(pwd): Invalid git username"; exit 1; }
-  orgname="$(git owner)" || { echo "$0: $(pwd): Invalid git owner"; exit 1; }
-  repo="$(git name)" || { echo "$0: $(pwd): Invalid git repo name"; exit 1; }
-  script="${0##*/}"
-  version=$(svu next || { echo "$0: $(pwd): Invalid next semver" >&2; exit 1; })
+  author="$(git owner)" || die "$(pwd): Invalid git owner"
+  orgname="${author}"
+  repo="$(git name)" || die "$(pwd): Invalid git repo name"
 
   GENERATED="$(mktemp -d)"
   DEST="${GIT_TOP}/share/man"
@@ -223,7 +241,7 @@ main(){
     output="${dir}/${filename}"
 
     manmanual="${manname^} Manual"
-    mansource="${manname^} ${version}"
+    mansource="${manname^}"; ! $change_mansource || mansource=$RANDOM
     doctitle="${manname^^}(${manvolnum})"
     asciidoctor -b manpage \
       -a doctype=manpage \
@@ -256,7 +274,8 @@ main(){
     for i in ${REMOVE_FILES}; do
       dest_file="${DEST}/${i}"
       rm "${dest_file}"
-      index "${dest_file}"
+      git rm -f "${dest_file}"
+      commit+=("${dest_file}")
     done
   fi
 
@@ -265,7 +284,8 @@ main(){
       dest_file="${DEST}/${i}"
       mkdir -p "$(dirname "${dest_file}")"
       cp "${GENERATED}/${i}" "${dest_file}"
-      index "${dest_file}"
+      git add -f "${dest_file}"
+      commit+=("${dest_file}")
     done
   fi
 
@@ -274,17 +294,16 @@ main(){
       dest_file="${DEST}/${i}"
       generated_file="${GENERATED}/${i}"
 
+      # Does not update the man page If there are no real differences in man page (excludes version, date, etc)
       if ! git diff --no-index --no-patch "$(filter "${dest_file}")" "$(filter "${generated_file}")" >/dev/null; then
         cp "${generated_file}" "${dest_file}"
-        index "${dest_file}"
+        git add -f "${dest_file}"
+        commit+=("${dest_file}")
       fi
     done
   fi
 
-  if [ "${GIT_ADD_FILES-}" ]; then
-    git add "${GIT_ADD_FILES[@]}"
-    git commit --quiet -m "${script}" "${GIT_ADD_FILES[@]}" >/dev/null
-  fi
+  [ ! "${commit-}" ] || git commit --quiet -m "${SCRIPT}" "${commit[@]}" >/dev/null
 }
 
 main "$@"

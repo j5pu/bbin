@@ -1,0 +1,88 @@
+# shellcheck shell=bash
+# bashsupport disable=BP5008
+
+# For 1 argument with: helps.
+#
+__comp_filedir_helps() { _comp_one_command; }
+for _comp_one_command_i in \
+  docker-contexts \
+  docker-running \
+  docker-start \
+  docker-stop \
+  isaction \
+  isdebian \
+  ismacos \
+  journal-clean \
+  path-default \
+  ; do
+  complete -F __comp_filedir_helps "${_comp_one_command_i}"
+done
+
+# For 1 argument with: _filedir (directories) or helps.
+#
+__comp_filedir_dir() { _comp_one_command -d; }
+for _comp_one_command_i in \
+  dir-exists-empty \
+  dir-has \
+  dir-has-files \
+  source_dir \
+  pwd_p; do
+  complete -F __comp_filedir_dir "${_comp_one_command_i}"
+done
+
+# For 1 argument git with: helps.
+# Generates:
+# _git_basename() { _comp_one_command; }
+# complete -F _git_basename git-basename
+# shellcheck disable=SC2043
+for _comp_one_command_i in \
+  ssh; do
+  _comp_one_command_func="_git_${_comp_one_command_i}"
+  eval "${_comp_one_command_func}() { _comp_one_command; }"
+  complete -F "${_comp_one_command_func}" "git-${_comp_one_command_i}"
+done
+
+# For 1 argument git with: _filedir or helps.
+# Generates:
+# _git_basename() { _comp_one_command -f; }
+# complete -F _git_basename git-basename
+for _comp_one_command_i in \
+  basename \
+  dirname \
+  filename \
+  is \
+  super \
+  superproject \
+  top; do
+  _comp_one_command_func="_git_${_comp_one_command_i}"
+  eval "${_comp_one_command_func}() { _comp_one_command -f; }"
+  complete -F "${_comp_one_command_func}" "git-${_comp_one_command_i}"
+done
+
+# For 1 argument git with: remotes or helps.
+# Generates:
+# _git_name() { _comp_one_command "$(__git_remotes)"; }
+# complete -F _git_name git-name
+for _comp_one_command_i in \
+  default \
+  name \
+  owner; do
+  _comp_one_command_func="_git_${_comp_one_command_i}"
+  eval "${_comp_one_command_func}() { _comp_one_command \$(__git_remotes); }"
+  complete -F "${_comp_one_command_func}" "git-${_comp_one_command_i}"
+done
+
+#######################################
+# docker_login
+# Arguments:
+#   None
+#######################################
+# shellcheck disable=SC2046
+_docker_login() {
+  _comp_one_command $(docker-contexts) --all
+#  [ "$1" = "$3" ] || return 0
+#  mapfile -t COMPREPLY < <(compgen -o nospace -W "-h --help help $(docker-contexts) --all" -- "$2")
+}
+complete -F _docker_login docker-login
+
+unset _comp_one_command_i _comp_one_command_func

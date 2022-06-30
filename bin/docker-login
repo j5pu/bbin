@@ -57,7 +57,7 @@ login() {
 #   GHCR_IO_TOKEN
 #   GIT
 # Arguments:
-#   1  [docker context]
+#   1  [docker context|--all]
 #######################################
 main() {
   help "$@"
@@ -73,7 +73,6 @@ main() {
   fi
   
   context="$(docker context show)"
-
 
   if [ "${1-}" ] && [ "$1" != "${context}" ]; then
     docker context use "$1" >/dev/null

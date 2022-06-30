@@ -275,7 +275,7 @@ pwd_p() { if test -d "${1:-.}"; then (cd "${1:-.}" || return; pwd -P); else echo
 #   PATH
 #######################################
 rebash() {
-  unset BREW_PROFILE_D_SOURCED
+  unset BASH_COMPLETION_VERSINFO BREW_PROFILE_D_SOURCED
   ! test -f "${BBIN_PROFILE_DEFAULT}" || BBIN_DEFAULT_SOURCED=0 . "${BBIN_PROFILE_DEFAULT}"
   test $BBIN_DEVELOPMENT -eq 0 || BBIN_DEVELOPMENT_SOURCED=0 . "${BBIN_PROFILE}"
 }
@@ -335,10 +335,6 @@ _shell_opt autocd cdablevars emacs histappend histexpand nocaseglob nocasematch
 source_dir "${BBIN_PREFIX}/etc/rc.d"
 source_dir "${BBIN_PREFIX}/etc/rc.d/${SH}"
 [ "${SH}" = "${SHELL_HOOK:-${SH}}" ] || source_dir "${BBIN_PREFIX}/etc/rc.d/${SHELL_HOOK}"
-
-#if [ "${SHELL_HOOK-}" ]; then
-#  ! has starship || eval "$(starship init "${SHELL_HOOK}")"
-#fi
 
 export PROMPT_COMMAND="history_prompt${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
 
