@@ -1,17 +1,26 @@
 #!/usr/bin/env bats
 
-setup_file() { rebash; . "${BATS_TOP}/tests/helpers/libexec::profile.sh::path.bash"; }
+setup_file() {
+  rebash
+  . "${BATS_TOP}/tests/helpers/libexec::profile.sh::path.bash"
+  FUNC="$(bats::basename)"; export FUNC
+}
 
 @test "funcexported $(bats::basename) " { bats::success; }
 
 @test "type -t $(bats::basename)" { bats::success; assert_output "function"; }
 
-@test "$(bats::basename) . && path_append . && path_in \"$(pwd -P)\" && assert_path \"${BATS_FILE_PATH}:$(pwd -P)\"" {
+@test "${FUNC} . && path_append . && path_in \"$(pwd -P)\" && assert_path \"${BATS_FILE_PATH}:$(pwd -P)\"" {
   run bash -c "${BATS_TEST_DESCRIPTION}"
   assert_success
 }
 
-@test "$(bats::basename) '/t a' && path_append '/t a' && path_in '/t a' && assert_path \"${BATS_FILE_PATH}:/t a\"" {
+@test "${FUNC} && ${FUNC} && path_in \"$(pwd -P)\" && assert_path \"${BATS_FILE_PATH}:$(pwd -P)\"" {
+  run bash -c "${BATS_TEST_DESCRIPTION}"
+  assert_success
+}
+
+@test "${FUNC} '/t a' && path_append '/t a' && path_in '/t a' && assert_path \"${BATS_FILE_PATH}:/t a\"" {
   run bash -c "${BATS_TEST_DESCRIPTION}"
   assert_success
 }
@@ -21,12 +30,12 @@ setup_file() { rebash; . "${BATS_TOP}/tests/helpers/libexec::profile.sh::path.ba
   assert_success
 }
 
-@test "unset MANPATH && $(bats::basename) '/t a' MANPATH && path_in '/t a' MANPATH && assert_manpath '/t a:'" {
+@test "unset MANPATH && ${FUNC} '/t a' MANPATH && path_in '/t a' MANPATH && assert_manpath '/t a:'" {
   run bash -c "${BATS_TEST_DESCRIPTION}"
   assert_success
 }
 
-@test "$(bats::basename) '/t a' VAR && path_in '/t a' VAR && assert_equal '/t a' \"\$VAR\"" {
+@test "${FUNC} '/t a' VAR && path_in '/t a' VAR && assert_equal '/t a' \"\$VAR\"" {
   run bash -c "${BATS_TEST_DESCRIPTION}"
   assert_success
 }

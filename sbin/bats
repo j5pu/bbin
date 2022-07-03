@@ -232,7 +232,9 @@ bats::failure() {
 #  1  directory name (default: random name)
 #######################################
 bats::remote() {
-  BATS_REMOTE=("$(bats::tmp "${1:-$RANDOM}")" "$(bats::tmp "${1:-$RANDOM}.git")"); export BATS_REMOTE
+  local pwd_p="$(pwd_p "$(bats::tmp "${1:-$RANDOM}")")"
+  local pwd_p_git="$(pwd_p "$(bats::tmp "${1:-$RANDOM}.git")")"
+  BATS_REMOTE=("${pwd_p}" "${pwd_p_git}"); export BATS_REMOTE
   git -C "${BATS_REMOTE[1]}" init --bare --quiet
   cd "${BATS_REMOTE[0]}" || return
   git init --quiet

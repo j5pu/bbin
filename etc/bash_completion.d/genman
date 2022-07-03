@@ -1,0 +1,42 @@
+# shellcheck shell=bash
+#bashsupport disable=BP2001
+
+#######################################
+# hascmd
+# Globals:
+#   COMPREPLY
+# Arguments:
+#   1     name of the command whose arguments are being completed
+#   2     word being completed ("cur")
+#   3     word preceding the word being completed or $1 when is the first word ("prev")
+#######################################
+# shellcheck disable=SC2154
+_genman() {
+  _init_completion -n :=/ || return
+  local c=1 change=(--change-mansource) dirs=true files=true helps=("${_COMPLETION_DEFAULT_HELPS[@]}") i w=()
+
+  test "${cword}" -lt 3 || return
+#  echo -e "\nc: $c"
+#  echo -e "\nc: $cword"
+  while [ $c -lt "${cword}" ]; do
+    i="${words[c]}"
+    case "${i}" in
+      -h|--help|help) return ;;
+      "${change[0]}") change=(); files=false; helps=() ;;
+      *)
+        ! test -f "${i}" || change=()
+        dirs=false; files=false; helps=() ;;
+    esac
+    ((c++))
+  done
+
+  [ ! "${helps-}" ] || w+=("${helps[@]}")
+  [ ! "${change-}" ] || w+=("${change[@]}")
+
+  [ ! "${w-}" ] || mapfile -t COMPREPLY < <(compgen -o nospace -W "${w[*]}" -- "${cur}")
+
+  ! $files || _filedir adoc
+  ! $dirs || _filedir -d
+}
+
+complete -F _genman genman

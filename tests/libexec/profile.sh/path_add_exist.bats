@@ -1,6 +1,10 @@
 #!/usr/bin/env bats
 
-setup_file() { rebash; . "${BATS_TOP}/tests/helpers/libexec::profile.sh::path.bash"; }
+setup_file() {
+  rebash
+  . "${BATS_TOP}/tests/helpers/libexec::profile.sh::path.bash"
+  FUNC="$(bats::basename)"; export FUNC
+}
 
 @test "funcexported $(bats::basename) " { bats::success; }
 
@@ -11,37 +15,42 @@ setup_file() { rebash; . "${BATS_TOP}/tests/helpers/libexec::profile.sh::path.ba
   assert_success
 }
 
-@test "$(bats::basename) . && $(bats::basename) . && path_in $(pwd_p) && assert_path \"$(pwd_p):${BATS_FILE_PATH}\"" {
+@test "${FUNC} . && ${FUNC} . && path_in $(pwd_p) && assert_path \"$(pwd_p):${BATS_FILE_PATH}\"" {
   run bash -c "${BATS_TEST_DESCRIPTION}"
   assert_success
 }
 
-@test "$(bats::basename) a MANPATH && ! path_in a MANPATH && assert_manpath \"${BATS_SAVED_MANPATH}\"" {
+@test "${FUNC} && ${FUNC} && path_in $(pwd_p) && assert_path \"$(pwd_p):${BATS_FILE_PATH}\"" {
   run bash -c "${BATS_TEST_DESCRIPTION}"
   assert_success
 }
 
-@test "path_add_exist . MANPATH && path_in \"$(pwd_p)\" MANPATH && assert_manpath \"$(pwd_p):${BATS_SAVED_MANPATH}\"" {
+@test "${FUNC} a MANPATH && ! path_in a MANPATH && assert_manpath \"${BATS_SAVED_MANPATH}\"" {
   run bash -c "${BATS_TEST_DESCRIPTION}"
   assert_success
 }
 
-@test "unset MANPATH && $(bats::basename) . MANPATH && path_in \"$(pwd_p)\" MANPATH && assert_manpath \"$(pwd_p):\"" {
+@test "${FUNC} . MANPATH && path_in \"$(pwd_p)\" MANPATH && assert_manpath \"$(pwd_p):${BATS_SAVED_MANPATH}\"" {
   run bash -c "${BATS_TEST_DESCRIPTION}"
   assert_success
 }
 
-@test "$(bats::basename) '/t a' VAR && ! path_in '/t a' VAR && assert_equal '' \"\$VAR\"" {
+@test "unset MANPATH && ${FUNC} . MANPATH && path_in \"$(pwd_p)\" MANPATH && assert_manpath \"$(pwd_p):\"" {
   run bash -c "${BATS_TEST_DESCRIPTION}"
   assert_success
 }
 
-@test "$(bats::basename) . VAR && path_in \"$(pwd_p)\" VAR && assert_equal \"$(pwd_p)\" \"\$VAR\"" {
+@test "${FUNC} '/t a' VAR && ! path_in '/t a' VAR && assert_equal '' \"\$VAR\"" {
   run bash -c "${BATS_TEST_DESCRIPTION}"
   assert_success
 }
 
-@test "path_append '/t a' VAR && $(bats::basename) '/t a' VAR && ! path_in '/t a' VAR && assert_equal '' \"\$VAR\"" {
+@test "${FUNC} . VAR && path_in \"$(pwd_p)\" VAR && assert_equal \"$(pwd_p)\" \"\$VAR\"" {
+  run bash -c "${BATS_TEST_DESCRIPTION}"
+  assert_success
+}
+
+@test "path_append '/t a' VAR && ${FUNC} '/t a' VAR && ! path_in '/t a' VAR && assert_equal '' \"\$VAR\"" {
   run bash -c "${BATS_TEST_DESCRIPTION}"
   assert_success
 }

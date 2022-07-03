@@ -273,6 +273,7 @@
 !/etc/bash_completion.d/_comp_one_command
 !/etc/bash_completion.d/_no_comp
 !/etc/bash_completion.d/bats
+!/etc/bash_completion.d/genman
 !/etc/bash_completion.d/git-url
 !/etc/bash_completion.d/hascmd
 !/etc/bash_completion.d/source

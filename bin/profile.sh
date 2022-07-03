@@ -122,11 +122,11 @@ history_prompt() {
 #   1   parameter null or not set
 #######################################
 path_add() {
-  path_pop "${1?}" "${2-}"
+  path_pop "${1:-${PWD}}" "${2-}"
   _path_add_value="$(eval echo "\$${2:-PATH}")"
   _path_add_value="${_path_add_value:+:${_path_add_value}}"
   [ "${2:-PATH}" != "MANPATH" ] || [ "${_path_add_value-}" ] || _path_add_value=":"
-  _path_add_real="$(pwd_p "${1?}")"
+  _path_add_real="$(pwd_p "${1:-${PWD}}" )"
   eval "export ${2:-PATH}='${_path_add_real}${_path_add_value}'"
   unset _path_add_value _path_add_real
 }
@@ -142,10 +142,10 @@ path_add() {
 #######################################
 path_add_all() {
   for _path_add_all in libexec bin sbin; do
-    path_add "${1?}/${_path_add_all}"
+    path_add "${1:-${PWD}}/${_path_add_all}"
   done
-  path_add "${1?}/share/man" MANPATH
-  path_add "${1?}/share/info" INFOPATH
+  path_add "${1:-${PWD}}/share/man" MANPATH
+  path_add "${1:-${PWD}}/share/info" INFOPATH
   unset _path_add_all
 }
 
@@ -157,7 +157,7 @@ path_add_all() {
 # Returns:
 #   1   parameter null or not set
 #######################################
-path_add_exist() { path_pop "${1?}" "${2-}"; [ ! -d "$1" ] || path_add "$1" "${2-}"; }
+path_add_exist() { path_pop "${1:-${PWD}}" "${2-}"; [ ! -d "${1:-${PWD}}" ] || path_add "${1:-${PWD}}" "${2-}"; }
 
 #######################################
 # add/prepend dir/sbin:dir/bin:dir/libexec, dir/share/info and dir/share/man removing previous entries if exist
@@ -170,10 +170,10 @@ path_add_exist() { path_pop "${1?}" "${2-}"; [ ! -d "$1" ] || path_add "$1" "${2
 #######################################
 path_add_exist_all() {
   for _path_add_exist_all in libexec bin sbin; do
-    path_add_exist "${1?}/${_path_add_exist_all}"
+    path_add_exist "${1:-${PWD}}/${_path_add_exist_all}"
   done
-  path_add_exist "${1?}/share/man" MANPATH
-  path_add_exist "${1?}/share/info" INFOPATH
+  path_add_exist "${1:-${PWD}}/share/man" MANPATH
+  path_add_exist "${1:-${PWD}}/share/info" INFOPATH
   unset _path_add_exist_all
 }
 
@@ -186,14 +186,14 @@ path_add_exist_all() {
 #   1   parameter null or not set
 #######################################
 path_append() {
-  path_pop "${1?}" "${2-}"
+  path_pop "${1:-${PWD}}" "${2-}"
   _path_append_value="$(eval echo "\$${2:-PATH}")"
   if [ "${2:-PATH}" = "MANPATH" ]; then
     _path_append_last=":"
   elif [ "${_path_append_value-}" ]; then
     _path_append_first=":"
   fi
-  _path_append_real="$(pwd_p "${1?}")"
+  _path_append_real="$(pwd_p "${1:-${PWD}}")"
   eval "export ${2:-PATH}='${_path_append_value}${_path_append_first-}${_path_append_real}${_path_append_last-}'"
   unset _path_append_first _path_append_last _path_append_real _path_append_value
 }
@@ -206,7 +206,7 @@ path_append() {
 # Returns:
 #   1   parameter null or not set
 #######################################
-path_append_exist() { path_pop "${1?}" "${2-}"; [ ! -d "$1" ] || path_append "$1" "${2-}"; }
+path_append_exist() { path_pop "${1:-${PWD}}" "${2-}"; [ ! -d "${1:-${PWD}}" ] || path_append "${1:-${PWD}}" "${2-}"; }
 
 #######################################
 # remove duplicates from variable (PATH, MANPATH, etc.)
@@ -235,7 +235,7 @@ path_dedup() {
 #######################################
 path_in() {
   [ "${2:-PATH}" = "MANPATH" ] || _path_in_add=":"
-  _path_in_real="$(pwd_p "${1?}")"
+  _path_in_real="$(pwd_p "${1:-${PWD}}")"
   case ":$(eval echo "\$${2:-PATH}")${_path_in_add-}" in
     *:"${_path_in_real}":*) unset _path_in_add _path_in_real; return 0 ;;
     *) unset _path_in_add _path_in_real; return 1 ;;
@@ -254,7 +254,7 @@ path_in() {
 #######################################
 path_pop() {
   [ "${2:-PATH}" = "MANPATH" ] || _path_pop_strip=":"
-  _path_pop_real="$(pwd_p "${1?}")"
+  _path_pop_real="$(pwd_p "${1:-${PWD}}")"
   _path_pop_value="$(eval echo "\$${2:-PATH}" | sed 's/:$//' | tr ':' '\n' | \
     grep -v "^${_path_pop_real}$" | tr '\n' ':' | sed "s|${_path_pop_strip-}$||")"
   [ "${_path_pop_value}" != ":" ] || _path_pop_value=""
@@ -263,11 +263,17 @@ path_pop() {
 }
 
 #######################################
-# physical pwd if it is a directory (default: pwd)
+# physical pwd if it is a directory or for dirname if dirname exist (default: pwd)
 # Arguments:
 #   1   path (default: pwd)
 #######################################
-pwd_p() { if test -d "${1:-.}"; then (cd "${1:-.}" || return; pwd -P); else echo "$1"; fi; }
+pwd_p() {
+  _pwd_p_dir="${1:-.}"
+  test -e "${_pwd_p_dir}" || { echo "$1"; return; }
+  test -d "${_pwd_p_dir}" || _pwd_p_dir="$(dirname "${_pwd_p_dir}")"
+  (cd "${_pwd_p_dir}" || return; pwd -P)
+  unset _pwd_p_dir
+}
 
 #######################################
 # rebash

@@ -65,17 +65,39 @@ has_function() { filefuncs "${SRC_FILE}" | grep -q "^${1:-main}$"; }
 #######################################
 # shows invalid function comment block error message
 # Globals:
-#   block
+#   BLOCK
 # Arguments:
 #   1
 #######################################
 invalid() {
-  if ! grep -q "^${line_comment}"; then
-    >&2 echo "${SCRIPT}: ${SRC_FILE}: ${1}: invalid function comment block"
-    >&2 echo -e "\n@ BLOCK START @\n$(tail -r <<< "${block}")\n@ BLOCK END @\n"
-    return 1
+  local empty i
+  [ "${BLOCK-}" ] || empty=empty
+  >&2 echo "${SCRIPT}: ${SRC_FILE}: ${empty:-invalid} comment block for function: ${1}"
+  if [ "${BLOCK-}" ]; then
+    >&2 cat <<EOF
+@ BLOCK START @
+$(for (( i=${#BLOCK[@]}-1; i>=0; i-- )) ; do
+echo "${BLOCK[i]}"
+done)
+@ BLOCK END @
+EOF
   fi
+  exit 1
 }
+
+#######################################
+# is commented line
+# Arguments:
+#   1
+#######################################
+is_commented() { [[ "$1" =~ ^# ]]; }
+
+#######################################
+# is commented line
+# Arguments:
+#   1
+#######################################
+is_start_or_end() { is_commented "$1" && [ "$1" = "#######################################" ]; }
 
 #######################################
 # extract description for header in file
@@ -83,8 +105,20 @@ invalid() {
 #   SRC_FILE      Command source code.
 #######################################
 manpurpose-file(){
-  awk '/^#/ && ! /^#!/ && ! /^##/ && ! /^#$/ && ! /^# shellcheck/ {sub(/^# /, ""); print $0=$0 }' \
-    "${SRC_FILE}" | head -1 | sed 's/\.$//'
+  local content line
+  readarray -t content < "${SRC_FILE}"
+  for line in "${content[@]}"; do
+    if is_start_or_end "${line}"; then
+      false || die "${SRC_FILE}: empty file description and start block comment found for: ${MANNAME}"
+    elif [ "${line-}" ] && [[ "${line}" =~ ^# ]] && ! [[ "${line}" =~ ^#!|^"# shellcheck"|^"# bashsupport" ]]; then
+      line="$(echo "${line}" | sed 's/^#//'| xargs | sed 's/\.$//')"
+      [ ! "${line-}" ] || break
+    else
+      line=""
+    fi
+  done
+  [ "${line-}" ] || die "${SRC_FILE}: empty file description for: ${MANNAME}"
+  echo "${line}"
 }
 
 #######################################
@@ -95,16 +129,29 @@ manpurpose-file(){
 #   1             Function name.
 #######################################
 manpurpose-func() {
-  line_comment="#######################################"
-  local function="${1:-main}" purpose
-  if grep -qE "^${function}\(\) " "${SRC_FILE}"; then
-    block="$(tail -r "${SRC_FILE}" | awk "/^${function}\() /{f=1; c=0} f; /^${line_comment}/ && ++c==2{f=0}")"
-    sed -n 2p <<< "${block}" | invalid "${function}" || return 1
-    tail -1 <<< "${block}" | invalid "${function}" || return 1
-    purpose="$(tail -r <<< "${block}" | sed -n 2p | sed 's/^#//; s/\.$//' | awk '{$1=$1};1')"
-    [ "${purpose-}" ] || return 1
-    echo "${purpose}"
-  fi
+  BLOCK=()
+  local content expect_comment=false found_block_start=false i line
+  has_function "$1" || return 0
+
+  readarray -t content < <(tail -r "${SRC_FILE}")
+
+  for i in "${!content[@]}"; do
+    line="${content[$i]}"
+    if [[ "${line}" =~ ^${1}\(\) ]]; then
+      expect_comment=true
+    elif $expect_comment && ! is_commented "${line}"; then
+      invalid "$1"
+    elif $expect_comment && ! $found_block_start && is_start_or_end "${line}"; then
+      found_block_start=true
+      BLOCK+=("${line}")
+    elif $expect_comment && $found_block_start && is_start_or_end "${line}"; then
+      echo "${content[$((i-1))]}" | sed 's/^#//; s/\.$//' | awk '{$1=$1};1'
+      return
+    elif $expect_comment; then
+     BLOCK+=("${line}")
+    fi
+  done
+  invalid "$1"
 }
 
 #######################################
@@ -120,27 +167,31 @@ manpurpose-func() {
 #   1             Generated man page.
 #######################################
 tests() {
-  ! $NO_TEST || { PAGE_GENERATED=true; return 0; }
-  if [ "${2-}" ]; then
-    readarray -t PAGE < <(MANPATH="${MANPATH}" COLUMNS=160 man -P cat "$2" "$1")
-  else
-    readarray -t PAGE < <(COLUMNS=160 man -P cat "$1")
-  fi
+  readarray -t PAGE < <(COLUMNS=160 man -P cat "${MANVOLNUM}" "${MANNAME}")
 
-  [ "${PAGE-}" ] || return 0
-
-  PAGE_GENERATED=true
+  [ "${PAGE-}" ] || die "MANVOLNUM: ${MANVOLNUM}, MANNAME: ${MANNAME}, output: ${1}, MANPATH: ${MANPATH}"
 
   for i in "${TOP_LEFT}" "${TOP_CENTER}" "${TOP_RIGHT}"; do
-    tests_line "${i}" 0
+    tests_line "${i}" 0 "$1"
   done
 
   { ! $NAME_SECTION_ADD || grep -q "${PAGE[5]/       /}" <<< "       ${NAME_SECTION}"; } \
-    || die "${MANNAME}: search: '${NAME_SECTION}', line: '${PAGE[5]/       /}': not found"
+    || die "${MANNAME}: search: '${NAME_SECTION}', line: '${PAGE[5]/       /}': not found: ${1}"
 
   for i in "${BOTTOM_LEFT}" "${BOTTOM_RIGHT}"; do
-    tests_line "${i}" $(( ${#PAGE[@]}-1 ))
+    tests_line "${i}" $(( ${#PAGE[@]}-1 )) "$1"
   done
+}
+
+#######################################
+# test final page destination directory
+# Arguments:
+#   1  dest_file
+#######################################
+test_final() {
+  local manvolnum="${1##*.}" manname
+  manname="$(basename  "${1}" ".${manvolnum}")"
+  man "${manvolnum}" "${manname}" >/dev/null || die "$1: dest_file, MANPATH: ${MANPATH}"
 }
 
 #######################################
@@ -153,15 +204,17 @@ tests() {
 #######################################
 tests_line() {
   local line="${PAGE[${2}]}"
-  grep -q "$1" <<< "${line}" || die "${MANNAME}, search: '${1}', line: '${line}': not found"
+  grep -q "$1" <<< "${line}" || die "${MANNAME}, search: '${1}', line: '${line}': not found: ${3}"
 }
 
 #######################################
-# converts, tests and commit changes for AsciiDoc man pages in a repository
-# checks description comment in main function for scripts if exists, otherwise comment in file
-# checks function description comment if it is not a script by sourcing *.sh and *.bash files and searching
+# main function
+# checks file description for scripts/file and function comment for libraries in libexec
 # If NAME section then source code is not searched for description comment.
-# If argument is file does not do git and output the temp file created
+# If argument is file does not do git and output the temp file created.
+# When file executable mas be in ../../bin and lib in ..../exec from .adoc file.
+# --change-mansource option for testing, run 'genman' and 'genman --change-mansource' and ls -la genman.1,
+#     file is not updated (only when no .adoc file provided, otherwise ignored)
 # Globals:
 #   author        The author.
 #   BOTTOM_LEFT   Button left text of man page.
@@ -182,101 +235,103 @@ tests_line() {
 #   1             [--desc|--help|--manrepo|--version] [directory]
 #######################################
 main(){
-  NO_TEST=false; SCRIPT="${0##*/}"
-  local arg author change_mansource=false commit=() corner dest_file dir dirs doctitle file filename find generated_file
-  local manmanual manpurpose manpurpose_file manpurpose_opt=() mansource manvolnum one=false orgname output
-  local repo src template
+  SCRIPT="${0##*/}"
+#  SRC_FILE=$1
+#  manpurpose-file
+#  exit
+  local arg author change_mansource=false commit=() corner dest_file dir doctitle file files
+  local filename find generated_file libexec libexec_dir manmanual manpurpose manpurpose_opt=() mansource
+  local one=false one_top orgname output repo src template
 
   for arg do
     shift
     case "${arg}" in
-      --no-test) NO_TEST=true ;;
-      # option for testing, run 'genman' and 'genman --change-mansource' and ls -la genman.1, file is not updated
       --change-mansource) change_mansource=true ;;
       --*) fromman "$0" "$@" || exit 0 ;;
       *)
         if test -f "${arg}"; then
           [ "${arg##*.}" = "adoc" ] || die "${arg}: not an '.adoc'"
           one=true
-          find=("$(realpath "${arg}")")
+          files="${arg}"
         else
-          cd "${arg}" || { "$0: ${arg}: No such directory"; exit 1; }
+          cd "${arg}" || die "${arg}: No such directory"
         fi
     esac
   done
 
   cd_top_exit
 
+  { ! [[ "${PWD}" =~ .*/bbin ]] || test "${BBIN_DEVELOPMENT}" -eq 1; } || \
+    die "${PWD}: man pages can only be generated when \$BBIN_DEVELOPMENT=1 for: bbin"
+
+  if $one; then
+    one_top="$(pwd_p "${files}")/../.."
+    libexec_dir="${one_top}/libexec"
+    path_add_exist_all "${one_top}"
+  else
+    find=( "${GIT_TOP}" ); [ ! -d "${GIT_TOP}/src/man" ] || find+=( "${GIT_TOP}/src/man" )
+    files="$(find "${find[@]}" -type f \( -name "*.adoc" -o -name "README.adoc" \) \
+      -mindepth 1 -maxdepth 1 -not -path "*/templates/*" | grep -v '=')"
+    [ "${files-}" ] || die "${GIT_TOP}: no .adoc files found"
+    libexec_dir="${GIT_TOP}/libexec"
+    path_add_exist_all
+  fi
+
   author="$(git owner)" || die "$(pwd): invalid git owner"
   orgname="${author}"
   repo="$(git name)" || die "$(pwd): invalid git repo name"
-  template="$(cd "$(dirname "${0}")"/..; pwd -P)/src/man/templates/template.adoc"
+  template="$(pwd_p "$0")/../src/man/templates/template.adoc"
   test -f "${template}" || die "${template}: no such file"
 
   GENERATED="$(mktemp -d)"
+  path_add "${GENERATED}" MANPATH
+
   DEST="${GIT_TOP}/share/man"
-  if ! $one; then
-    find=( "${GIT_TOP}" ); [ ! -d "${GIT_TOP}/src/man" ] || find+=( "${GIT_TOP}/src/man" )
-  fi
-set -x
+  mkdir -p "${DEST}"
+
   while read -r file; do
-    mkdir -p "${DEST}"
-    manvolnum=1
+    MANVOLNUM=1
     src="${file%.*}"
     MANNAME="${src##*/}"  # name.1 or name
+
     NAME_SECTION_ADD=false; grep -q "== NAME" "${file}" || NAME_SECTION_ADD=true
     case "${MANNAME}" in
       README)
         MANNAME="$(head -1 README.adoc | awk -F '[()= ]' '/\([1-8])/ { print $3 }')"
         [ "${MANNAME}" != 'doctitle' ] || die "${MANNAME}: invalid doctitle for README.adoc: "
-        manvolnum="$(head -1 README.adoc | awk -F '[()= ]' '/\([1-8])/ { print $4 }')"
+        MANVOLNUM="$(head -1 README.adoc | awk -F '[()= ]' '/\([1-8])/ { print $4 }')"
         ;;
-      *.[1-8]) manvolnum="${MANNAME##*.}"; MANNAME="${MANNAME%.*}" ;;  # Do not change order !!!
+      *.[1-8]) MANVOLNUM="${MANNAME##*.}"; MANNAME="${MANNAME%.*}" ;;  # Do not change order !!!
     esac
 
-    dirs=()
-    for d in bin lib libexec sbin "$(dirname "${file}")/../../bin"; do
-      [ ! -d "${d}" ] || dirs+=("$(realpath "${d}")")
-    done
-
     if $NAME_SECTION_ADD; then
-      SRC_FILE="$(find "${dirs[@]}" -type f -name "${MANNAME}" | head -1)"
-      [ "${SRC_FILE-}" ] || SRC_FILE="$(realpath "$(which "${MANNAME}")" 2>/dev/null || true)"
-
+      manpurpose=""
+      SRC_FILE="$(which "${MANNAME}" || true)"
       if [ "${SRC_FILE-}" ]; then
-        if ! has_function || ! manpurpose="$(manpurpose-func 2>&1)"; then
-          manpurpose_file="$(manpurpose-file)"
-          if [ "${manpurpose_file-}" ]; then
-            manpurpose="${manpurpose_file}"
-          else
-            >&2 echo "${SCRIPT}: ${SRC_FILE}: empty manpurpose file and no main function manpurpose"
-            [ ! "${manpurpose-}" ] || >&2 echo "${manpurpose}"
-            exit 1
-          fi
-        fi
+        manpurpose="$(manpurpose-file)"
+        [ "${manpurpose-}" ] || die "${SRC_FILE}: empty file description for: ${MANNAME}"
+      elif ! test -d "${libexec_dir}"; then
+        die "${libexec_dir}: libexec does not exist and not executable found for: ${MANNAME}"
       else
+        libexec="$(find "${libexec_dir}" -type f \( -name "*.sh" -o -name "*.bash" \))"
+        [ "${libexec-}" ] || die "${libexec_dir}: no *.sh/*.bash found for: ${MANNAME}"
+
         while read -r SRC_FILE; do
-          [ "${SRC_FILE-}" ] || continue
-          if has_function "${MANNAME}"; then
-            if manpurpose="$(manpurpose-func "${MANNAME}")"; then
-              break
-            else
-              >&2 echo "${SCRIPT}: WARNING: ${MANNAME} in ${SRC_FILE} but invalid description"
-            fi
-          fi
-        done < <(find "${dirs[@]}" -type f \( -name "*.sh" -o -name "*.bash" \) | head -1)
+          manpurpose="$(manpurpose-func "${MANNAME}")"
+          [ ! "${manpurpose-}" ] || break
+        done <<<"${libexec}"
+        [ "${manpurpose-}" ] || die "${libexec_dir}: function description or executable not found for: ${MANNAME}"
       fi
-      [ "${manpurpose-}" ] || die "${MANNAME}: function, source file '${SRC_FILE}' or description not found"
       manpurpose_opt=(-a manpurpose="${manpurpose}")
     fi
 
-    filename="${MANNAME}.${manvolnum}"  # name.1
-    dir="${GENERATED}/man${manvolnum}"; mkdir -p "${dir}"
+    filename="${MANNAME}.${MANVOLNUM}"  # name.1
+    dir="${GENERATED}/man${MANVOLNUM}"; mkdir -p "${dir}"
     output="${dir}/${filename}"
 
     manmanual="${MANNAME^} Manual"
     mansource="${MANNAME^}"; ! $change_mansource || mansource=$RANDOM
-    doctitle="${MANNAME^^}(${manvolnum})"
+    doctitle="${MANNAME^^}(${MANVOLNUM})"
 
     asciidoctor -b manpage \
       -a doctype=manpage \
@@ -292,7 +347,7 @@ set -x
       -a allow-uri-read \
       -o "${output}" "${file}"
 
-    corner="${MANNAME^^}(${manvolnum})"
+    corner="${MANNAME^^}(${MANVOLNUM})"
     TOP_LEFT="^${doctitle} "
     TOP_CENTER=" ${manmanual} "
     TOP_RIGHT=" ${doctitle}$"
@@ -300,17 +355,19 @@ set -x
     BOTTOM_RIGHT=" ${doctitle}$"
     ! $NAME_SECTION_ADD || NAME_SECTION="${MANNAME} - ${manpurpose}"
 
-    PAGE_GENERATED=false
     tests "${output}"
-    if ! $PAGE_GENERATED; then
-      MANPATH="${GENERATED}${MANPATH:+:${MANPATH}}"
-      tests "${MANNAME}" "${manvolnum}"
-      $PAGE_GENERATED || die "${MANNAME}: ${manvolnum}: ${MANPATH}: test not done because no \$PAGE"
-    fi
-  done < <(if $one; then echo "${find[*]}"; else find "${find[@]}" -type f \( -name "*.adoc" -o -name "README.adoc" \) \
-    -mindepth 1 -maxdepth 1 -not -path "*/templates/*" | grep -v '='; fi)
+#
+#    PAGE_GENERATED=false
+#    tests "${output}"
+#    if ! $PAGE_GENERATED; then
+#      MANPATH="${GENERATED}${MANPATH:+:${MANPATH}}"
+#      tests "${MANNAME}" "${MANVOLNUM}"
+#      $PAGE_GENERATED || die "${MANNAME}: ${MANVOLNUM}: ${MANPATH}: test not done because no \$PAGE"
+#    fi
+  done <<< "${files}"
 
   if $one; then
+    >&2 printf "%s " man
     echo "${output}"
     return 0
   fi
@@ -321,8 +378,7 @@ set -x
     for i in ${REMOVE_FILES}; do
       dest_file="${DEST}/${i}"
       rm "${dest_file}"
-      git rm -f --quiet "${dest_file}"
-      commit+=("${dest_file}")
+      ! git rm -f --quiet "${dest_file}" 2>/dev/null || commit+=("${dest_file}")
     done
   fi
 
@@ -331,6 +387,7 @@ set -x
       dest_file="${DEST}/${i}"
       mkdir -p "$(dirname "${dest_file}")"
       cp "${GENERATED}/${i}" "${dest_file}"
+      test_final "${dest_file}"
       git add -f "${dest_file}"
       commit+=("${dest_file}")
     done
@@ -344,6 +401,7 @@ set -x
       # Does not update the man page If there are no real differences in man page (excludes version, date, etc)
       if ! git diff --no-index --no-patch "$(filter "${dest_file}")" "$(filter "${generated_file}")" >/dev/null; then
         cp "${generated_file}" "${dest_file}"
+        test_final "${dest_file}"
         git add -f "${dest_file}"
         commit+=("${dest_file}")
       fi
