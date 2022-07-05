@@ -1,10 +1,8 @@
 #!/usr/bin/env bats
 
-setup_file() { rebash; }
-
-@test "funcexported $(bats::basename) " { bats::success; }
-
-@test "type -t $(bats::basename)" { bats::success; assert_output "function"; }
+@test "assert::helps physical pwd for path if it is a directory or for dirname if path exists (default: pwd)" {
+  bats::success
+}
 
 @test "$(bats::basename) " {
   bats::success

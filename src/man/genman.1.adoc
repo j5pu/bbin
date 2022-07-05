@@ -1,11 +1,10 @@
 :Output:
-:includedir: templates
+:template: templates/template.adoc
 == SYNOPSIS
 
 [verse]
 *{manname}* [_OPTION_]... [_OPTION PROGRAM OUTPUT_]... _ARGUMENT_...
-
-include::{includedir}/template.adoc[tag=synopsys-information]
+include::{template}[tag=SYNOPSIS-information]
 
 == DESCRIPTION
 
@@ -17,7 +16,7 @@ The *{manname}* command
 _OPTION_ one option.
 
 ifdef::Output[]
-include::{includedir}/template.adoc[tag=options-output]
+include::{template}[tag=options-output]
 endif::[]
 
 == ARGUMENTS
@@ -25,7 +24,7 @@ endif::[]
 *ARGUMENT*::
 Required one _ARGUMENT_.
 
-include::{includedir}/template.adoc[tag=arguments-information]
+include::{template}[tag=arguments-information]
 
 == EXIT STATUS
 
@@ -38,7 +37,7 @@ Error. +
 == ENVIRONMENT
 
 ifdef::Output[]
-include::{includedir}/template.adoc[tag=environment-output]
+include::{template}[tag=environment-output]
 endif::[]
 
 == OUTPUT
@@ -51,15 +50,13 @@ and to control output, see: _<<_options-output>>_ and _<<_environment-output>>_
 
 endif::[]
 
-.
-
 == EXAMPLES
 
 [verse]
 _$_ *{manname}*
 output
 
-include::{includedir}/template.adoc[tag=repository-and-copying]
+include::{template}[tag=repository-and-copying]
 
 == SEE ALSO
 

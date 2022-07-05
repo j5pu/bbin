@@ -1,0 +1,51 @@
+#!/bin/sh
+
+#
+# replace tilde at the beginning of each line from arguments or stdin with $HOME
+
+set -eu
+
+#######################################
+# show usage
+# Arguments:
+#   1
+#######################################
+help() {
+  case "$1" in
+    -h|--help|help) rc=0 ;;
+    *) return 0 ;;
+  esac
+
+  >&2 cat <<EOF
+usage: ${0##*/} [arg...]
+   or: arg | ${0##*/}
+   or: ${0##*/} -h|--help|help
+
+replace tilde at the beginning of each line from arguments or stdin with \$HOME
+
+Arguments:
+  arg                 the arg to replace tilde
+
+Commands:
+   -h, --help, help   display this help and exit.
+
+EOF
+  exit "${rc:-1}"
+}
+
+#######################################
+# replace
+# Arguments:
+#  None
+#######################################
+main() { sed "s|^~|${HOME}|g"; }
+
+
+if test $# -ne 0; then
+  help "$@"
+  for arg; do
+    echo "${arg}" | main
+  done
+else
+  main
+fi

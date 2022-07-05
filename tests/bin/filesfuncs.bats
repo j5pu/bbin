@@ -23,7 +23,6 @@ path_append_exist
 path_dedup
 path_in
 path_pop
-pwd_p
 rebash
 source_dir
 EOF

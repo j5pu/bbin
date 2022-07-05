@@ -53,7 +53,7 @@ else
   BBIN_DEVELOPMENT_SOURCED=1
 fi
 
-test -f "${BBIN_PROFILE}" || { echo "${BBIN_PROFILE}: No such file"; return 1 2>/dev/null || exit; }
+test -f "${BBIN_PROFILE}" || { >&2 echo "${BBIN_PROFILE}: No such file"; return 1 2>/dev/null || exit; }
 
 #######################################
 # export all functions
@@ -126,7 +126,7 @@ path_add() {
   _path_add_value="$(eval echo "\$${2:-PATH}")"
   _path_add_value="${_path_add_value:+:${_path_add_value}}"
   [ "${2:-PATH}" != "MANPATH" ] || [ "${_path_add_value-}" ] || _path_add_value=":"
-  _path_add_real="$(pwd_p "${1:-${PWD}}" )"
+  _path_add_real="$("${BBIN_PREFIX}/bin/pwd_p" "${1:-${PWD}}" )"
   eval "export ${2:-PATH}='${_path_add_real}${_path_add_value}'"
   unset _path_add_value _path_add_real
 }
@@ -193,7 +193,7 @@ path_append() {
   elif [ "${_path_append_value-}" ]; then
     _path_append_first=":"
   fi
-  _path_append_real="$(pwd_p "${1:-${PWD}}")"
+  _path_append_real="$("${BBIN_PREFIX}/bin/pwd_p" "${1:-${PWD}}")"
   eval "export ${2:-PATH}='${_path_append_value}${_path_append_first-}${_path_append_real}${_path_append_last-}'"
   unset _path_append_first _path_append_last _path_append_real _path_append_value
 }
@@ -235,7 +235,7 @@ path_dedup() {
 #######################################
 path_in() {
   [ "${2:-PATH}" = "MANPATH" ] || _path_in_add=":"
-  _path_in_real="$(pwd_p "${1:-${PWD}}")"
+  _path_in_real="$("${BBIN_PREFIX}/bin/pwd_p" "${1:-${PWD}}")"
   case ":$(eval echo "\$${2:-PATH}")${_path_in_add-}" in
     *:"${_path_in_real}":*) unset _path_in_add _path_in_real; return 0 ;;
     *) unset _path_in_add _path_in_real; return 1 ;;
@@ -254,25 +254,12 @@ path_in() {
 #######################################
 path_pop() {
   [ "${2:-PATH}" = "MANPATH" ] || _path_pop_strip=":"
-  _path_pop_real="$(pwd_p "${1:-${PWD}}")"
+  _path_pop_real="$("${BBIN_PREFIX}/bin/pwd_p" "${1:-${PWD}}")"
   _path_pop_value="$(eval echo "\$${2:-PATH}" | sed 's/:$//' | tr ':' '\n' | \
     grep -v "^${_path_pop_real}$" | tr '\n' ':' | sed "s|${_path_pop_strip-}$||")"
   [ "${_path_pop_value}" != ":" ] || _path_pop_value=""
   eval "export ${2:-PATH}='${_path_pop_value}'"
   unset _path_pop_real _path_pop_strip _path_pop_value
-}
-
-#######################################
-# physical pwd if it is a directory or for dirname if dirname exist (default: pwd)
-# Arguments:
-#   1   path (default: pwd)
-#######################################
-pwd_p() {
-  _pwd_p_dir="${1:-.}"
-  test -e "${_pwd_p_dir}" || { echo "$1"; return; }
-  test -d "${_pwd_p_dir}" || _pwd_p_dir="$(dirname "${_pwd_p_dir}")"
-  (cd "${_pwd_p_dir}" || return; pwd -P)
-  unset _pwd_p_dir
 }
 
 #######################################

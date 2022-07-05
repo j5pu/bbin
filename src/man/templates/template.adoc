@@ -1,8 +1,8 @@
 == SYNOPSIS
 
-// tag::synopsys-information[]
+// tag::SYNOPSIS-information[]
 *{manname}* --desc|--description|--examples|--help|--manrepo|--subsections|--synopsis|--version
-// end::synopsys-information[]
+// end::SYNOPSIS-information[]
 
 == OPTIONS
 

@@ -220,6 +220,7 @@
 !/bin/dir-exists-empty
 !/bin/dir-has
 !/bin/dir-has-files
+!/bin/dir-null
 !/bin/docker-contexts
 !/bin/docker-login
 !/bin/docker-running
@@ -265,7 +266,12 @@
 !/bin/path-default
 !/bin/printarr
 !/bin/profile.sh
+!/bin/pwd_p
 !/bin/shell.sh
+!/bin/sudo
+!/bin/tilde
+!/bin/to-lower
+!/bin/to-upper
 !/bin/utils.bash
 !/bin/utils.sh
 ## /etc

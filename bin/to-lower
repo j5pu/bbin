@@ -1,0 +1,44 @@
+#!/bin/sh
+
+set -eu
+
+#######################################
+# show usage
+# Arguments:
+#   1
+#######################################
+help() {
+  case "$1" in
+    -h|--help|help) : ;;
+    *) return 0 ;;
+  esac
+
+  >&2 cat <<EOF
+usage: ${0##*/} [args...]
+   or: [args...] | ${0##*/}
+       ${0##*/} [-h|--help|help]
+
+to lower case from args or stdin
+
+Arguments:
+  [args...]      args to convert
+
+Commands:
+   -h, --help, help   display this help and exit.
+EOF
+  exit "${rc:-1}"
+}
+
+#######################################
+# to lower case
+# Arguments:
+#   [value]   the value to lower case
+#######################################
+main() { tr '[:upper:]' '[:lower:]'; }
+
+if test $# -ne 0; then
+  help "$@"
+  echo "$@" | main
+elif ! test -t 0; then
+  main
+fi

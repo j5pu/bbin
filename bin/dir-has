@@ -10,10 +10,8 @@ rc=0
 #   1
 #######################################
 help() {
-  test $# -ne 0 || return 0
-
   case "$1" in
-    -h|--help|help) rc=0 ;;
+    -h|--help|help) : ;;
     *) return 0 ;;
   esac
 
@@ -61,25 +59,24 @@ std() { >&2 echo "$1"; rc=1; }
 # Arguments:
 #   1   path/s to directory (default: cwd)
 #######################################
-main () {
-  dir="$(echo "$1" | sed "s|~|${HOME}|")"
-  test -d "${dir}" || { std "$1"; return 0; }
-  cd "${dir}"
-  [ -n "$(find . -mindepth 1 -maxdepth 1)" ] || std "$1"
+main() {
+  for arg; do
+    dir="$(pwd_p "${arg}")"
+    test -d "${dir}" || { std "${arg}"; continue; }
+    [ -n "$(find "${dir}" -mindepth 1 -maxdepth 1)" ] || std "${arg}"
+  done
+  exit $rc
 }
 
-help "$@"
-
 if test $# -ne 0; then
-  for arg; do
-    main "${arg}"
-  done
-elif test -s /dev/stdin; then
+  help "$@"
+elif ! test -t 0; then
   while read -r arg; do
-    main "${arg}"
-  done < /dev/stdin
+    set -- "$@" "${arg}"
+  done
 else
-  main .
+  set -- "$@" .
 fi
 
-exit $rc
+main "$@"
+

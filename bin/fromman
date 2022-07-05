@@ -32,7 +32,7 @@ examples() { subsection 'EXAMPLES'; }
 #######################################
 func() {
   case "${1-}" in
-    --desc|--description|--examples|--help|--manrepo|--subsections|--synopsis|--version) func="${1#--}" ;;
+    --desc|--description|--examples|--help|--manrepo|--subsections|--synopsis) func="${1#--}" ;;
   esac
 }
 
@@ -85,15 +85,6 @@ subsections() { awk '/^[A-Z ]+$/ {print}' "${tmp}"; }
 #   None
 #######################################
 synopsis() { subsection 'SYNOPSIS'; }
-
-#######################################
-# show version from manpage
-# Globals:
-#   tmp       Temp file with manpage.
-# Arguments:
-#   None
-#######################################
-version() { tail -1 "${tmp}" | awk '{ print $2 }'; }
 
 #######################################
 # show description, help, repository, version or subsections (SYNOPSYS, etc.) from man page

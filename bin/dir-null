@@ -1,0 +1,87 @@
+#!/bin/sh
+
+set -eu
+
+rc=0
+
+#######################################
+# show usage
+# Arguments:
+#   1
+#######################################
+help() {
+  case "$1" in
+    -h|--help|help) : ;;
+    *) return 0 ;;
+  esac
+
+  >&2 cat <<EOF
+usage: ${0##*/} [directory...]
+   or: [directory...] | ${0##*/}
+       ${0##*/} [-h|--help|help]
+
+is directory or directories empty, including hidden files and folders or does not exist
+
+Arguments:
+  [directory...]      directory or directories (default: cwd) or from stdin if not input
+
+Commands:
+   -h, --help, help   display this help and exit.
+
+Returns:
+   1 if at least one of directories passed exists and is not empty
+   0 all directories does not exist or are empty
+
+Output:
+   Shows not empty directories to stderr.
+
+Examples:
+  $ ${0##*/}
+  $ ${0##*/} ~
+  $ ${0##*/} foo
+  foo
+  $ find . -type d | ${0##*/}
+  $ mkdir -p /tmp/has{1,2} ; ${0##*/} /tmp/has{1,2}
+  $ touch /tmp/has1/f; ${0##*/} /tmp/has{1,2}
+  /tmp/has1
+  $ echo /tmp/has{1,2} | ${0##*/} /tmp/has{1,2}
+  /tmp/has1
+EOF
+  exit "${rc:-1}"
+}
+
+#######################################
+# is directory or directories empty, including hidden files and folders or does not exist
+# Arguments:
+#   1   path/s to directory (default: cwd)
+# Returns:
+#   1 if at least one of directories passed is not empty.
+# Output:
+#   Shows not empty directories to stderr.
+# Examples:
+#   dirnull
+#   dirnull foo
+#   find . -type d | dirnull
+#   mkdir -p /tmp/empty{1,2}; dirnull /tmp/empty{1,2}
+#   touch /tmp/empty1/file; dirnull /tmp/empty{1,2}
+#######################################
+main () {
+  for arg; do
+    dir="$(pwd_p "${arg}")"
+    test -d "${dir}" || continue
+    [ -z "$(sudo find "${dir}" -mindepth 1 -maxdepth 1)" ] || { >&2 echo "${arg}"; rc=1; }
+  done
+  exit $rc
+}
+set +x
+if test $# -ne 0; then
+  help "$@"
+elif ! test -t 0; then
+  while read -r arg; do
+    set -- "$@" "${arg}"
+  done
+fi
+
+test $# -ne 0 || set -- .
+
+main "$@"

@@ -6,13 +6,17 @@
 
 @test "$(bats::basename) " { bats::success; }
 
+@test "$(bats::basename) . " { bats::success; }
+
 @test "$(bats::basename) ~ " { bats::success; }
 
 @test "$(bats::basename) foo" { bats::failure; assert_output "foo"; }
 
 @test "find . -type d | $(bats::basename)" {
+  mkdir -p .git/empty
   run sh -c "${BATS_TEST_DESCRIPTION}"
-  assert_success
+  assert_failure
+  assert_line "./.git/empty"
 }
 
 @test "echo $(bats::tmp d1) | $(bats::basename)" {
