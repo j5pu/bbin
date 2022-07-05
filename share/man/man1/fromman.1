@@ -1,0 +1,220 @@
+'\" t
+.\"     Title: fromman
+.\"    Author: j5pu
+.\" Generator: Asciidoctor 2.0.17
+.\"      Date: 2022-07-04
+.\"    Manual: Fromman Manual
+.\"    Source: Fromman
+.\"  Language: English
+.\"
+.TH "FROMMAN" "1" "2022-07-04" "Fromman" "Fromman Manual"
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.ss \n[.ss] 0
+.nh
+.ad l
+.de URL
+\fI\\$2\fP <\\$1>\\$3
+..
+.als MTO URL
+.if \n[.g] \{\
+.  mso www.tmac
+.  am URL
+.    ad l
+.  .
+.  am MTO
+.    ad l
+.  .
+.  LINKSTYLE blue R < >
+.\}
+.SH "NAME"
+fromman \- show description, help, repository, version or subsections (SYNOPSYS, etc.) from man page
+.SH "SYNOPSIS"
+.sp
+.nf
+\fBfromman\fP [\fICOMMAND|PATH\fP] [\fIOPTION\fP] ...
+\fBfromman\fP \-\-desc|\-\-description|\-\-examples|\-\-help|\-\-manrepo|\-\-subsections|\-\-synopsis|\-\-version
+.fi
+.br
+.SH "DESCRIPTION"
+.sp
+The \fBfromman\fP command will show information from man page of \fICOMMAND|PATH\fP (default: \fBfromman\fP),
+if the first \fIOPTION\fP (\fI$1\fP \fBfromman\fP and \fI$2\fP for others) is an option in the \fIProgram Information\fP list.
+The program will return \fI1\fP, if there is a match in \fIOPTION\fP (\fI$2\fP), to indicate the caller to exit.
+.SH "OPTIONS"
+.sp
+\fB[COMMAND|PATH]\fP
+.RS 4
+\fIPATH\fP to get name of command from basename or \fICOMMAND\fP.
+.RE
+.SS "Program Information"
+.sp
+\fB\-\-desc\fP
+.RS 4
+Show one line description from \fINAME\fP section of man page and exit.
+.RE
+.sp
+\fB\-\-description\fP
+.RS 4
+Show \fIDESCRIPTION\fP subsection of man page and exit.
+.RE
+.sp
+\fB\-\-examples\fP
+.RS 4
+Show \fIEXAMPLES\fP subsection of man page and exit.
+.RE
+.sp
+\fB\-\-help\fP
+.RS 4
+Show \fIman page\fP and exit.
+.RE
+.sp
+\fB\-\-manrepo\fP
+.RS 4
+Show \fIREPOSITORY\fP name from man page and exit.
+.RE
+.sp
+\fB\-\-subsections\fP
+.RS 4
+Show \fIsubsections\fP of man page and exit.
+.RE
+.sp
+\fB\-\-synopsis\fP
+.RS 4
+Show \fISYNOPSIS\fP subsection of man page and exit.
+.RE
+.sp
+\fB\-\-version\fP
+.RS 4
+Show \fIversion\fP from man page and exit.
+.RE
+.SH "EXIT STATUS"
+.sp
+\fB0\fP
+.RS 4
+When called directly (\fI$SHLVL=2\fP) and an argument from:_Program Information_
+found in \fIOPTION\fP (\fI$2\fP) with value from man page.
+.RE
+.sp
+\fB1\fP
+.RS 4
+Program will return \fI1\fP for the following conditions:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.  sp -1
+.  IP \(bu 2.3
+.\}
+An argument from: \fIProgram Information\fP found in \fIOPTION\fP, with empty value from man page
+(\fIValue Not Found: "${func}", for: "${cmd}"\fP).
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.  sp -1
+.  IP \(bu 2.3
+.\}
+An argument from:_Program Information_ found in \fIOPTION\fP (\fI$2\fP),
+to indicate the caller to stop parsing and exit (except when called directly (\fI$SHLVL=2\fP), which will exit with \fI0\fP).
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.  sp -1
+.  IP \(bu 2.3
+.\}
+\fIman\fP command not installed (\fICommand Not Found: man\fP).
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.  sp -1
+.  IP \(bu 2.3
+.\}
+\fIman page\fP not found for command (\fIMan Page Not Found: <command>\fP).
+.RE
+.RE
+.SH "EXAMPLES"
+.SS "Terminal"
+.sp
+\fI$\fP \fBfromman\fP \-\-desc
+.br
+show description, help, repository, version or subsections (SYNOPSYS, etc.) from man page
+.sp
+\fI$\fP \fBfromman\fP git \-\-desc
+.br
+the stupid content tracker
+.sp
+\fI$\fP \fBfromman\fP bash \-\-synopsis
+.br
+bash [options] [command_string | file]
+.SS "Library Usage"
+.sp
+.nf
+if [ "$(command \-p basename "$0")" = \*(Aqlibrary.sh\*(Aq ]; then
+  \fBfromman\fP \fIfunction_name\fP \fI"$@"\fP || exit 0
+fi
+.fi
+.br
+.SS "Script Usage: Before Parsing"
+.sp
+.nf
+main() {
+  \fBfromman\fP \fI"$0"\fP \fI"$@"\fP || exit
+}
+.fi
+.br
+.SS "Script Usage: Additional Long Options to Parse"
+.sp
+.nf
+case "${arg}" in
+  \-\-\fI*\fP)
+    if \fBfromman\fP \fI"$0"\fP \fI"$@"\fP; then
+      do dome work for "${arg}"
+    else
+      exit 0
+    fi
+    ;;
+  *) do ;;
+esac
+.fi
+.br
+.SS "Script Usage: No Additional Long Options to Parse"
+.sp
+.nf
+case "${arg}" in
+  \-\-option) do some work for \-\-option ;;
+  \-\-\fI*\fP) \fBfromman\fP \fI"$0"\fP \fI"$@"\fP || exit 0 ;;
+esac
+.fi
+.br
+.SH "REPOSITORY"
+.sp
+bbin
+.br
+.sp
+\fBGitHub:\fP \c
+.URL "https://github.com/j5pu/bbin" "" ""
+.SH "COPYING"
+.sp
+Copyright \(co 2021\-present j5pu.
+.br
+Free use of this software is granted under the terms of the MIT License.
+.SH "SEE ALSO"
+.sp
+genman(1), parse(1)
+.SH "AUTHOR"
+.sp
+j5pu
