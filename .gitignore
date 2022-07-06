@@ -227,7 +227,7 @@
 !/bin/docker-start
 !/bin/docker-stop
 !/bin/fd3
-!/bin/filesfuncs
+!/bin/filefuncs
 !/bin/fronman
 !/bin/funcexported
 !/bin/genman

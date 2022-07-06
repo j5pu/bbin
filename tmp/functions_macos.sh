@@ -21,6 +21,5 @@ enable_sharing() {
 size() { find . -type f -name "${*}" -exec stat -f '%z' "{}" \;; }
 # temp function to move to bbin
 to_bbin() { git add . && git commit --quiet  -m "moved to bbin $*" && git push --quiet; git status; }
-complete -r brctl 2>/dev/null
+complete -r brctl 2>/dev/null || true
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash

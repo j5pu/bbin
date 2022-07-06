@@ -7,7 +7,7 @@ if ! command -v has >/dev/null; then
   export BBIN_PREFIX="$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd -P)"
   . "${BBIN_PREFIX}/bin/profile.sh" || return 2>/dev/null || exit
 fi
-command -v filesfuncs >/dev/null || return 2>/dev/null || exit
+command -v filefuncs >/dev/null || return 2>/dev/null || exit
 
 # <html><h2>Bats Description Array</h2>
 # <p><strong><code>$BATS_ARRAY</code></strong> created by bats::array() with $BATS_TEST_DESCRIPTION.</p>
@@ -487,8 +487,8 @@ _file() {
 #######################################
 _functions() {
   mapfile -t BATS_FUNCTIONS < <(
-    filesfuncs "${BATS_SHARE}"/bats-*/src/*.bash \
-      && filesfuncs "${BASH_SOURCE[0]}"
+    filefuncs "${BATS_SHARE}"/bats-*/src/*.bash \
+      && filefuncs "${BASH_SOURCE[0]}"
   )
 
   # bashsupport disable=BP2001

@@ -78,7 +78,7 @@ export_funcs_all() {
 export_funcs_path() {
   [ "${BASH_VERSION-}" ] || return 0
   # shellcheck disable=SC2046,SC3045
-  export -f $("${BBIN_PREFIX}/bin/filesfuncs"  "$@")
+  export -f $("${BBIN_PREFIX}/bin/filefuncs"  "$@")
 }
 
 #######################################

@@ -4,6 +4,7 @@
 # Utils Library for Bash
 
 . utils.sh
+
 export_funcs_path "$(command -v utils.sh)"
 
 # Shared array to copy array used by cparray(), getkey(), getvalue() and inarray()
