@@ -44,6 +44,7 @@ export BBIN_DEVELOPMENT
 # Public Configuration Files Repository Submodule, i.e.: can be defined with Global Variables)
 #
 export CONFIG="${BBIN_PREFIX}/config"
+export XDG_CONFIG_HOME="${CONFIG}"
 
 test $BBIN_DEBUG -eq 0 || [ ! "${BASH_SOURCE-}" ] || caller
 

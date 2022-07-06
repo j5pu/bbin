@@ -287,18 +287,22 @@
 !/etc/profile.d/bash-4/hooks.sh
 !/etc/profile.d/constants/bash.sh
 !/etc/profile.d/constants/bats.sh
+!/etc/profile.d/constants/cheat.sh
 !/etc/profile.d/constants/docker.sh
 !/etc/profile.d/constants/git.sh
 !/etc/profile.d/constants/homebrew.sh
 !/etc/profile.d/constants/pager.sh
 !/etc/profile.d/constants/pyenv.sh
 !/etc/profile.d/constants/python.sh
+!/etc/profile.d/constants/zoxide.sh
 !/etc/profile.d/00-system.sh
 !/etc/profile.d/fzf.sh
 ## /etc/rc.d
 !/etc/rc.d/bash/hooks.sh
+!/etc/rc.d/bash/pet_function.sh
 !/etc/rc.d/bash-4/completion_helpers.bash
 !/etc/rc.d/bash-4/hooks.sh
+!/etc/rc.d/zsh/pet_function.sh
 !/etc/rc.d/aliases.sh
 !/etc/rc.d/hooks.sh
 !/etc/rc.d/pyenv.sh
