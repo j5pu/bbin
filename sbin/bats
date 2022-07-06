@@ -436,7 +436,7 @@ _docker() {
   elif test $BATS_LOCAL -eq 0; then
     if [ ! "${BATS_DOCKER_CONTEXT-}" ]; then
       if ismacos; then
-        BATS_DOCKER_CONTEXT="macOS"
+        BATS_DOCKER_CONTEXT="default"
       else
         BATS_DOCKER_CONTEXT="default"
       fi

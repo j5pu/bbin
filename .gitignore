@@ -294,6 +294,7 @@
 !/etc/profile.d/constants/pyenv.sh
 !/etc/profile.d/constants/python.sh
 !/etc/profile.d/00-system.sh
+!/etc/profile.d/fzf.sh
 ## /etc/rc.d
 !/etc/rc.d/bash/hooks.sh
 !/etc/rc.d/bash-4/completion_helpers.bash
@@ -301,6 +302,8 @@
 !/etc/rc.d/aliases.sh
 !/etc/rc.d/hooks.sh
 !/etc/rc.d/pyenv.sh
+## /install.d
+!/install.d
 ## /libexec
 !/libexec
 ## /sbin
@@ -314,5 +317,8 @@
 ## /tmp
 !/tmp
 ## /
+!/Brewfile
+!/INSTALLATION.md
 !/Makefile
+!/requirements.txt
 ### END unignore

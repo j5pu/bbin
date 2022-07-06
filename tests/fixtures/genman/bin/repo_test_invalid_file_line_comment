@@ -1,0 +1,12 @@
+#!/bin/sh
+# shellcheck disable=SC2154
+# bashsupport disable=BP3001
+set -u
+
+#
+#
+
+#######################################
+#  main
+#######################################
+main() (:)

@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+set -eu
+
+ICLOUD="/Users/j5pu/Library/Mobile Documents"
+CLOUDDOCS="${ICLOUD}/com~apple~CloudDocs"
+
+DOWNLOAD="$(cat <<EOF
+${CLOUDDOCS}/Documents/Backups iPhone
+${CLOUDDOCS}/Documents/Judicial
+${CLOUDDOCS}/Documents/Julia
+${CLOUDDOCS}/Documents/Personales
+${CLOUDDOCS}/Documents/Personales - Viejos
+${CLOUDDOCS}/Documents/Salud
+EOF
+)"
+
+find=(find -L "${CLOUDDOCS}")
+
+evict=("${find[@]}" -not \( )
+download=("${find[@]}" "${ICLOUD}" \( )
+
+o=(-o)
+
+while read -r i; do
+  test -e "${i}" || { echo "${i}: No such file or directory"; exit 1; }  
+  evict+=(-path "${i}" -prune "${o[@]}")
+  download+=(-path "${i}/*" "${o[@]}")
+  [ ! "${o-}" ] || o=()
+done < <(echo "${DOWNLOAD}"| awk '! /^#/ && ! /^$/')
+
+file=(-type f)
+dir=(-type d)
+file_or_dir=(-type f -o -type d)
+exec=(-exec brctl)
+name_icloud=(-name "*.icloud")
+file=("{}" \;)
+
+exec_evict=("${exec[@]}" evict "${file[@]}")
+exec_download=("${exec[@]}" download "${file[@]}")
+
+#evict+=(\) "${file_or_dir[@]}" -not -name "*.DS_Store" "${exec_evict[@]}")
+#download+=(\) "${file_or_dir[@]}" "${exec_download[@]}")
+
+evict_files=("${evict[@]}" \) -not \( "${name_icloud[@]}" -o -name "*.DS_Store" \) -type f "${exec_evict[@]}" )
+evict_directories=("${evict[@]}" \) -type d "${exec_evict[@]}" )
+
+download_files=("${download[@]}" \) "${name_icloud[@]}" -type f "${exec_download[@]}" )
+download_directories=("${download[@]}" \) -type d "${exec_download[@]}" )
+
+#set +eu
+#"${evict_files[@]}"
+#"${evict_directories[@]}"
+"${download_files[@]}"
+"${download_directories[@]}"
+
+#find -L "${CLOUDDOCS}" -not \( -path "${A}" -prune -o -path "${B}" -prune \) -type f -not -name "*.icloud" -not -name "*.DS_Store" -exec echo brctl evict "{}" \;
+
+#find -L "${CLOUDDOCS}" \( -path "${A}/*" -o -path "${B}/*" \) -name "*.icloud" -exec echo brctl download "{}" \;
+

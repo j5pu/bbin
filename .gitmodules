@@ -1,0 +1,5 @@
+[submodule "config"]
+	path = config
+	url = https://github.com/j5pu/config.git
+	branch = main
+	fetchRecurseSubmodules = true

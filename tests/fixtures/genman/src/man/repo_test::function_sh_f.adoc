@@ -1,0 +1,65 @@
+:Output:
+:template: ../../../../../src/man/templates/template.adoc
+== SYNOPSIS
+
+[verse]
+*{manname}* [_OPTION_]... [_OPTION PROGRAM OUTPUT_]... _ARGUMENT_...
+include::{template}[tag=SYNOPSIS-information]
+
+== DESCRIPTION
+
+The *{manname}* command
+
+== OPTIONS
+
+*--option*::
+_OPTION_ one option.
+
+ifdef::Output[]
+include::{template}[tag=options-output]
+endif::[]
+
+== ARGUMENTS
+
+*ARGUMENT*::
+Required one _ARGUMENT_.
+
+include::{template}[tag=arguments-information]
+
+== EXIT STATUS
+
+*0*::
+Success.
+
+*1*::
+Error. +
+
+== ENVIRONMENT
+
+ifdef::Output[]
+include::{template}[tag=environment-output]
+endif::[]
+
+== OUTPUT
+
+For more information, see: _<<_arguments-information>>_
+
+ifdef::Output[]
+
+and to control output, see: _<<_options-output>>_ and _<<_environment-output>>_
+
+endif::[]
+
+.
+
+== EXAMPLES
+
+[verse]
+_$_ *{manname}*
+output
+
+include::{template}[tag=repository-and-copying]
+
+== SEE ALSO
+
+genman(1), fromman(1), parse(1)

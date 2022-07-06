@@ -41,6 +41,10 @@ export BBIN_DEVELOPMENT
 #
 : "${BREW_PROFILE_D_SOURCED=0}"
 
+# Public Configuration Files Repository Submodule, i.e.: can be defined with Global Variables)
+#
+export CONFIG="${BBIN_PREFIX}/config"
+
 test $BBIN_DEBUG -eq 0 || [ ! "${BASH_SOURCE-}" ] || caller
 
 if [ "${BBIN_PREFIX_DEFAULT}" = "${BBIN_PREFIX}" ]; then
@@ -74,7 +78,7 @@ export_funcs_all() {
 export_funcs_path() {
   [ "${BASH_VERSION-}" ] || return 0
   # shellcheck disable=SC2046,SC3045
-  export -f $(filefuncs "$@")
+  export -f $("${BBIN_PREFIX}/bin/filesfuncs"  "$@")
 }
 
 #######################################
@@ -269,8 +273,8 @@ path_pop() {
 #######################################
 rebash() {
   unset BASH_COMPLETION_VERSINFO BREW_PROFILE_D_SOURCED
-  ! test -f "${BBIN_PROFILE_DEFAULT}" || BBIN_DEFAULT_SOURCED=0 . "${BBIN_PROFILE_DEFAULT}"
-  test $BBIN_DEVELOPMENT -eq 0 || BBIN_DEVELOPMENT_SOURCED=0 . "${BBIN_PROFILE}"
+  ! test -f "${BBIN_PROFILE_DEFAULT}" || { unset BBIN_DEFAULT_SOURCED; . "${BBIN_PROFILE_DEFAULT}"; }
+  test $BBIN_DEVELOPMENT -eq 0 || { unset BBIN_DEVELOPMENT_SOURCED; . "${BBIN_PROFILE}"; }
 }
 
 #######################################

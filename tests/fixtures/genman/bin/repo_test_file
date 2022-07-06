@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# shellcheck disable=SC2154
+#
+#  repo_test_file is a test script ending with . and with spaces at the beginning.
+
+#######################################
+# main
+#######################################
+main() {
+  :
+}
+
+main "$@"
