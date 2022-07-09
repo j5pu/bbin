@@ -22,4 +22,8 @@ size() { find . -type f -name "${*}" -exec stat -f '%z' "{}" \;; }
 # temp function to move to bbin
 to_bbin() { git add . && git commit --quiet  -m "moved to bbin $*" && git push --quiet; git status; }
 complete -r brctl 2>/dev/null || true
+eval "$(zoxide init bash)"
+
+download() { find -L . -type f -name "*.icloud" -exec brctl download "{}" \;; }
+evict() { find -L . -not -name "*.icloud" -exec brctl evict "{}" \;; }
 
