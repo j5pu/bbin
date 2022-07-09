@@ -24,6 +24,8 @@ to_bbin() { git add . && git commit --quiet  -m "moved to bbin $*" && git push -
 complete -r brctl 2>/dev/null || true
 eval "$(zoxide init bash)"
 
+# JULIA - JUDICIAL
 download() { find -L . -type f -name "*.icloud" -exec brctl download "{}" \;; }
 evict() { find -L . -not -name "*.icloud" -exec brctl evict "{}" \;; }
+preserve() { rsync -aptvADENUX --fileflags "$@"; }
 
