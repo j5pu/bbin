@@ -25,7 +25,7 @@ complete -r brctl 2>/dev/null || true
 eval "$(zoxide init bash)"
 
 # JULIA - JUDICIAL
-download() { find -L . -type f -name "*.icloud" -exec brctl download "{}" \;; }
-evict() { find -L . -not -name "*.icloud" -exec brctl evict "{}" \;; }
-preserve() { rsync -aptvADENUX --fileflags "$@"; }
+download() { find -L "$(realpath "${1:-.}")" -type f -name "*.icloud" -exec brctl download "{}" \;; }
+evict() { find -L "$(realpath "${1:-.}")" -type f -not -name "*.icloud" -not -name ".DS_Store" -exec brctl evict "{}" \;; }
+preserve() { rsync -aptvADENUX "$@"; }
 
