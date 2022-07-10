@@ -24,6 +24,8 @@ to_bbin() { git add . && git commit --quiet  -m "moved to bbin $*" && git push -
 complete -r brctl 2>/dev/null || true
 eval "$(zoxide init bash)"
 
+export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
+
 # JULIA - JUDICIAL
 download() { find -L "$(realpath "${1:-.}")" -type f -name "*.icloud" -exec brctl download "{}" \;; }
 evict() { find -L "$(realpath "${1:-.}")" -type f -not -name "*.icloud" -not -name ".DS_Store" -exec brctl evict "{}" \;; }
