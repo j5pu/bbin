@@ -25,6 +25,7 @@ complete -r brctl 2>/dev/null || true
 eval "$(zoxide init bash)"
 
 export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
+export HOMEBREW_BUNDLE_FILE="${HOME}/bbin/Brewfile"
 
 # JULIA - JUDICIAL
 download() { find -L "$(realpath "${1:-.}")" -type f -name "*.icloud" -exec brctl download "{}" \;; }

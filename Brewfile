@@ -162,6 +162,7 @@ cask "thunderbird"
 cask "tor-browser"
 mas "Bear", id: 1091189122
 mas "HP Smart", id: 1474276998
+mas "Image2icon", id: 992115977
 mas "LimeChat", id: 414030210
 mas "Magnet", id: 441258766
 mas "Microsoft Excel", id: 462058435
