@@ -31,13 +31,13 @@ export HOMEBREW_BUNDLE_FILE="${HOME}/bbin/Brewfile"
 download() { 
   local dir
   dir="$(realpath "${1:-.}")"
-  find -L "${dir}" -type d -exec brctl download "{}" \;
+#  find -L "${dir}" -type d -exec brctl download "{}" \;
   find -L "${dir}" -type f -name "*.icloud" -exec brctl download "{}" \;
 }
 evict() {
   local dir
   dir="$(realpath "${1:-.}")" 
-#  find -L "${dir}" -type d -exec brctl evict "{}" \;
+  find -L "${dir}" -type d -exec brctl evict "{}" \;
   find -L "${dir}" -type f -not -name "*.icloud" -not -name ".DS_Store" -exec brctl evict "{}" \;
 }
 preserve() { rsync -aptvADENUX --exclude "*.icloud" "$@"; }
@@ -75,9 +75,16 @@ status() {
     esac
   done
   echo "--------------------------------"
-  total="$(find -L "${HOME}/Library/Mobile Documents/com~apple~CloudDocs" -type f)"
-  echo "Total: $(wc -l <<< "${total}")"
-  echo "  evicted: $(wc -l < <(grep ".icloud$" <<< "${total}"))"
-  echo "  downloaded: $(wc -l < <(grep -v ".icloud$" <<< "${total}"))"
+  total "${HOME}/Library/Mobile Documents/com~apple~CloudDocs"
   unset -f status_show
+}
+total() {
+  local dir total
+  dir="$(realpath "${1:-.}")"
+  total="$(find -L "${dir}" -not -name ".DS_Store" -type f)"
+  du -L -h -d1 "${dir}"
+  echo
+  echo "Total:        $(wc -l <<< "${total}")"
+  echo "  evicted:    $(wc -l < <(grep ".icloud$" <<< "${total}"))"
+  echo "  downloaded: $(wc -l < <(grep -v ".icloud$" <<< "${total}"))"
 }
