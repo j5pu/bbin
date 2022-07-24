@@ -37,10 +37,22 @@ export HOMEBREW_BUNDLE_FILE="${HOME}/bbin/Brewfile"
 
 # JULIA - JUDICIAL
 attachments() {
-  local file
+  local dir=/Volumes/USB-2TB/Attachments extension file
+  copy() {
+    ! test -f "$2" && cp -pv "$1" "$2"
+  }
   while read -r file; do
-    echo "$file"
+    extension="$(extension "${file}")"
+    test -s "${file}" || continue
+    [ "$(stat -f "%z" "${file}")" -ne 0 ] || continue
+    if ! copy "${file}" "${dir}/${file##*/}"; then
+      sum="$(md5sum "${file}" | awk '{ print $1 }')"
+      if ! find "${dir}" -type f -exec md5sum "{}" \; | awk '{ print $1 }' | grep -q "${sum}"; then
+        copy "${file}" "${dir}/$(stem "${file}") (${sum})${extension:+.${extension}}"
+      fi
+    fi
   done < <(find "${HOME}/Library/Mail/V9" -path "*/Attachments/*" -type f)
+  unset -f copy
 }
 download() { 
   local dir
