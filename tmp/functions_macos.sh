@@ -1,5 +1,9 @@
 # macOS disk1 free
 df_macos() { df -H | awk '/\/dev\/disk1s1/ { printf $4 }'; }
+# file extension if . otherwise empty
+# extension /hola.xz/example.tar.gz
+# extension /hola.xz/example
+extension() { echo "${1##*/}" | awk -F "." '/\./ {print $NF}'; }
 # added to $2 (does not show empty files)
 files_added() { git diff --diff-filter=A --name-only --no-index "$1" "$2"; }
 # deleted in $2 (does not show empty files)
@@ -19,6 +23,10 @@ enable_sharing() {
 }
 # size of files found in $1
 size() { find . -type f -name "${*}" -exec stat -f '%z' "{}" \;; }
+# file stem
+# stem /hola.xz/example.tar.gz
+# stem /hola.xz/example
+stem() { echo "${1##*/}" | sed -e 's/\.[^\.]*$//'; } 
 # temp function to move to bbin
 to_bbin() { git add . && git commit --quiet  -m "moved to bbin $*" && git push --quiet; git status; }
 complete -r brctl 2>/dev/null || true
@@ -28,6 +36,12 @@ export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 export HOMEBREW_BUNDLE_FILE="${HOME}/bbin/Brewfile"
 
 # JULIA - JUDICIAL
+attachments() {
+  local file
+  while read -r file; do
+    echo "$file"
+  done < <(find "${HOME}/Library/Mail/V9" -path "*/Attachments/*" -type f)
+}
 download() { 
   local dir
   dir="$(realpath "${1:-.}")"
