@@ -107,7 +107,8 @@ ocr() {
         easyocr -l es en -f "${src}" | awk -F "'" '{NF--;$1=$1;sub(".*"$2,$2,$0)}1' > "${dest}"
       fi
     fi
-  done < <(find "${dir}" -type f \( -iname "*.pdf" -or -iname "*.png" \) -not -iname "*${readable}.*" | grep -v "^LISTA")
+  done < <(find "${dir}" \
+    -type f \( -iname "*.pdf" -or -iname "*.png" \) -not -iname "*${readable}.*" | grep -v "^LISTA")
 }
 preserve() { rsync -aptvADENUX --exclude "*.icloud" "$@"; }
 status() {
