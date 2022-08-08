@@ -215,6 +215,7 @@
 !/Bbin.app
 ## /bin
 !/bin/base-images.bash
+!/bin/bats
 !/bin/color
 !/bin/completions_helpers.bash
 !/bin/dir-exists-empty
