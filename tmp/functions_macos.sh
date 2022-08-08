@@ -54,6 +54,29 @@ attachments() {
   done < <(find "${HOME}/Library/Mail/V9" -path "*/Attachments/*" -type f)
   unset -f copy
 }
+dates() {
+  local dir file tmp files
+  dir="${HOME}/Documents/Julia"
+  declare -A files
+  while read -r file; do
+     ! echo "${file##*/}" | grep -q -- " -" || files["${file##*/}"]="${file}"
+  done < <(find "${dir}" -type f -name "20*" | sed "s|${dir}/||g")
+  keys="$(printf "%s\n" "${!files[@]}" | sort)"
+  to_file() {
+    tmp="$(mktemp)"
+    rm -f "$1"
+    while read -r file; do
+      echo "${file} ${files[${file}]}" >> "${tmp}" 
+    done <<< "${keys}"
+    cupsfilter -o landscape "${tmp}" > "$1"
+  }
+  tmp="$(mktemp)"
+  echo "${keys}" > "${tmp}"
+  cupsfilter -o landscape "${tmp}" > "${dir}/LISTA.pdf"
+  to_file "${dir}/LISTA_TODOS.pdf"
+  keys="$(echo "${keys}" | grep JUZGADO)"
+  to_file "${dir}/LISTA_JUZGADO.pdf"
+}
 download() { 
   local dir
   dir="$(realpath "${1:-.}")"
@@ -66,6 +89,7 @@ evict() {
   find -L "${dir}" -type d -exec brctl evict "{}" \;
   find -L "${dir}" -type f -not -name "*.icloud" -not -name ".DS_Store" -exec brctl evict "{}" \;
 }
+icapture() { screencapture -m -R 0,0,650,850 ~/Downloads/"$*".png; }
 preserve() { rsync -aptvADENUX --exclude "*.icloud" "$@"; }
 status() {
   local i status x total
