@@ -17,7 +17,7 @@
       <excludeFolder url="file://$MODULE_DIR$/.sublime" />
       <excludeFolder url="file://$MODULE_DIR$/.vscode" />
     </content>
-    <orderEntry type="jdk" jdkName="ruby-2.6.8-p205" jdkType="RUBY_SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.10" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Python 3.10 interpreter library" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="ast (v2.4.2, ruby-2.6.8-p205) [gem]" level="application" />

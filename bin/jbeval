@@ -23,6 +23,13 @@ done < "${applications}"
 
 #######################################
 # description
+# Arguments:
+#   1
+#######################################
+show() { read -n 1 -s -r -p "${1} [press any key to continue]: "; echo; }
+
+#######################################
+# description
 # Globals:
 #   JETBRAINS_CONFIG
 #   JETBRAINS_CONFIGS
@@ -32,18 +39,22 @@ done < "${applications}"
 #######################################
 main() {
   local file i tmp
+  open https://github.com
+  show "GitHub: Log in with gmail+MMYY"
+
+  open "https://github.com/settings/billing"
+  show "GitHub: Cancel Copilot and Delete previous gmail+MMYY"
+
   open https://account.jetbrains.com/login
-  read -n 1 -s -r -p "Safari: delete account, cookies and web form ⌘, [press any key to continue]: "
-  echo
+  show "Safari: delete account, cookies and web form ⌘, for JetBrains and GitHub"
 
   open /System/Applications/Utilities/Keychain\ Access.app/
-  read -n 1 -s -r -p "Keychain <-: delete JetBrains account [press any key to continue]: "
-  echo
+  show "Keychain <-: delete JetBrains account"
 
   for i in "${!OPEN[@]}"; do
     open "${OPEN["${i}"]}"
-    read -n 1 -s -r -p "${i}: 'Manage Licenses...' ⇧⌘A and log out [press any key to continue]: "
-    echo
+    show "${i}: 'Manage Licenses...' ⇧⌘A and log out"
+    show "${i}: 'GitHub Copilot...' log out"
   done
   
   for i in ${JETBRAINS_CONFIGS} Toolbox; do
@@ -76,23 +87,33 @@ main() {
   killall cfprefsd 2>/dev/null || true
   rm -f ~/.cache/log/JetBrains/*/token
   
-  open https://www.icloud.com/mail/
-  read -n 1 -s -r -p "iCloud: remove email alias and create new email alias [press any key to continue]: "
-  echo
+#  open https://www.icloud.com/mail/
+#  show "iCloud: remove email alias and create new email alias"
 
   open https://account.jetbrains.com/login
-  read -n 1 -s -r -p "Safari: create new account [press any key to continue]: "
-  echo
+  show "Safari: create new account using gmail+"
 
-  open https://www.icloud.com/mail/
-  read -n 1 -s -r -p "iCloud: confirm email [press any key to continue]: "
-  echo
+  open https://github.com
+  show "GitHub: log out from ${GIT}"
+  show "GitHub: Sign up with gmail+MMYY and username gmailMMYY"
+  open https://gmail.com
+  show "Gmail: Copy Code"
+  open https://github.com/github-copilot/signup
+  show "GitHub: 100 Continental Dr, Newark, DE 19713, United States"
+  open /System/Applications/Calendar.app
+  show "Calendar: Set a reminder to cancel subscription"
+
+#  open https://www.icloud.com/mail/
+#  show "iCloud: confirm email"
 
   for i in "${!OPEN[@]}"; do
     open "${OPEN["${i}"]}"
-    read -n 1 -s -r -p "${i}: login with the new account [press any key to continue]: "
-    echo
+    show "${i}: login with the new account"
+    show "${i}: GitHub Copilot Login with gmailMMYY"
   done
+
+  open https://github.com
+  show "GitHub: log in with ${GIT}"
 }
 
 main "$@"
