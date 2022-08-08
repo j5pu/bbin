@@ -285,6 +285,7 @@
 !/etc/bash_completion.d/source
 ## /etc/profile.d
 !/etc/profile.d/bash-4/hooks.sh
+!/etc/profile.d/constants/00-usb.sh
 !/etc/profile.d/constants/bash.sh
 !/etc/profile.d/constants/bats.sh
 !/etc/profile.d/constants/cheat.sh

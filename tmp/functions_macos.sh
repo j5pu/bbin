@@ -56,6 +56,7 @@ attachments() {
   done < <(find "${HOME}/Library/Mail/V9" -path "*/Attachments/*" -type f)
   unset -f copy
 }
+bashrc() { . "${HOME}/.bashrc"; }
 dates() {
   local dir file tmp files
   dir="${HOME}/Documents/Julia"
