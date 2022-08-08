@@ -94,7 +94,7 @@ evict() {
 }
 ocr() {
   local dir dest readable='~readable' src suffix="pdf"
-  dir="$(realpath "${1:-${HOME}/Volumes/USB-2TB/Documents/Julia}")"
+  dir="$(realpath "${1:-/Volumes/USB-2TB/Documents/Julia}")"
   while read -r src; do
     suffix="$(extension "${src}")"
     dest="${src%/*}/$(basename "${src}" ".${suffix}")${readable}.${suffix/PNG/txt}"
@@ -107,7 +107,7 @@ ocr() {
         easyocr -l es en -f "${src}" | awk -F "'" '{NF--;$1=$1;sub(".*"$2,$2,$0)}1' > "${dest}"
       fi
     fi
-  done < <(find "${dir}" -type f \( -iname "*.pdf" -or -iname "*.png" \) -not -iname "*${readable}.*")
+  done < <(find "${dir}" -type f \( -iname "*.pdf" -or -iname "*.png" \) -not -iname "*${readable}.*" | grep -v "^LISTA")
 }
 preserve() { rsync -aptvADENUX --exclude "*.icloud" "$@"; }
 status() {
