@@ -1,3 +1,4 @@
+# shellcheck disable=SC3044,SC3043,SC3001,SC3053,SC3054,SC3011,SC2043,SC3055,SC2126
 # macOS disk1 free
 df_macos() { df -H | awk '/\/dev\/disk1s1/ { printf $4 }'; }
 # file extension if . otherwise empty
@@ -29,6 +30,7 @@ size() { find . -type f -name "${*}" -exec stat -f '%z' "{}" \;; }
 stem() { echo "${1##*/}" | sed -e 's/\.[^\.]*$//'; } 
 # temp function to move to bbin
 to_bbin() { git add . && git commit --quiet  -m "moved to bbin $*" && git push --quiet; git status; }
+
 complete -r brctl 2>/dev/null || true
 eval "$(zoxide init bash)"
 
