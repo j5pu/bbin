@@ -1,4 +1,4 @@
 easyocr
-ocrmypdf
+# ocrmypdf
 send2trash
 shallow-backup

@@ -1,4 +1,4 @@
-# shellcheck disable=SC3044,SC3043,SC3001,SC3053,SC3054,SC3011,SC2043,SC3055,SC2126
+# shellcheck disable=SC3044,SC3043,SC3001,SC3053,SC3054,SC3011,SC2043,SC3055,SC2126,SC3013,SC3060
 # macOS disk1 free
 df_macos() { df -H | awk '/\/dev\/disk1s1/ { printf $4 }'; }
 # file extension if . otherwise empty
@@ -92,7 +92,23 @@ evict() {
   find -L "${dir}" -type d -exec brctl evict "{}" \;
   find -L "${dir}" -type f -not -name "*.icloud" -not -name ".DS_Store" -exec brctl evict "{}" \;
 }
-icapture() { screencapture -m -R 0,0,650,850 ~/Downloads/"$*".png; }
+ocr() {
+  local dir dest readable='~readable' src suffix="pdf"
+  dir="$(realpath "${1:-${HOME}/Volumes/USB-2TB/Documents/Julia}")"
+  while read -r src; do
+    suffix="$(extension "${src}")"
+    dest="${src%/*}/$(basename "${src}" ".${suffix}")${readable}.${suffix/PNG/txt}"
+
+    if ! test -f "${dest}" || [ "${src}" -nt "${dest}" ]; then
+      if [ "${suffix}" = "pdf" ]; then
+        ocrmypdf -l spa+eng --force-ocr "${src}" "${dest}"
+      else
+#        easyocr -l es en -f "${src}" > "${dest}"
+        easyocr -l es en -f "${src}" | awk -F "'" '{NF--;$1=$1;sub(".*"$2,$2,$0)}1' > "${dest}"
+      fi
+    fi
+  done < <(find "${dir}" -type f \( -iname "*.pdf" -or -iname "*.png" \) -not -iname "*${readable}.*")
+}
 preserve() { rsync -aptvADENUX --exclude "*.icloud" "$@"; }
 status() {
   local i status x total
