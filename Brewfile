@@ -76,6 +76,8 @@ brew "fclones"
 brew "fd"
 # OCR (Optical Character Recognition) engine
 brew "tesseract"
+# Client app of fast reverse proxy to expose a local server to the internet
+brew "frpc"
 # Command-line fuzzy finder written in Go
 brew "fzf"
 # Open source programming language to build simple/reliable/efficient software
@@ -90,6 +92,8 @@ brew "gh"
 brew "ghostscript"
 # Distributed revision control system
 brew "git"
+# Open GitHub webpages from a terminal
+brew "git-open"
 # GNU Pretty Good Privacy (PGP) package
 brew "gnupg"
 # Bash tool for navigation to aliased directories with auto-completion
@@ -102,6 +106,8 @@ brew "gradle"
 brew "gradle-completion"
 # Colorize logfiles and command output
 brew "grc"
+# Image manipulation
+brew "netpbm"
 # Improved top (interactive process viewer)
 brew "htop"
 # User-friendly cURL replacement (command-line HTTP client)
@@ -112,8 +118,16 @@ brew "hyperfine"
 brew "ipython"
 # Duplicate file finder and an enhanced fork of 'fdupes'
 brew "jdupes"
+# JSON output from a shell
+brew "jo"
+# Platform built on V8 to build network applications
+brew "node"
+# Note taking and to-do application with synchronization capabilities
+brew "joplin-cli"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
+# Handy way to save and run project-specific commands
+brew "just"
 # Bash completion for Launchctl
 brew "launchctl-completion"
 # Terminal file manager
@@ -132,8 +146,6 @@ brew "man-db"
 brew "mas"
 # Powerful paging program
 brew "most"
-# Platform built on V8 to build network applications
-brew "node"
 # Wrap web apps natively
 brew "nativefier"
 # NCurses Disk Usage
@@ -198,6 +210,8 @@ brew "svg2png"
 brew "tag"
 # User interface to the TELNET protocol
 brew "telnet"
+# Terminal file explorer
+brew "tere"
 # Enables extra languages support for Tesseract
 brew "tesseract-lang"
 # Anonymizing overlay network for TCP
@@ -214,6 +228,8 @@ brew "watchman"
 brew "wget"
 # Homebrew, but with Docker images
 brew "whalebrew"
+# Friendly and fast tool for sending HTTP requests
+brew "xh"
 # JavaScript package manager
 brew "yarn"
 # Bash completion for Yarn
@@ -243,6 +259,8 @@ cask "autofirma"
 cask "beardedspice"
 # App to build and share containerized applications and microservices
 cask "docker"
+# Client for the Dropbox cloud storage service
+cask "dropbox"
 # Finds duplicate files in a computer system
 cask "dupeguru"
 # Build desktop apps with JavaScript, HTML, and CSS
@@ -266,6 +284,8 @@ cask "google-drive"
 cask "intellij-idea"
 # Terminal emulator as alternative to Apple's Terminal app
 cask "iterm2"
+# Note taking and to-do application with synchronization capabilities
+cask "joplin"
 # Tool to prevent the system from going into sleep mode
 cask "keepingyouawake"
 # File archiver
@@ -295,28 +315,5 @@ cask "temurin"
 cask "thunderbird"
 # Web browser focusing on security
 cask "tor-browser"
-mas "Amphetamine", id: 937984704
-mas "Bear", id: 1091189122
-mas "Boop", id: 1518425043
-mas "com.tyrhex.Tyrhex", id: 933525733
-mas "Flycut", id: 442160987
-mas "HP Smart", id: 1474276998
-mas "Image2icon", id: 992115977
-mas "Keynote", id: 409183694
-mas "LimeChat", id: 414030210
-mas "Magnet", id: 441258766
-mas "Microsoft Excel", id: 462058435
-mas "Microsoft PowerPoint", id: 462062816
-mas "Microsoft Word", id: 462054704
-mas "Numbers", id: 409203825
-mas "Pages", id: 409201541
-mas "PhotoMiner", id: 1227312629
-mas "PrettyJSON for Safari", id: 1445328303
-mas "Slack", id: 803453959
-mas "Sleep Alarm Clock", id: 1091149644
-mas "Telegram", id: 747648890
-mas "Transporter", id: 1450874784
-mas "Userscripts", id: 1463298887
-mas "virtualOS", id: 1614659226
-mas "WhatFont", id: 1437138382
-mas "WhatsApp", id: 1147396723
+# SSH/SFTP/Shell/Telnet/Serial terminal
+cask "windterm"
