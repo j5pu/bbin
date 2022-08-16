@@ -145,37 +145,48 @@ attachments() {
 # Arguments:
 #  None
 #######################################
-audio() {
-  local dir filename name src
-  dir="/Volumes/USB-2TB/Documents/Julia/Backups - Audios - Sacadas Ordenador -
-Capturas Pantalla /Audios y Transcripciones/Mio"
-
-  cd "${src}" || return
-  filename="$1"; shift
-  name="$(echo "${filename##*/}" | awk -F "-" '{ print $1 }')"
-  cp "${src}/${filename}" "${dir}/${name} - $*.m4a"
-  cd - >/dev/null || return
-
+audios() {
   local c=0 dir dest files log readable='@' src suffix="pdf" total
+  dir="/Volumes/USB-2TB/Documents/Julia/Backups - Audios - Sacadas Ordenador - \
+Capturas Pantalla /Audios y Transcripciones/Mio"
   files="$(find "${dir}" -type f -iname "*.m4a"  | sort -R)"
-  log="$(mktemp)"
   total="$(echo "${files}" | wc -l | sed 's/ //g')"
 
   while read -r src; do
     ((c += 1))
     suffix="$(extension "${src}")"
-    dest="${src%/*}/$(basename "${src}" ".${suffix}")${readable}.${suffix/PNG/txt}"
+    dest="${src%/*}/$(basename "${src}" ".${suffix}")${readable}.${suffix/m4a/txt}"
     if ! test -f "${dest}" || [ "${src}" -nt "${dest}" ]; then
-      if [ "${suffix}" = "pdf" ]; then
-        ocrmypdf -l spa+eng --force-ocr "${src}" "${dest}" 1>"${log}" 2>&1
-      else
-        easyocr -l es en -f "${src}" >"${dest}" 2>>"${log}"
-      fi
+      echo "${dest}"
+      ~/Tools/hear/products/hear --language es-ES -i "${src}" >"${dest}"
       file="  \e[32m${src}\e[0m"
       [ $? -eq 0 ] || file="  \e[31m${src}\e[0m"
       outof "${c}" "${total}" "${file}"
     fi
   done <<<"${files}"
+}
+
+audio() {
+  local dir file
+  dir="/Volumes/USB-2TB/Documents/Julia/Backups - Audios - Sacadas Ordenador - \
+Capturas Pantalla /Audios y Transcripciones/Mio"
+
+  while read -r file; do
+    echo Starting: "${file}" "${file/.m4a/@.txt}"
+    test -f "${file/.m4a/@.txt}" || ~/Tools/hear/products/hear --language es-ES -i "${file}" > "${file/.m4a/@.txt}"
+  done < <(find "${dir}" -type f -name "*.m4a")
+}
+
+#######################################
+# description
+# Arguments:
+#  None
+#######################################
+ocrall() {
+  local i
+  while read -r i; do
+    ocr "" &
+  done < <(seq )
 }
 
 #######################################
@@ -359,3 +370,5 @@ total() {
   echo "  evicted:    $(wc -l < <(grep ".icloud$" <<<"${total}"))"
   echo "  downloaded: $(wc -l < <(grep -v ".icloud$" <<<"${total}"))"
 }
+
+jet-service

@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file:///Volumes/USB-2TB/Documents/.idea/Documents.iml" filepath="/Volumes/USB-2TB/Documents/.idea/Documents.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/bbin.iml" filepath="$PROJECT_DIR$/.idea/bbin.iml" />
     </modules>
   </component>

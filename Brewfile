@@ -65,11 +65,21 @@ brew "gdbm"
 # Library for decimal floating point arithmetic
 brew "mpdecimal"
 # Interpreted, interactive, object-oriented programming language
-brew "python@3.10"
+brew "python@3.10", link: false
 # Library and command-line tool for SSH
 brew "fabric"
 # Bash completion for Fabric
 brew "fabric-completion"
+# Collection of reusable C++ library artifacts developed at Facebook
+brew "folly"
+# C++14 implementation of the TLS-1.3 standard
+brew "fizz"
+# Modular, composable client/server abstractions framework
+brew "wangle"
+# Facebook's branch of Apache Thrift, including a new C++ server
+brew "fbthrift"
+# Thrift functions for querying information from a service
+brew "fb303"
 # Efficient Duplicate File Finder
 brew "fclones"
 # Simple, fast and user-friendly alternative to find
@@ -80,6 +90,8 @@ brew "tesseract"
 brew "frpc"
 # Command-line fuzzy finder written in Go
 brew "fzf"
+# Toolkit for image loading and pixel buffer manipulation
+brew "gdk-pixbuf"
 # Open source programming language to build simple/reliable/efficient software
 brew "go"
 # Go Dependency Manager (gdm)
@@ -114,6 +126,8 @@ brew "htop"
 brew "httpie"
 # Command-line benchmarking tool
 brew "hyperfine"
+# Install and debug iPhone apps from the command-line
+brew "ios-deploy"
 # Interactive computing in Python
 brew "ipython"
 # Duplicate file finder and an enhanced fork of 'fdupes'
@@ -276,8 +290,6 @@ cask "font-lato"
 cask "font-nova-mono"
 cask "font-share-tech"
 cask "font-share-tech-mono"
-# Web browser
-cask "google-chrome-dev"
 # Client for the Google Drive storage service
 cask "google-drive"
 # Java IDE by JetBrains
@@ -288,6 +300,8 @@ cask "iterm2"
 cask "joplin"
 # Tool to prevent the system from going into sleep mode
 cask "keepingyouawake"
+# Password manager compatible with KeePass
+cask "keeweb"
 # File archiver
 cask "keka"
 # Customize mouse behavior
@@ -315,5 +329,9 @@ cask "temurin"
 cask "thunderbird"
 # Web browser focusing on security
 cask "tor-browser"
+# Virtualizer for x86 hardware
+cask "virtualbox"
+# Extend the functionality of VirtualBox
+cask "virtualbox-extension-pack"
 # SSH/SFTP/Shell/Telnet/Serial terminal
 cask "windterm"
