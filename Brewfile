@@ -303,6 +303,8 @@ cask "font-lato"
 cask "font-nova-mono"
 cask "font-share-tech"
 cask "font-share-tech-mono"
+# Web browser
+cask "google-chrome-beta"
 # Client for the Google Drive storage service
 cask "google-drive"
 # Java IDE by JetBrains
