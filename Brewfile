@@ -16,8 +16,15 @@ tap "knqyf263/pet"
 tap "mas-cli/tap"
 tap "microsoft/git"
 tap "mongodb/brew"
+tap "qqilihq/partial-emlx-converter"
 # Search tool like grep, but optimized for programmers
 brew "ack"
+# Toolkit for image loading and pixel buffer manipulation
+brew "gdk-pixbuf"
+# Library to render SVG files using Cairo
+brew "librsvg"
+# Icons for the GNOME project
+brew "adwaita-icon-theme"
 # Text processor and publishing toolchain for AsciiDoc
 brew "asciidoctor"
 # GNU File, Shell, and Text utilities
@@ -65,7 +72,7 @@ brew "gdbm"
 # Library for decimal floating point arithmetic
 brew "mpdecimal"
 # Interpreted, interactive, object-oriented programming language
-brew "python@3.10", link: false
+brew "python@3.10"
 # Library and command-line tool for SSH
 brew "fabric"
 # Bash completion for Fabric
@@ -86,12 +93,12 @@ brew "fclones"
 brew "fd"
 # OCR (Optical Character Recognition) engine
 brew "tesseract"
+# Play, record, convert, and stream audio and video
+brew "ffmpeg"
 # Client app of fast reverse proxy to expose a local server to the internet
 brew "frpc"
 # Command-line fuzzy finder written in Go
 brew "fzf"
-# Toolkit for image loading and pixel buffer manipulation
-brew "gdk-pixbuf"
 # Open source programming language to build simple/reliable/efficient software
 brew "go"
 # Go Dependency Manager (gdm)
@@ -120,12 +127,16 @@ brew "gradle-completion"
 brew "grc"
 # Image manipulation
 brew "netpbm"
+# Toolkit for creating graphical user interfaces
+brew "gtk4"
 # Improved top (interactive process viewer)
 brew "htop"
 # User-friendly cURL replacement (command-line HTTP client)
 brew "httpie"
 # Command-line benchmarking tool
 brew "hyperfine"
+# ISO/IEC 23008-12:2017 HEIF file format decoder and encoder
+brew "libheif"
 # Install and debug iPhone apps from the command-line
 brew "ios-deploy"
 # Interactive computing in Python
@@ -262,6 +273,8 @@ brew "goreleaser/tap/nfpm"
 brew "knqyf263/pet/pet"
 # High-performance, schema-free, document-oriented database
 brew "mongodb/brew/mongodb-community"
+# Convert .emlx and .partial.emlx files created by Apple’s Mail.app to .eml
+brew "qqilihq/partial-emlx-converter/partial-emlx-converter"
 # View, print, and comment on PDF documents
 cask "adobe-acrobat-reader"
 # Inspect application bundles
