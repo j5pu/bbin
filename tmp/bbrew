@@ -1,0 +1,9 @@
+#!/bin/sh
+set -eu
+
+eval "$(/usr/local/bin/brew shellenv)"
+
+#brew install tesseract-lang
+mas list >/dev/null
+brew bundle dump --force --describe
+brew bundle --cleanup --no-lock --force
