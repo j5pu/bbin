@@ -3,7 +3,7 @@ set -eu
 
 eval "$(/usr/local/bin/brew shellenv)"
 
-test $# -eq 0 || brew "$@"
+test $# -eq 0 || { brew "$@"; echo; }
 
 mas list >/dev/null
 
