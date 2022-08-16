@@ -139,14 +139,13 @@ attachments() {
   unset -f copy
 }
 
-
 #######################################
 # copy audios from iCloud and text
 # Arguments:
 #  None
 #######################################
 audios() {
-  local c=0 dir dest files log readable='@' src suffix="pdf" total
+  local c=0 dir dest files readable='@' src suffix="pdf" total
   dir="/Volumes/USB-2TB/Documents/Julia/Backups - Audios - Sacadas Ordenador - \
 Capturas Pantalla /Audios y Transcripciones/Mio"
   files="$(find "${dir}" -type f -iname "*.m4a"  | sort -R)"
@@ -166,6 +165,11 @@ Capturas Pantalla /Audios y Transcripciones/Mio"
   done <<<"${files}"
 }
 
+#######################################
+# description
+# Arguments:
+#  None
+#######################################
 audio() {
   local dir file
   dir="/Volumes/USB-2TB/Documents/Julia/Backups - Audios - Sacadas Ordenador - \
