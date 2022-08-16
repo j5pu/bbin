@@ -6,8 +6,10 @@ eval "$(/usr/local/bin/brew shellenv)"
 test $# -eq 0 || brew "$@"
 
 mas list >/dev/null
+
 brew bundle dump --force --describe
 brew bundle --cleanup --no-lock --force
+
 git -C "${HOME}/bbin" add Brewfile
 git -C "${HOME}/bbin"  commit --quiet -m "update Brewfile" 2>/dev/null || exit 0
 git -C "${HOME}/bbin"  push --quiet
