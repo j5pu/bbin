@@ -7,3 +7,7 @@ eval "$(/usr/local/bin/brew shellenv)"
 mas list >/dev/null
 brew bundle dump --force --describe
 brew bundle --cleanup --no-lock --force
+cd ~/bbin
+git add Brewfile
+git commit --quiet -m "update Brewfile" 2>/dev/null || exit 0
+git push --quiet
