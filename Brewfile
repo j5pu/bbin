@@ -33,6 +33,8 @@ brew "coreutils"
 brew "readline"
 # Extendable version manager with support for Ruby, Node.js, Erlang & more
 brew "asdf"
+# Automatically exclude development dependencies from Time Machine backups
+brew "asimov"
 # Bourne-Again SHell, a UNIX command interpreter
 brew "bash"
 # Programmable completion for Bash 4.2+
