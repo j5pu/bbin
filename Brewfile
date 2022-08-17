@@ -113,6 +113,8 @@ brew "gh"
 brew "ghostscript"
 # Distributed revision control system
 brew "git"
+# Git extension for versioning large files
+brew "git-lfs"
 # Open GitHub webpages from a terminal
 brew "git-open"
 # GNU Pretty Good Privacy (PGP) package
