@@ -215,6 +215,8 @@ brew "python@3.9"
 brew "rake-completion"
 # Ruby version manager
 brew "rbenv"
+# Tool to recover JPEG images from a file system image
+brew "recoverjpeg"
 # Utility that provides fast incremental file transfer
 brew "rsync"
 # Bash completion for Ruby
@@ -294,6 +296,8 @@ cask "appcleaner"
 # Digital signature editor and validator
 cask "autofirma"
 cask "beardedspice"
+# Mobile gaming platform
+cask "bluestacks"
 # App to build and share containerized applications and microservices
 cask "docker"
 # Client for the Dropbox cloud storage service
@@ -362,31 +366,3 @@ cask "virtualbox"
 cask "virtualbox-extension-pack"
 # SSH/SFTP/Shell/Telnet/Serial terminal
 cask "windterm"
-mas "Amphetamine", id: 937984704
-mas "Bear", id: 1091189122
-mas "Boop", id: 1518425043
-mas "com.tyrhex.Tyrhex", id: 933525733
-mas "Flycut", id: 442160987
-mas "HP Smart", id: 1474276998
-mas "Image2icon", id: 992115977
-mas "Keynote", id: 409183694
-mas "LimeChat", id: 414030210
-mas "Magnet", id: 441258766
-mas "Microsoft Excel", id: 462058435
-mas "Microsoft PowerPoint", id: 462062816
-mas "Microsoft Word", id: 462054704
-mas "Numbers", id: 409203825
-mas "OneDrive", id: 823766827
-mas "Pages", id: 409201541
-mas "PhotoMiner", id: 1227312629
-mas "PrettyJSON for Safari", id: 1445328303
-mas "Slack", id: 803453959
-mas "Sleep Alarm Clock", id: 1091149644
-mas "Telegram", id: 747648890
-mas "Tot", id: 1491071483
-mas "Transporter", id: 1450874784
-mas "Userscripts", id: 1463298887
-mas "virtualOS", id: 1614659226
-mas "WhatFont", id: 1437138382
-mas "WhatsApp", id: 1147396723
-mas "Xcode", id: 497799835
