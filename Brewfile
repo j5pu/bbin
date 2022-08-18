@@ -296,8 +296,6 @@ cask "appcleaner"
 # Digital signature editor and validator
 cask "autofirma"
 cask "beardedspice"
-# Mobile gaming platform
-cask "bluestacks"
 # App to build and share containerized applications and microservices
 cask "docker"
 # Client for the Dropbox cloud storage service
@@ -337,6 +335,8 @@ cask "keeweb"
 cask "keka"
 # Customize mouse behavior
 cask "linearmouse"
+# Android emulator to play mobile games
+cask "noxappplayer"
 # Finder Toolbar app to open the current directory in Terminal or Editor
 cask "openinterminal"
 # Web browser
