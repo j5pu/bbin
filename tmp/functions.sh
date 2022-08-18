@@ -323,7 +323,8 @@ ocrall() {
 # Arguments:
 #  None
 #######################################
-preserve() { rsync -aptvADENUX --exclude "*.icloud" "$@"; }
+preserve() { rsync -avAXUN E --exclude "*.icloud" "$@"; }
+dry() { preserve -n "$@"; }
 
 #######################################
 # brctl status
@@ -388,5 +389,40 @@ total() {
   echo "  evicted:    $(wc -l < <(grep ".icloud$" <<<"${total}"))"
   echo "  downloaded: $(wc -l < <(grep -v ".icloud$" <<<"${total}"))"
 }
+
+#######################################
+# Copy Mail attachments and remove duplicates
+# Globals:
+#   HOME
+# Arguments:
+#   1
+#   2
+#######################################
+windows() {
+  local copy dir=~/Windows/All extension file src=/Volumes/"$1" sum
+  # copy
+  copy() {
+    ! test -f "$2" && cp -pv "$1" "$2"
+  }
+  while read -r file; do
+    extension="$(extension "${file}")"
+    test -s "${file}" || continue
+    [ "$(stat -f "%z" "${file}")" -ne 0 ] || continue
+    if ! copy "${file}" "${dir}/${file##*/}"; then
+      sum="$(md5sum "${file}" | awk '{ print $1 }')"
+      if ! find "${dir}" -type f -exec md5sum "{}" \; | awk '{ print $1 }' | grep -q "${sum}"; then
+        copy "${file}" "${dir}/$(stem "${file}") (${sum})${extension:+.${extension}}"
+      fi
+    fi
+  done < <(find "${src}" -type f)
+  unset -f copy
+}
+
+#######################################
+# description
+# Arguments:
+#  None
+#######################################
+windows_all() { windows HDD; windows DATA; }
 
 jet-service
