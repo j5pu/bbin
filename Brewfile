@@ -59,6 +59,8 @@ brew "dash"
 brew "ddrescue"
 # Secure runtime for JavaScript and TypeScript
 brew "deno"
+# Ncurses based advanced hex editor featuring diff mode and more
+brew "dhex"
 # Load/unload environment variables based on $PWD
 brew "direnv"
 # Disk Usage/Free Utility - a better 'df' alternative
@@ -133,6 +135,8 @@ brew "grc"
 brew "netpbm"
 # Toolkit for creating graphical user interfaces
 brew "gtk4"
+# GUI for playing Hex over Hex Text Protocol
+brew "hexgui"
 # Improved top (interactive process viewer)
 brew "htop"
 # User-friendly cURL replacement (command-line HTTP client)
@@ -221,6 +225,8 @@ brew "rust"
 brew "rustc-completion"
 # Rust toolchain installer
 brew "rustup-init"
+# 7-Zip is a file archiver with a high compression ratio
+brew "sevenzip"
 # Command-line interface for https://speedtest.net bandwidth tests
 brew "speedtest-cli"
 # Cross-shell prompt for astronauts
@@ -311,6 +317,8 @@ cask "font-share-tech-mono"
 cask "google-chrome-beta"
 # Client for the Google Drive storage service
 cask "google-drive"
+# Hex editor focussing on speed
+cask "hex-fiend"
 # Java IDE by JetBrains
 cask "intellij-idea"
 # Terminal emulator as alternative to Apple's Terminal app
