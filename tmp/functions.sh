@@ -391,6 +391,21 @@ total() {
 }
 
 #######################################
+# description
+# Arguments:
+#  None
+#######################################
+video() {
+  local i dest="/Volumes/USB-2TB/Recovered/Windows/converted - video"
+  mkdir -p "${dest}"
+  while read -r i; do
+    ffmpeg -nostdin -y -i "$i" "${dest}/$(stem "$i")".mp4 &
+    sleep 3
+  done < <(find "/Volumes/USB-2TB/Recovered/Wondershare - DATA/Recoverit 2022-08-19 at 03.20.20/Unsourced files/Video" \
+    -type f )
+}
+
+#######################################
 # Copy Mail attachments and remove duplicates
 # Globals:
 #   HOME
