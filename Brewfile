@@ -289,6 +289,8 @@ brew "mongodb/brew/mongodb-community"
 brew "qqilihq/partial-emlx-converter/partial-emlx-converter"
 # View, print, and comment on PDF documents
 cask "adobe-acrobat-reader"
+# Tools for building Android applications
+cask "android-studio"
 # Inspect application bundles
 cask "apparency"
 # Application uninstaller
@@ -335,8 +337,6 @@ cask "keeweb"
 cask "keka"
 # Customize mouse behavior
 cask "linearmouse"
-# Android emulator to play mobile games
-cask "noxappplayer"
 # Finder Toolbar app to open the current directory in Terminal or Editor
 cask "openinterminal"
 # Web browser
