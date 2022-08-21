@@ -23,7 +23,10 @@ extension() { echo "${1##*/}" | awk -F "." '/\./ {print $NF}'; }
 #   1
 #   2
 #######################################
-files_diff() { find "$1" "$2" -type f -name ".DS_Store" -delete; git diff --name-only --no-index "$1" "$2"; diff "$1" "$2"; }
+files_diff() {
+  find "$1" "$2" -type f -name ".DS_Store" -delete;
+  git diff --name-only --no-index "$1" "$2"; diff "$1" "$2";
+}
 
 #######################################
 # show files added to $2 directory not in $1 directory (does not show empty files)
