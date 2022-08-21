@@ -1,4 +1,5 @@
 # shellcheck shell=bash disable=SC2043,SC2181
+alias ls="lsd"
 
 #######################################
 # macOS disk1 free
