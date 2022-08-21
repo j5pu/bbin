@@ -347,8 +347,6 @@ cask "keka"
 cask "linearmouse"
 # Finder Toolbar app to open the current directory in Terminal or Editor
 cask "openinterminal"
-# Web browser
-cask "opera-developer"
 # Image editor
 cask "paintbrush"
 # IDE for professional Python development
