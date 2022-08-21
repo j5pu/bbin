@@ -135,6 +135,8 @@ brew "grc"
 brew "netpbm"
 # Toolkit for creating graphical user interfaces
 brew "gtk4"
+# Open-source video transcoder available for Linux, Mac, and Windows
+brew "handbrake"
 # GUI for playing Hex over Hex Text Protocol
 brew "hexgui"
 # Improved top (interactive process viewer)
@@ -310,6 +312,8 @@ cask "dupeguru"
 cask "electron"
 # Bitcoin thin client
 cask "electrum"
+# Tool to rename digital photos, movie- and audio-clips
+cask "exifrenamer"
 # Web browser
 cask "firefox-developer-edition"
 cask "fiscript"
@@ -323,6 +327,8 @@ cask "font-share-tech-mono"
 cask "google-chrome-beta"
 # Client for the Google Drive storage service
 cask "google-drive"
+# Open-source video transcoder
+cask "handbrake"
 # Hex editor focussing on speed
 cask "hex-fiend"
 # Java IDE by JetBrains
