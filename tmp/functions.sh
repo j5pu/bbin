@@ -1452,3 +1452,4 @@ wma() {
 }
 
 jet-service
+export PATH="${HOME}/media/scripts:${PATH}"
