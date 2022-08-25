@@ -3,7 +3,7 @@
 <plist>
   <dict>
     <key>CFBundleExecutable</key>
-    <string>internetcopy</string>
+    <string>internet-copy</string>
     <key>CFBundleGetInfoString</key>
     <string>InternetCopy</string>
     <key>CFBundleIconFile</key>

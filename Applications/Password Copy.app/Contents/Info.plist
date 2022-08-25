@@ -3,7 +3,7 @@
 <plist>
   <dict>
     <key>CFBundleExecutable</key>
-    <string>passwordcopy</string>
+    <string>password-copy</string>
     <key>CFBundleGetInfoString</key>
     <string>PasswordCopy</string>
     <key>CFBundleIconFile</key>

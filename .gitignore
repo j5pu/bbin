@@ -214,6 +214,7 @@
 ## /Bbin.app
 !/Bbin.app
 ## /bin
+!/Applications
 !/bin/base-images.bash
 !/bin/color
 !/bin/completions_helpers.bash
