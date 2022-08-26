@@ -16,7 +16,7 @@ df_macos() { df -H | awk '/\/dev\/disk1s1/ { printf $4 }'; }
 #   extension /hola.xz/example.tar.gz
 #   extension /hola.xz/example
 #######################################
-extension() { echo "${1##*/}" | awk -F "." '/\./ {print $NF}'; }
+extension() { echo "${1##*/}" | awk -F "." '/\./ { print $NF }'; }
 
 #######################################
 # show files added to $2 directory not in $1 directory (does not show empty files)
