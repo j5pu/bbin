@@ -1453,3 +1453,19 @@ wma() {
 
 jet-service
 export PATH="${HOME}/media/scripts:${HOME}/media/scripts/run:${PATH}"
+
+history_prompt() { history -a; history -c; history -r; }
+export PROMPT_COMMAND="history_prompt${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
+export HISTCONTROL=erasedups
+# Undocumented feature which sets the size to "unlimited".
+# http://stackoverflow.com/questions/9457233/unlimited-bash-history
+export HISTFILESIZE=
+export HISTSIZE=
+export HISTTIMEFORMAT="[%F %T] "
+# Change the file location because certain bash sessions truncate .bash_history file upon close.
+# http://superuser.com/questions/575479/bash-history-truncated-to-500-lines-on-each-login
+export HISTFILE=~/.bash_history_unlimited
+
+
+/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -u /Applications/Spotify.app 2>/dev/null || true
+
