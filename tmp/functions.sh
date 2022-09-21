@@ -129,7 +129,6 @@ to_bbin() {
   git status
 }
 
-complete -r brctl 2>/dev/null || true
 eval "$(zoxide init bash)"
 
 export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
@@ -1454,7 +1453,7 @@ wma() {
 jet-service
 export PATH="${HOME}/media/scripts:${HOME}/media/scripts/run:${PATH}"
 
-history_prompt() { history -a; history -c; history -r; }
+history_prompt() { local rc=$?; history -a; history -c; history -r; return $rc; }
 export PROMPT_COMMAND="history_prompt${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
 export HISTCONTROL=erasedups
 # Undocumented feature which sets the size to "unlimited".
