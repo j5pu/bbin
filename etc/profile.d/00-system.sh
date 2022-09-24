@@ -17,7 +17,7 @@ export ARCH
 
 # Bash Deprecation
 #
-export BASH_SILENCE_DEPRECATION_WARNING
+export BASH_SILENCE_DEPRECATION_WARNING  #
 
 # '1' if not '/etc/os-release' and not '/sbin'.
 #
@@ -29,7 +29,7 @@ export CENTOS
 
 # Command Line Tools Usr Directory (xcode-select -p).
 #
-export CLT
+export CLT  #
 
 # '1' if running in docker container.
 #
@@ -41,7 +41,7 @@ export DEBIAN
 
 # 'noninteractive' if 'IS_CONTAINER' and 'DEBIAN_LIKE' are set.
     #
-export DEBIAN_FRONTEND
+export DEBIAN_FRONTEND  #
 
 # '1' if 'DIST_ID_LIKE is 'debian'.
 #
@@ -108,51 +108,51 @@ export GIT_TEMPLATE_DIR
 
 # https://github.com/Homebrew/homebrew-command-not-found
 #
-export HB_CNF_HANDLER
+export HB_CNF_HANDLER  #
 
 # Cask Versions (similar to opt)
 #
-export HOMEBREW_CASK
+export HOMEBREW_CASK  #
 
 # Version of formula, $HOMEBREW_PREFIX/opt is a symlink to $HOMEBREW_CELLAR (brew shellenv).
 #
-export HOMEBREW_CELLAR
+export HOMEBREW_CELLAR  #
 
 # HOMEBREW_COMPLETIONS_D
 #
-export HOMEBREW_COMPLETIONS_D
+export HOMEBREW_COMPLETIONS_D  #
 
 # Homebrew etc
 #
-export HOMEBREW_ETC
+export HOMEBREW_ETC  #
 
 # Homebrew unlinked Kegs (in $HOMEBREW_OPT) to add to PATH
 #
-export HOMEBREW_KEGS
+export HOMEBREW_KEGS  #
 
 # Homebrew ./lib
 #
-export HOMEBREW_LIB
+export HOMEBREW_LIB  #
 
 # Symlink for the latest version of formula to $HOMEBREW_CELLAR.
 #
-export HOMEBREW_OPT
+export HOMEBREW_OPT  #
 
 # Homebrew prefix (brew shellenv)
 #
-export HOMEBREW_PREFIX
+export HOMEBREW_PREFIX  #
 
 # Profile compat dir (profile.d), under etc.
 #
-export HOMEBREW_PROFILE_D
+export HOMEBREW_PROFILE_D  #
 
 # Repository and Library with homebrew gems and Taps (brew shellenv).
 #
-export HOMEBREW_REPOSITORY
+export HOMEBREW_REPOSITORY  #
 
 # Taps path under '$HOMEBREW_REPOSITORY/Library'.
 #
-export HOMEBREW_TAPS
+export HOMEBREW_TAPS  #
 
 # <html><h2>First part of hostname</h2>
 # <p><strong><code>$HOST</code></strong> (always exported).</p>
@@ -165,7 +165,7 @@ export HOST
 
 # Symbol and 'HOST' if 'CONTAINER' or 'SSH'.
 #
-export HOST_PROMPT
+export HOST_PROMPT  #
 
 # '1' if 'DIST_ID' is 'kali'.
 #
@@ -225,7 +225,7 @@ export PM_UPGRADE
 
 # Python Interactive Startup File
 #
-PYTHONSTARTUP="$(command -v pythonstartup || true)"; export PYTHONSTARTUP
+PYTHONSTARTUP="$(command -v pythonstartup || true)"; export PYTHONSTARTUP  #
 
 # '1' if 'DIST_ID' is 'rhel'.
 #
@@ -237,11 +237,11 @@ export RHEL_LIKE
 
 # SHARE_COMPLETIONS_D contains the default /usr/share completions compat dir for Linux
 #
-export SHARE_COMPLETIONS_D
+export SHARE_COMPLETIONS_D  #
 
 # '1' if 'SSH_CLIENT' or 'SSH_TTY' or 'SSH_CONNECTION'.
 #
-export SSH
+export SSH  #
 
 # Path with sudo command
 # https://linuxhandbook.com/run-alias-as-sudo/
