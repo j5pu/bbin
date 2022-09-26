@@ -384,6 +384,7 @@ system() {
       1015) DIST_CODENAME='Catalina' ;;
       11*) DIST_CODENAME='Big Sur' ;;
       12*) DIST_CODENAME='Monterey' ;;
+      13*) DIST_CODENAME='Ventura' ;;
       *) DIST_CODENAME='Other' ;;
     esac
     HOMEBREW_KEGS='ruby'
