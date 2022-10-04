@@ -60,7 +60,7 @@ fi
 
 test -f "${BBIN_PROFILE}" || { >&2 echo "${BBIN_PROFILE}: No such file"; return 1 2>/dev/null || exit; }
 
-#######################################
+#######################################  MOVE TO RC
 # export all functions
 # Arguments:
 #  None
@@ -71,7 +71,7 @@ export_funcs_all() {
   export -f $(compgen -A function)
 }
 
-#######################################
+#######################################  MOVE TO RC
 # export file or files functions
 # Arguments:
 #  Files or Directories to search for functions
@@ -82,7 +82,7 @@ export_funcs_path() {
   export -f $("${BBIN_PREFIX}/bin/filefuncs"  "$@")
 }
 
-#######################################
+####################################### MOVE TO RC
 # export public functions (not starting with _)
 # Arguments:
 #  None

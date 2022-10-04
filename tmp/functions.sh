@@ -1,3 +1,4 @@
+echo .bashrc
 # shellcheck shell=bash disable=SC2043,SC2181
 alias ls="lsd"
 
@@ -129,7 +130,7 @@ to_bbin() {
   git status
 }
 
-eval "$(zoxide init bash)"
+eval "$(/usr/local/bin/zoxide init bash)"
 
 export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 export HOMEBREW_BUNDLE_FILE="${HOME}/bbin/Brewfile"
@@ -1450,7 +1451,7 @@ wma() {
     -type f )
 }
 
-jet-service
+/usr/local/bin/jet-service
 export PATH="${HOME}/media/scripts:${HOME}/media/scripts/run:${PATH}"
 
 history_prompt() { local rc=$?; history -a; history -c; history -r; return $rc; }
@@ -1468,3 +1469,8 @@ export HISTFILE=~/.bash_history_unlimited
 
 /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -u /Applications/Spotify.app 2>/dev/null || true
 
+if [ "${PS1-}" ] && [ "${TERMINAL_EMULATOR-}" = JetBrains-JediTerm ] && [[ ! "$TERM" =~ tmux ]] && [ ! "${TMUX-}" ]; then
+  true; #  exec tmux
+fi
+
+eval "$(direnv hook bash)"
