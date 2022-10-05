@@ -1473,4 +1473,4 @@ if [ "${PS1-}" ] && [ "${TERMINAL_EMULATOR-}" = JetBrains-JediTerm ] && [[ ! "$T
   true; #  exec tmux
 fi
 
-eval "$(direnv hook bash)"
+# eval "$(direnv hook bash)"  # does not work in posix
