@@ -335,6 +335,7 @@ ocrall() {
 #  None
 #######################################
 preserve() { rsync -avAXUN E --exclude "*.icloud" "$@"; }
+
 #######################################
 # description
 # Arguments:
@@ -430,7 +431,7 @@ video() {
 #   2
 #######################################
 windows() {
-  local copy dir=~/Windows/All extension extensions file src=/Volumes/"$1" sum
+  local copy extension extensions file src=/Volumes/"$1"
   extensions="$(cat <<EOF
 ---
 000
@@ -1451,8 +1452,14 @@ wma() {
 }
 
 /usr/local/bin/jet-service
-export PATH="${HOME}/media/scripts:${HOME}/media/scripts/run:${PATH}"
 
+#######################################
+# history_prompt
+# Arguments:
+#  None
+# Returns:
+#   $rc ...
+#######################################
 history_prompt() { local rc=$?; history -a; history -c; history -r; return $rc; }
 export PROMPT_COMMAND="history_prompt${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
 export HISTCONTROL=erasedups
@@ -1466,10 +1473,14 @@ export HISTTIMEFORMAT="[%F %T] "
 export HISTFILE=~/.bash_history_unlimited
 
 
-/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -u /Applications/Spotify.app 2>/dev/null || true
+/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister \
+  -u /Applications/Spotify.app 2>/dev/null || true
 
-if [ "${PS1-}" ] && [ "${TERMINAL_EMULATOR-}" = JetBrains-JediTerm ] && [[ ! "$TERM" =~ tmux ]] && [ ! "${TMUX-}" ]; then
+if [ "${PS1-}" ] && [ "${TERMINAL_EMULATOR-}" = JetBrains-JediTerm ] && [[ ! "$TERM" =~ tmux ]] && [ ! "${TMUX-}" ];
+then
   true; #  exec tmux
 fi
 
 # eval "$(direnv hook bash)"  # does not work in posix
+
+! test -f ~/media/.bashrc || . ~/media/.bashrc
