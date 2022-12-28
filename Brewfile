@@ -212,9 +212,9 @@ cask "linearmouse"
 cask "macstroke"
 cask "menubar-colors"
 cask "microsoft-auto-update"
-cask "microsoft-outlook"
 cask "openinterminal"
 cask "paintbrush"
+cask "proxyman"
 cask "pycharm"
 cask "qlmarkdown"
 cask "qlvideo"
@@ -230,3 +230,51 @@ cask "uncolored"
 cask "virtualbox"
 cask "windterm"
 cask "xquartz"
+mas "Amphetamine", id: 937984704
+mas "Apple Configurator", id: 1037126344
+mas "Authen", id: 1602945200
+mas "Bear", id: 1091189122
+mas "Boop", id: 1518425043
+mas "com.tyrhex.Tyrhex", id: 933525733
+mas "Connect Fonts for Safari", id: 1612867278
+mas "Flycut", id: 442160987
+mas "G App Launcher", id: 1543803459
+mas "HP Easy Scan", id: 967004861
+mas "HP Smart", id: 1474276998
+mas "Image2icon", id: 992115977
+mas "Instapaper", id: 288545208
+mas "Instapaper Save", id: 1481302432
+mas "JSONPeep", id: 1458969831
+mas "Keynote", id: 409183694
+mas "Keyword Search", id: 1558453954
+mas "LimeChat", id: 414030210
+mas "MacWeb Servers", id: 1469079631
+mas "Magnet", id: 441258766
+mas "Marklog", id: 1640691513
+mas "Microsoft Excel", id: 462058435
+mas "Microsoft PowerPoint", id: 462062816
+mas "Microsoft Remote Desktop", id: 1295203466
+mas "Microsoft Word", id: 462054704
+mas "Numbers", id: 409203825
+mas "Pages", id: 409201541
+mas "PhotoMiner", id: 1227312629
+mas "Post-it®", id: 1475777828
+mas "PrettyJSON for Safari", id: 1445328303
+mas "Prime Video", id: 545519333
+mas "Reading Queue", id: 1387881185
+mas "Slack", id: 803453959
+mas "Sleep Alarm Clock", id: 1091149644
+mas "Smart Converter", id: 447513724
+mas "Speedtest", id: 1153157709
+mas "Tamperish", id: 1516885392
+mas "Telegram", id: 747648890
+mas "Tot", id: 1491071483
+mas "Transporter", id: 1450874784
+mas "URL Linker", id: 1289119450
+mas "Userscripts", id: 1463298887
+mas "virtualOS", id: 1614659226
+mas "WeTransfer", id: 1114922065
+mas "WhatFont", id: 1437138382
+mas "WhatsApp", id: 1147396723
+mas "Xcode", id: 497799835
+mas "Zoom for Safari", id: 1423085875
