@@ -1,6 +1,8 @@
 # shellcheck shell=bash disable=SC2043,SC2181
 alias ls="lsd"
 
+alias now="sudo shutdown -h now"
+
 # brew all
 bb() {
   brew update && brew upgrade && brew cleanup && brew autoremove && brew bundle dump --force && brew bundle install --no-lock --cleanup && brew cleanup --prune=all
@@ -1489,3 +1491,4 @@ fi
 # eval "$(direnv hook bash)"  # does not work in posix
 
 ! test -f ~/media/.bashrc || . ~/media/.bashrc
+export PATH=$PATH:/Users/j5pu/.spicetify
