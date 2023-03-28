@@ -13,6 +13,7 @@ tap "homebrew/core"
 tap "homebrew/services"
 tap "homebrew/test-bot"
 tap "knqyf263/pet"
+tap "lencx/chatgpt", "https://github.com/lencx/ChatGPT.git"
 tap "mas-cli/tap"
 tap "microsoft/git"
 tap "mongodb/brew"
@@ -21,9 +22,12 @@ brew "ack"
 brew "xz"
 brew "gdk-pixbuf"
 brew "harfbuzz"
+brew "pango"
 brew "librsvg"
 brew "adwaita-icon-theme"
 brew "alerter"
+brew "jpeg-xl"
+brew "aom"
 brew "asciidoctor"
 brew "coreutils"
 brew "readline"
@@ -32,9 +36,11 @@ brew "asimov"
 brew "bash"
 brew "bash-completion@2"
 brew "bat"
+brew "boost"
 brew "brew-cask-completion"
 brew "brew-gem"
 brew "bundler-completion"
+brew "cdrtools"
 brew "cheat"
 brew "curl"
 brew "dash"
@@ -46,11 +52,11 @@ brew "duf"
 brew "dust"
 brew "dvdbackup"
 brew "folly"
+brew "edencommon"
 brew "exa"
 brew "exiftool"
-brew "gdbm"
 brew "mpdecimal"
-brew "python@3.10"
+brew "python@3.11"
 brew "fabric"
 brew "fabric-completion"
 brew "fizz"
@@ -59,11 +65,15 @@ brew "fbthrift"
 brew "fb303"
 brew "fclones"
 brew "fd"
+brew "libarchive"
+brew "libass"
 brew "tesseract"
 brew "ffmpeg"
+brew "open-mpi"
 brew "findutils"
 brew "frpc"
 brew "fzf"
+brew "gdbm"
 brew "go"
 brew "gdm"
 brew "gem-completion"
@@ -72,23 +82,28 @@ brew "ghostscript"
 brew "git"
 brew "git-lfs"
 brew "git-open"
+brew "gnu-sed"
 brew "gnupg"
 brew "goto"
 brew "gradle"
 brew "gradle-completion"
+brew "python@3.10"
 brew "grc"
+brew "grep"
 brew "netpbm"
 brew "gtk4"
-brew "handbrake"
+brew "handbrake", link: false
 brew "openjdk"
 brew "hexgui"
+brew "hostess"
 brew "htop"
 brew "httpie"
 brew "hyperfine"
 brew "libheif"
+brew "libraw"
 brew "imagemagick"
 brew "ios-deploy"
-brew "ipython"
+brew "ipython", link: false
 brew "jdupes"
 brew "jo"
 brew "mozjpeg"
@@ -99,8 +114,10 @@ brew "vips"
 brew "joplin-cli"
 brew "jq"
 brew "just"
+brew "known_hosts"
 brew "launchctl-completion"
 brew "lf"
+brew "libraqm"
 brew "lsd"
 brew "m-cli"
 brew "macos-trash"
@@ -116,7 +133,8 @@ brew "ncdu"
 brew "neovim", args: ["HEAD"]
 brew "nmap"
 brew "nodebrew"
-brew "tcl-tk"
+brew "pillow"
+brew "pngquant"
 brew "qpdf"
 brew "ocrmypdf"
 brew "openssh"
@@ -125,6 +143,7 @@ brew "packer-completion"
 brew "parallel"
 brew "pdfgrep"
 brew "pip-completion"
+brew "poppler-qt5"
 brew "procs"
 brew "pv"
 brew "pyenv"
@@ -165,8 +184,10 @@ brew "whalebrew"
 brew "xh"
 brew "yarn"
 brew "yarn-completion"
+brew "yt-dlp"
 brew "zoxide"
 brew "zsh-completions"
+brew "zsync"
 brew "caarlos0/tap/svu"
 brew "dopplerhq/cli/doppler"
 brew "goreleaser/tap/nfpm"
@@ -179,15 +200,19 @@ cask "apparency"
 cask "appcleaner"
 cask "autofirma"
 cask "beardedspice"
+cask "chatgpt"
 cask "clion"
 cask "colorpicker-materialdesign"
 cask "colorpicker-propicker"
+cask "corelocationcli"
+cask "dhs"
 cask "docker"
 cask "dupeguru"
 cask "duplicacy-cli"
 cask "electron"
 cask "electrum"
 cask "exifrenamer"
+cask "fing"
 cask "firefox"
 cask "firefox-developer-edition"
 cask "fiscript"
@@ -195,6 +220,10 @@ cask "font-archivo-black"
 cask "font-jetbrains-mono-nerd-font"
 cask "font-lato"
 cask "font-nova-mono"
+cask "font-sf-arabic"
+cask "font-sf-compact"
+cask "font-sf-mono"
+cask "font-sf-pro"
 cask "font-share-tech"
 cask "font-share-tech-mono"
 cask "free-download-manager"
@@ -203,15 +232,18 @@ cask "google-chrome-beta"
 cask "google-drive"
 cask "handbrake"
 cask "hex-fiend"
+cask "hostsx"
 cask "intellij-idea"
 cask "iterm2"
 cask "keepingyouawake"
 cask "keeweb"
 cask "keka"
 cask "linearmouse"
+cask "locationsimulator"
 cask "macstroke"
 cask "menubar-colors"
 cask "microsoft-auto-update"
+cask "opendnsupdater"
 cask "openinterminal"
 cask "paintbrush"
 cask "proxyman"
@@ -219,6 +251,7 @@ cask "pycharm"
 cask "qlmarkdown"
 cask "qlvideo"
 cask "rar"
+cask "rectangle"
 cask "skype"
 cask "spotify"
 cask "syntax-highlight"
@@ -230,51 +263,3 @@ cask "uncolored"
 cask "virtualbox"
 cask "windterm"
 cask "xquartz"
-mas "Amphetamine", id: 937984704
-mas "Apple Configurator", id: 1037126344
-mas "Authen", id: 1602945200
-mas "Bear", id: 1091189122
-mas "Boop", id: 1518425043
-mas "com.tyrhex.Tyrhex", id: 933525733
-mas "Connect Fonts for Safari", id: 1612867278
-mas "Flycut", id: 442160987
-mas "G App Launcher", id: 1543803459
-mas "HP Easy Scan", id: 967004861
-mas "HP Smart", id: 1474276998
-mas "Image2icon", id: 992115977
-mas "Instapaper", id: 288545208
-mas "Instapaper Save", id: 1481302432
-mas "JSONPeep", id: 1458969831
-mas "Keynote", id: 409183694
-mas "Keyword Search", id: 1558453954
-mas "LimeChat", id: 414030210
-mas "MacWeb Servers", id: 1469079631
-mas "Magnet", id: 441258766
-mas "Marklog", id: 1640691513
-mas "Microsoft Excel", id: 462058435
-mas "Microsoft PowerPoint", id: 462062816
-mas "Microsoft Remote Desktop", id: 1295203466
-mas "Microsoft Word", id: 462054704
-mas "Numbers", id: 409203825
-mas "Pages", id: 409201541
-mas "PhotoMiner", id: 1227312629
-mas "Post-it®", id: 1475777828
-mas "PrettyJSON for Safari", id: 1445328303
-mas "Prime Video", id: 545519333
-mas "Reading Queue", id: 1387881185
-mas "Slack", id: 803453959
-mas "Sleep Alarm Clock", id: 1091149644
-mas "Smart Converter", id: 447513724
-mas "Speedtest", id: 1153157709
-mas "Tamperish", id: 1516885392
-mas "Telegram", id: 747648890
-mas "Tot", id: 1491071483
-mas "Transporter", id: 1450874784
-mas "URL Linker", id: 1289119450
-mas "Userscripts", id: 1463298887
-mas "virtualOS", id: 1614659226
-mas "WeTransfer", id: 1114922065
-mas "WhatFont", id: 1437138382
-mas "WhatsApp", id: 1147396723
-mas "Xcode", id: 497799835
-mas "Zoom for Safari", id: 1423085875
