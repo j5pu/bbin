@@ -5,13 +5,6 @@
 #
 __comp_filedir_helps() { _comp_one_command; }
 for _comp_one_command_i in \
-  docker-contexts \
-  docker-running \
-  docker-start \
-  docker-stop \
-  isaction \
-  isdebian \
-  ismacos \
   journal-clean \
   path-default \
   ; do
@@ -25,8 +18,7 @@ for _comp_one_command_i in \
   dir-exists-empty \
   dir-has \
   dir-has-files \
-  source_dir \
-  pwd_p; do
+  source_dir; do
   complete -F __comp_filedir_dir "${_comp_one_command_i}"
 done
 
@@ -71,18 +63,5 @@ for _comp_one_command_i in \
   eval "${_comp_one_command_func}() { _comp_one_command \$(__git_remotes); }"
   complete -F "${_comp_one_command_func}" "git-${_comp_one_command_i}"
 done
-
-#######################################
-# docker_login
-# Arguments:
-#   None
-#######################################
-# shellcheck disable=SC2046
-_docker_login() {
-  _comp_one_command $(docker-contexts) --all
-#  [ "$1" = "$3" ] || return 0
-#  mapfile -t COMPREPLY < <(compgen -o nospace -W "-h --help help $(docker-contexts) --all" -- "$2")
-}
-complete -F _docker_login docker-login
 
 unset _comp_one_command_i _comp_one_command_func
